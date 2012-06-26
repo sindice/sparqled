@@ -1,0 +1,47 @@
+QueryContainer
+ SelectQuery
+  Select ( * )
+  WhereClause
+   GraphPatternGroup
+    BasicGraphPattern
+     TriplesSameSubjectPath
+      Var (_anon_1)
+      PropertyListPath
+       PathAlternative
+        PathSequence
+         PathElt
+          IRI (http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+       ObjectList
+        IRI (Person)
+     TriplesSameSubjectPath
+      Var (_anon_2)
+      PropertyListPath
+       PathAlternative
+        PathSequence
+         PathElt
+          IRI (http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+       ObjectList
+        IRI (Publication)
+    UnionGraphPattern
+     GraphPatternGroup
+      BasicGraphPattern
+       TriplesSameSubjectPath
+        Var (_anon_1)
+        PropertyListPath
+         PathAlternative
+          PathSequence
+           PathElt
+            IRI (writes)
+         ObjectList
+          Var (_anon_2)
+     GraphPatternGroup
+      BasicGraphPattern
+       TriplesSameSubjectPath
+        Var (_anon_1)
+        PropertyListPath
+         PathAlternative
+          PathSequence
+           PathElt
+            IRI (author)
+         ObjectList
+          Var (_anon_2)

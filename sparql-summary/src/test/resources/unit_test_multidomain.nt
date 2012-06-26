@@ -1,0 +1,15 @@
+@prefix og: <http://opengraphprotocol.org/schema/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ogp: <http://ogp.me/ns#> .
+@prefix ogorg: <http://opengraph.org/schema/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dbp: <http://dbpedia.org/property/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+
+dbp:a ogp:type "Thing" .
+dbp:a rdf:type "Thing" .
+dbp:a dc:like dbo:b .
+
+dbo:b ogp:like dbp:a .
+dbo:b og:type "Human" .
+dbo:b rdf:type "Thing" .

@@ -1,0 +1,14 @@
+@prefix og: <http://opengraphprotocol.org/schema/> .
+
+og:a og:type _:nothing .
+og:a og:link og:d .
+
+og:b og:type _:empty .
+og:b og:type "Thing" .
+og:b og:link og:d .
+
+og:c og:type _:empty .
+og:c og:type _:empty2 .
+og:c og:link og:d .
+
+og:d og:useless "test" .

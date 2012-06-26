@@ -1,0 +1,10 @@
+@prefix ogp: <http://opengraphprotocol.org/schema/> .
+
+ogp:a ogp:type "Thing" .
+ogp:a ogp:type "Human" .
+ogp:a ogp:like ogp:b .
+
+ogp:b ogp:like ogp:a .
+ogp:b ogp:type "Human" .
+
+ogp:d ogp:fail "INVALID" .

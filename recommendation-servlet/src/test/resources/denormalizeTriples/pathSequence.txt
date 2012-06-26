@@ -1,0 +1,28 @@
+QueryContainer
+ SelectQuery
+  Select ( * )
+  WhereClause
+   GraphPatternGroup
+    UnionGraphPattern
+     GraphPatternGroup
+      BasicGraphPattern
+       TriplesSameSubjectPath
+        Var (s)
+        PropertyListPath
+         PathAlternative
+          PathSequence
+           PathElt
+            IRI (http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+         ObjectList
+          Var (o1)
+     GraphPatternGroup
+      BasicGraphPattern
+       TriplesSameSubjectPath
+        Var (s)
+        PropertyListPath
+         PathAlternative
+          PathSequence
+           PathElt
+            IRI (dc:type)
+         ObjectList
+          Var (o1)

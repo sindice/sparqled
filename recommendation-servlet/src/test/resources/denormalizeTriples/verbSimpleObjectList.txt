@@ -1,0 +1,24 @@
+QueryContainer
+ SelectQuery
+  Select ( * )
+  WhereClause
+   GraphPatternGroup
+    BasicGraphPattern
+     TriplesSameSubjectPath
+      Var (s)
+      PropertyListPath
+       Var (p)
+       ObjectList
+        Var (o1)
+     TriplesSameSubjectPath
+      Var (s)
+      PropertyListPath
+       Var (p)
+       ObjectList
+        Var (o2)
+     TriplesSameSubjectPath
+      Var (s)
+      PropertyListPath
+       Var (p)
+       ObjectList
+        Var (o3)

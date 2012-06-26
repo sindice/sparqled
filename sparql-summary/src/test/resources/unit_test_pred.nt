@@ -1,0 +1,20 @@
+@prefix ogp: <http://opengraphprotocol.org/schema/> .
+
+ogp:a ogp:firstName "Richard" .
+ogp:a ogp:type "Human" .
+ogp:a ogp:like ogp:b .
+
+ogp:b ogp:firstName "Roger" .
+ogp:b ogp:firstName "Luc" .
+ogp:b ogp:think_at ogp:c .
+ogp:b ogp:type "Human" .
+
+ogp:c ogp:firstName "Cindy" .
+ogp:c ogp:test ogp:d .
+ogp:c ogp:type "Animal" .
+
+ogp:d ogp:fail "INVALID" .
+
+ogp:e ogp:type "double" .
+ogp:e ogp:type "type" .
+ogp:e ogp:test "win" .

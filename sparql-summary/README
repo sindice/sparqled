@@ -1,0 +1,189 @@
+GRAPH SUMMARY SPARQL README file
+====================
+
+
+INTRODUCTION:
+===============
+This software will create the graph summary from a dataset.
+
+COMPILATION
+===============
+To get the .jar you need to follow this procedure:
+go to the main repository, then do:
+> mvn assembly:assembly
+The good jar will be:
+./target/sparqled-assembly.jar
+
+I suggest you to do an alias:
+alias graphsummary="java -cp PWD/sparqled-assembly.jar org.sindice.summary.Pipeline"
+(You must change the PWD by something, in most of case "target")
+
+WARNING:
+===============
+If you want to compute a XMLRDF input, you must change the pom.xml before
+compiling the .jar:
+Go line 67, get:
+
+	       <dependency>
+                        <groupId>org.openrdf.sesame</groupId>
+                        <artifactId>sesame-rio-n3</artifactId>
+                        <version>2.6.5</version>
+                </dependency>
+
+	       <dependency>
+                        <groupId>org.openrdf.sesame</groupId>
+                        <artifactId>sesame-rio-rdfxml</artifactId>
+                        <version>2.6.5</version>
+                </dependency>
+
+Remove this lines.
+Write instead :
+
+	       <dependency>
+                        <groupId>org.openrdf.sesame</groupId>
+                        <artifactId>sesame-rio-rdfxml</artifactId>
+                        <version>2.6.5</version>
+                </dependency>
+
+	       <dependency>
+                        <groupId>org.openrdf.sesame</groupId>
+                        <artifactId>sesame-rio-n3</artifactId>
+                        <version>2.6.5</version>
+                </dependency>
+
+
+INPUT:
+===============
+The software need a repository in order to launch the SPARQL queries.
+You can give the path of an existing repository with "--input".
+If you don't have a repository "--input" will create one, then you need tofeed
+it with RDF file (and the option "--add").
+
+
+OUTPUT:
+===============
+The output will be in a RDF format compressed in GZIP format. The location of
+this file is defined by the option "--outputfile".
+
+
+LAUNCH:
+===============
+In order to launch the program you need to well formated command line.
+This line depend of the type of the repository, which contain the data.
+The software handle two type of local repository (NATIVE or MEMORY),
+one MYSQL database connexion (SQL) and can connect to a web server (HTTP)
+or a virtuoso server (VIRTUOSO).
+
+
+COMMAND LINE:
+===============
+	graphsummary --type=[NATIVE|MEMORY|HTTP] --input=[path]			\
+		--outputfile=[path] (--add=[file]) (--addformat=[NT|RDFXML]) 	\
+		(--pagination=5) (--domain=url)
+
+	to get the connexion to a virtuoso server
+	graphsummary --type=VIRTUOSO --input=[path] --outputfile=[path]		\
+		--user=[user] --pass=[pass] (--add=[file]) 			\
+		(--addformat=[NT|RDFXML]) (--pagination=5) (--DOMAIN=url)
+
+	for a MYSQL connexion:
+	graphsummary --type=SQL --input=[path] --outputfile=[path]		\
+		--database=[database] --user=[user] --pass=[pass]		\
+		(--add=[file]) (--addformat=[NT|RDFXML]) (--pagination=5)	\
+		(--DOMAIN=url)
+
+
+OPTIONS:
+===============
+	--type
+		Type of the input file (NATIVE, MEMORY, SQL, HTTP or VIRTUOSO)
+		[MANDATORY]
+ 	--feed, --feedmode
+		The feed mode allow you to create a repository without
+		launching the SPARQL queries
+	--repository
+                To specify the path of the local repository is.
+		Create the repository if nothing is found.
+		[MANDATORY FOR MEMORY AND NATIVE]
+	--url
+		The adress of the external repository.
+		[MANDATORY FOR HTTP, VIRTUOSO AND SQL]
+	--input
+		Can be use instead of "--repository" or "--url".
+	--add
+		Add a file to the repository. Can be used multiples times.
+		Warning, there is not globbing with the "equal".
+		Exemple:
+		"--add ~/test.nt" will work but not "--add=~/test.nt".
+	--addformat
+		The format of the file added to the repository.
+		Possible option :
+               		 RDF/XML (mimeTypes=application/rdf+xml,
+			 	  application/xml; ext=rdf, rdfs, owl, xml)
+		  	 N-Triples (mimeTypes=text/plain; ext=nt)
+			 Turtle (mimeTypes=text/turtle, application/x-turtle;
+			 	 ext=ttl)
+			 N3 (mimeTypes=text/rdf+n3; ext=n3)
+			 TriX (mimeTypes=application/trix; ext=xml, trix)
+			 TriG (mimeTypes=application/x-trig; ext=trig)
+			 BinaryRDF (mimeTypes=application/x-binary-rdf;
+			  	    ext=brf)
+		         NQuads (mimeTypes=text/x-nquads; ext=nq)
+		(default: N-Triples)
+	--pagination
+		Set the limit of the pagination. A little pagination is slower
+		but prevent the timeout. (0 for infinite)
+	--domain, --graph
+                Limit the search to one domain/one graph.
+	--outputfile
+		The output file.
+		[MANDATORY]
+	--database
+		The database in the MYSQL.
+		[MANDATORY FOR SQL]
+	--user
+		The user for a MYSQL connection.
+		[MANDATORY FOR VIRTUOSO and SQL]
+	--pass, --password
+		The password for a MYSQL connection.
+		[MANDATORY FOR VIRTUOSO and SQL]
+	--help
+		show help
+
+
+EXAMPLE:
+===============
+graphsummary --type=NATIVE --repository=example/nativestore/			\
+--add=src/test/resources/unit_test_multidomain.nt --outputfile=output.nt.gz
+
+graphsummary --type=NATIVE --input=example/nativestore/				\
+--outputfile=output2.nt 
+
+graphsummary --type=MEMORY --repository=example/memorystore/			\
+--add=src/test/resources/unit_test_multidomain.nt --outputfile=ouput3.nt.gz
+
+graphsummary --type=HTTP  --url=http://sparql.sindice.com/sparql		\
+--domain=http://www.rottentomatoes.com --outputfile=output4.nt.gz
+
+graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
+--user=testuser --pass=pass42 --outputfile=output5.nt.gz
+
+
+graphsummary --type=SQL --url=localhost --db=test --user=testuser		\
+--pass=pass42 --outputfile=output5.nt.gz
+
+graphsummary --feed --type=MEMORY --repository=example/memorystore/		\
+--add=src/test/resources/test.nt						\
+--add=src/test/resources/unit_test_multidomain.nt
+
+graphsummary --help
+
+
+===============
+This file was written by Pierre Bailly <pierre.bailly@deri.org>
+for Sindice Graph Summary on SPARQL
+
+Copyright (c) 2012,
+Digital Enterprise Research Institute,
+National University of Ireland, Galway.
+All rights reserved.

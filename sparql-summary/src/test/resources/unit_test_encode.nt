@@ -1,0 +1,2 @@
+@prefix ogp: <http://opengraphprotocol.org/schema/> .
+ogp:e ogp:type "test complexe" .

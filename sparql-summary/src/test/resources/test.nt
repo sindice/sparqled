@@ -1,0 +1,23 @@
+<http://opengraphprotocol.org/schema/a> <http://opengraphprotocol.org/schema/firstName> "Richard" .
+<http://opengraphprotocol.org/schema/a> <http://opengraphprotocol.org/schema/type> "Thing" .
+<http://opengraphprotocol.org/schema/a> <http://opengraphprotocol.org/schema/like> <http://opengraphprotocol.org/schema/c> .
+
+<http://opengraphprotocol.org/schema/b> <http://opengraphprotocol.org/schema/firstName> "Roger" .
+<http://opengraphprotocol.org/schema/b> <http://opengraphprotocol.org/schema/firstName> "Luc" .
+<http://opengraphprotocol.org/schema/b> <http://opengraphprotocol.org/schema/think_at> <http://opengraphprotocol.org/schema/c> .
+<http://opengraphprotocol.org/schema/b> <http://opengraphprotocol.org/schema/type> "Thing" .
+
+<http://opengraphprotocol.org/schema/c> <http://opengraphprotocol.org/schema/firstName> "Cindy" .
+<http://opengraphprotocol.org/schema/c> <http://opengraphprotocol.org/schema/mdr> <http://opengraphprotocol.org/schema/d> .
+<http://opengraphprotocol.org/schema/c> <http://opengraphprotocol.org/schema/type> "Animal" .
+
+<http://opengraphprotocol.org/schema/d> <http://opengraphprotocol.org/schema/fail> "INVALID" .
+
+<http://opengraphprotocol.org/schema/e> <http://opengraphprotocol.org/schema/type> <http://opengraphprotocol.org/schema/a> .
+
+<http://opengraphprotocol.org/schema/f> <http://opengraphprotocol.org/schema/type> "Lord \"Inateur\"" .
+<http://opengraphprotocol.org/schema/f> <http://opengraphprotocol.org/schema/do> "Crash" .
+
+<http://opengraphprotocol.org/schema/g> <http://opengraphprotocol.org/schema/type> "double" .
+<http://opengraphprotocol.org/schema/g> <http://opengraphprotocol.org/schema/type> <http://opengraphprotocol.org/nothing> .
+<http://opengraphprotocol.org/schema/g> <http://opengraphprotocol.org/schema/test> "win" .

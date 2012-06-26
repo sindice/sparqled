@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/a">
+    <ns0:type xmlns:ns0="http://opengraphprotocol.org/schema/">Thing</ns0:type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/b">
+    <ns0:type xmlns:ns0="http://opengraphprotocol.org/schema/">Thing</ns0:type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/c">
+    <ns0:type xmlns:ns0="http://opengraphprotocol.org/schema/">Animal</ns0:type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/c">
+    <ns0:mdr xmlns:ns0="http://opengraphprotocol.org/schema/" rdf:resource="http://opengraphprotocol.org/schema/d"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/d">
+    <ns0:fail xmlns:ns0="http://opengraphprotocol.org/schema/">INVALID</ns0:fail>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/e">
+    <ns0:type xmlns:ns0="http://opengraphprotocol.org/schema/">double</ns0:type>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://opengraphprotocol.org/schema/e">
+    <ns0:type xmlns:ns0="http://opengraphprotocol.org/schema/">type</ns0:type>
+  </rdf:Description>
+</rdf:RDF>

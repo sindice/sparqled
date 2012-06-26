@@ -1,0 +1,40 @@
+QueryContainer
+ SelectQuery
+  Select ( * )
+  WhereClause
+   GraphPatternGroup
+    UnionGraphPattern
+     GraphPatternGroup
+      BasicGraphPattern
+       TriplesSameSubjectPath
+        Var (s)
+        PropertyListPath
+         PathAlternative
+          PathSequence
+           PathElt
+            IRI (foaf:name)
+         ObjectList
+          Var (o1)
+     UnionGraphPattern
+      GraphPatternGroup
+       BasicGraphPattern
+        TriplesSameSubjectPath
+         Var (s)
+         PropertyListPath
+          PathAlternative
+           PathSequence
+            PathElt
+             IRI (dc:name)
+          ObjectList
+           Var (o1)
+      GraphPatternGroup
+       BasicGraphPattern
+        TriplesSameSubjectPath
+         Var (s)
+         PropertyListPath
+          PathAlternative
+           PathSequence
+            PathElt
+             IRI (dc:title)
+          ObjectList
+           Var (o1)

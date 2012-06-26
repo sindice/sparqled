@@ -1,0 +1,50 @@
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <display-name>sparqled</display-name>
+
+    <servlet>
+        <servlet-name>AssistedSparqlEditorServlet</servlet-name>
+        <servlet-class>org.sindice.analytics.servlet.AssistedSparqlEditorServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AssistedSparqlEditorServlet</servlet-name>
+        <url-pattern>/AssistedSparqlEditorServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>SparqlQueryServlet</servlet-name>
+        <servlet-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SparqlQueryServlet</servlet-name>
+        <url-pattern>/SparqlQueryServlet</url-pattern>
+    </servlet-mapping>
+
+    <listener>
+        <listener-class>org.sindice.analytics.servlet.AssistedSparqlEditorListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServletListener</listener-class>
+    </listener>
+
+
+    <filter>
+        <filter-name>jsonpCallbackFilter</filter-name>
+        <filter-class>org.sindice.analytics.servlet.JsonpCallbackFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>jsonpCallbackFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
