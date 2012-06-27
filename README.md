@@ -22,6 +22,6 @@ This distribution includes 4 modules:
 
 #### Acknowledgements
 
-This software is based upon works supported by the European FP7 project LOD2 (257943).
+This software is based upon works supported by the European FP7 project [LOD2](http://lod2.eu/Welcome.html) (257943).
 
 The SparQLed User Interface is based on the [Flint SPARQL Editor](https://github.com/TSO-Openup/FlintSparqlEditor).
