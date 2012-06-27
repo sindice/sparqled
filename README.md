@@ -18,7 +18,8 @@ This distribution includes 4 modules:
 * _recommendation-servlet:_ the servlet for providing query element recommendations;
 * _sesame-sparql-queryparser:_ [Sesame](http://www.openrdf.org/) SPARQL query parser extended for the SparQLed use case;
 * _sesame-backend:_ Utility classes for operating on SPARQL endpoint through Sesame;
-* _analytics-commons:_ Utility classes used in the Data Graph Summary computation.
+* _analytics-commons:_ Utility classes used in the Data Graph Summary computation;
+* _sparql-summary:_ an SPARQL-based Data Graph Summary Computation.
 
 #### Acknowledgements
 
