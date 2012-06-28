@@ -292,7 +292,7 @@ function FlintEditor(container, imagesPath, config) {
 		    paramsData[config.defaultEndpointParameters.queryParameters.query] = cm.getValue();
 		    var mimeType = endpointMimeTypeItem.getMimeType();
 		    $.ajax({
-			url: config.endpoints[2].uri,
+			url: config.endpoints[1].uri,
 			type: 'post',
 			 
 			data: "&query="+encodeURIComponent(paramsData[config.defaultEndpointParameters.queryParameters.query])+"&format=application%2Fsparql-results%2Bjson",
