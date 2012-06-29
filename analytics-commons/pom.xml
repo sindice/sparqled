@@ -12,12 +12,6 @@
     <packaging>jar</packaging>
     <name>analytics-commons</name>
 
-    <scm>
-        <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/analytics-commons</connection>
-        <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/analytics-commons</developerConnection>
-        <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/analytics-commons</url>
-    </scm>
-
     <dependencies>
         <!-- To resolve the extraction of second-level domain name -->
         <dependency>

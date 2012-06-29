@@ -9,11 +9,7 @@
   <artifactId>sesame-backend</artifactId>
   <packaging>jar</packaging>
   <name>sesame-backend</name>
-  <scm>
-    <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-backend</connection>
-    <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-backend</developerConnection>
-    <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-backend</url>
-  </scm>
+
   <build>
     <plugins>
       <plugin>
@@ -39,11 +35,11 @@
     </plugins>
   </build>
   <repositories>
-<repository>
-    <id>virtuoso</id>
-    <url>file://${basedir}/../lib/</url>
-</repository>
-
+    <!-- To get virtuoso sesame plugin -->
+    <repository>
+      <id>virtuoso</id>
+      <url>file://${basedir}/../lib/</url>
+    </repository>
     <!-- To get sesame -->
     <repository>
       <id>thirdparty-releases</id>

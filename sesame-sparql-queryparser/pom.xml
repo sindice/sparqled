@@ -14,12 +14,6 @@
 
     <description>Query language parser implementation for SPARQL, based on sesame. Modified for the EASE use case</description>
 
-    <scm>
-        <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-sparql-queryparser</connection>
-        <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-sparql-queryparser</developerConnection>
-        <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sesame-sparql-queryparser</url>
-    </scm>
-
     <repositories>
         <!-- To get sesame -->
         <repository>

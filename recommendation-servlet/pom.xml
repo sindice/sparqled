@@ -12,12 +12,6 @@
     <packaging>war</packaging>
     <name>recommendation-servlet</name>
 
-    <scm>
-        <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/recommendation-servlet</connection>
-        <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/recommendation-servlet</developerConnection>
-        <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/recommendation-servlet</url>
-    </scm>
-
     <repositories>
         <!-- To get sesame -->
         <repository>

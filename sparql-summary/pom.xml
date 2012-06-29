@@ -12,12 +12,6 @@
     <packaging>jar</packaging>
     <name>sparql-summary</name>
 
-    <scm>
-        <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-summary</connection>
-        <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-summary</developerConnection>
-        <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-summary</url>
-    </scm>
-
     <build>
         <plugins>
             <plugin>

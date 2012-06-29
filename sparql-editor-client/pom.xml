@@ -12,12 +12,6 @@
     <packaging>war</packaging>
     <name>sparql-editor-client</name>
 
-    <scm>
-        <connection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-editor-client</connection>
-        <developerConnection>scm:svn:https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-editor-client</developerConnection>
-        <url>https://dev01.sindice.net/svn/di2/sindice/core/analytics/trunk/sparql-editor-client</url>
-    </scm>
-
     <repositories>
         <repository>
             <id>spy</id>
