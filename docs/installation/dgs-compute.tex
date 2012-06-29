@@ -1,0 +1,18 @@
+\qnhead{1. Computing the Data Graph Summary}
+
+The DGS implementation bundled with this documentation is based on SPARQL, and computes the summary over a single dataset. A high performance, hadoop-based, DGS implementation is also available, and allows to compute a summary across datasets. Therefore, links between datasets can also be recommended. However, this version is not shipped with this package. Please inquire\footnote{\url{http://groups.google.com/group/sindice-dev}}.
+
+The following command will create the DGS over the given dataset which lies in a SPARQL endpoint located at \url{http://url/to/sparql/endpoint/}. The output is a gzip compressed NTriple file \texttt{/path/to/\mbox{$<\!data\!>$}-summary.nt.gz}. It is strongly advised to give enough memory to prevent OOME, e.g., \texttt{-Xmx2048m}.
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \parbox[r]{\linewidth}{\texttt{
+        \$ java -cp target/sparql-summary-assembly.jar org.sindice.summary.Pipeline -{}-type HTTP -{}-repository \url{http://url/to/sparql/endpoint/} -{}-outputfile /path/to/\mbox{$<\!data\!>$}-summary.nt.gz
+    }}
+}\marginnote[-0.8cm]{\textcolor{blue}{You can constrain the processing to a single named graph using the option \texttt{-{}-domain}.}}
+\end{raggedleft}
+\hfill
+
+A SPARQL endpoint must then be loaded with the computed DGS NTriples, under the named graph \url{http://sindice.com/analytics}.
+

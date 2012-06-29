@@ -1,0 +1,113 @@
+\qnhead{2. Configuring the Webapp}
+
+In this section and the next, we use by default tomcat6. If you are to use tomcat7, replace all occurrences of tomcat6 by tomcat7.
+
+In order to properly configure the application, we need to stop tomcat:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \texttt{
+        \$ sudo service tomcat6 stop
+    }
+}
+\end{raggedleft}
+
+\subsection{Edit Tomcat Properties}
+
+The application needs to set a pre-defined folder, where it can read configuration settings and also writes log output into a file. That folder is set using the Tomcat property \texttt{sindice.home} to the value \texttt{/path/to/sindice/home}.
+
+As a super-user, edit the file \texttt{/etc/default/tomcat6} and update the \texttt{JAVA\_OPTS} variable:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \texttt{
+        JAVA\_OPTS="-Dsindice.home=/path/to/sindice/home"
+    }
+}
+\end{raggedleft}
+\hfill
+
+Set tomcat6 permissions on that folder, so that the deployed webapp can write in that folder:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \texttt{
+        \$ sudo chown -R tomcat6:tomcat6 /path/to/sindice/home
+    }
+}
+\end{raggedleft}
+
+\subsection{Create the Webapp .war File}
+
+Edit the default XML config file of SparQLed:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    {\small \texttt{
+        recommendation-servlet/src/main/resources/default-config.xml
+    }}
+}
+\end{raggedleft}
+
+Set\marginnote{\textcolor{blue}{{\bfseries recommender} and {\bfseries proxy} tags}} the URL to the endpoints loaded with the original RDF Graph and the DGS. The endpoint with the RDF Graph is set under the \texttt{proxy} tag, the one with the DGS graph is set under the \texttt{recommender} tag.
+
+We assume here that both graphs are loaded into the same, \texttt{HTTP} endpoint:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \parbox[r]{\linewidth}{\texttt{
+        <backendArgs>http://path/to/sparql/endpoint</backendArgs>
+    }}
+}
+\end{raggedleft}
+\hfill
+
+The \texttt{sparqled.war} file is created using the following command, and is located in the directory \texttt{recommendation-servlet/target/}:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \parbox[r]{\linewidth}{\texttt{
+        \$ mvn -{}-projects recommendation-servlet -{}-also-make package
+    }}
+}
+\end{raggedleft}
+
+\qnhead{3. Launching the SparQLed Webapp}
+\label{sec:sparqled}
+
+With the SPARQL endpoint ready and the configuration files correctly setup, we are now ready to launch the webapp!
+
+\subsection{Clean Previously Installed Webapp}
+
+Remove a previously deployed SparQLed webapp, in order to avoid unexpected issues:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \parbox[r]{\linewidth}{\texttt{
+        \$ rm -rf /path/to/sindice/home/sparqled\\\hspace{0.02cm}
+        \$ rm -rf \$CATALINA\_BASE/webapps/sparqled*
+    }}
+}\marginnote[-0.2cm]{\textcolor{blue}{On Ubuntu, \$CATALINA\_BASE=/var/lib/tomcat6/}}
+\end{raggedleft}
+
+\subsection{Run Tomcat}
+
+Copy the \texttt{sparqled.war} file to the tomcat base directory and start tomcat:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \parbox[r]{\linewidth}{\texttt{
+        \$ sudo cp recommendation-servlet/target/sparqled.war \$CATALINA\_BASE/webapps/\\\hspace{0.002cm}
+        \$ sudo service tomcat6 start
+    }}
+}
+\end{raggedleft}
+
