@@ -210,9 +210,7 @@ public class Pipeline {
 						System.exit(10);
 					}
 				} else {
-					logger.error("You need to define a user to "
-					        + "connect to a virtuoso repository.");
-					System.exit(10);
+					q = new QueryHTTPVirtuoso(new Dump(), repository);
 				}
 			} else {
 				logger.error("You need to define the type of the "
@@ -381,9 +379,7 @@ public class Pipeline {
 						System.exit(10);
 					}
 				} else {
-					logger.error("You need to define a user to "
-					        + "connect to a virtuoso repository.");
-					System.exit(10);
+					q = new QueryHTTPVirtuoso(new Dump(), repository);
 				}
 			} else {
 				logger.error("You need to define the type of the "

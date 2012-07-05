@@ -83,7 +83,7 @@ COMMAND LINE:
 
 	to get the connexion to a virtuoso server
 	graphsummary --type=VIRTUOSO --input=[path] --outputfile=[path]		\
-		--user=[user] --pass=[pass] (--add=[file]) 			\
+		(--user=[user]) (--pass=[pass]) (--add=[file]) 			\
 		(--addformat=[NT|RDFXML]) (--pagination=5) (--DOMAIN=url)
 
 	for a MYSQL connexion:
@@ -143,10 +143,12 @@ OPTIONS:
 		[MANDATORY FOR SQL]
 	--user
 		The user for a MYSQL connection.
-		[MANDATORY FOR VIRTUOSO and SQL]
+		[MANDATORY FOR SQL]
+		[OPTIONNAL FOR VIRTUOSO]
 	--pass, --password
 		The password for a MYSQL connection.
-		[MANDATORY FOR VIRTUOSO and SQL]
+		[MANDATORY FOR SQL]
+		[OPTIONNAL FOR VIRTUOSO]
 	--help
 		show help
 
@@ -166,11 +168,13 @@ graphsummary --type=HTTP  --url=http://sparql.sindice.com/sparql		\
 --domain=http://www.rottentomatoes.com --outputfile=output4.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---user=testuser --pass=pass42 --outputfile=output5.nt.gz
+--outputfile=output5.nt.gz
 
+graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
+--user=testuser --pass=pass42 --outputfile=output6.nt.gz
 
 graphsummary --type=SQL --url=localhost --db=test --user=testuser		\
---pass=pass42 --outputfile=output5.nt.gz
+--pass=pass42 --outputfile=output7.nt.gz
 
 graphsummary --feed --type=MEMORY --repository=example/memorystore/		\
 --add=src/test/resources/test.nt						\
