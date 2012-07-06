@@ -9,6 +9,7 @@ package org.sindice.summary;
 import static java.util.Arrays.asList;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -20,6 +21,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.core.sesame.backend.SesameBackendException;
+import org.sindice.core.sesame.backend.SesameBackendFactory;
 
 /**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
@@ -57,9 +59,13 @@ public class Pipeline {
 	public static void main(String[] args) throws SesameBackendException {
 		OptionParser parser = new OptionParser() {
 			{
-				accepts(TYPE,
-				        "Type of the input file (SQL, NATIVE, MEMORY, HTTP or VIRTUOSO).")
-				        .withRequiredArg().required();
+				accepts(
+				        TYPE,
+				        "Type of the input file "
+				                + Arrays.toString(SesameBackendFactory.BackendType
+				                        .values())).withRequiredArg()
+				        .ofType(SesameBackendFactory.BackendType.class)
+				        .required();
 				acceptsAll(
 				        asList(FEED, "feedmode"),
 				        "The feed mode allow you to create a repository without launching the SPARQL queries");
@@ -115,7 +121,9 @@ public class Pipeline {
 		OptionParser feedParser = new OptionParser() {
 			{
 				acceptsAll(asList(FEED, "feedmode")).isRequired();
-				accepts(TYPE).withRequiredArg().required();
+				accepts(TYPE).withRequiredArg()
+				        .ofType(SesameBackendFactory.BackendType.class)
+				        .required();
 				acceptsAll(asList("repository", "input", "url"))
 				        .withRequiredArg().required();
 				acceptsAll(asList("domain", "graph")).withRequiredArg();
@@ -134,7 +142,7 @@ public class Pipeline {
 				parser.printHelpOn(System.out);
 			} catch (IOException e) {
 				Logger logger = Logger.getLogger(Pipeline.class);
-				logger.error(e.getStackTrace());
+				logger.error(e.getMessage());
 			}
 			System.exit(0);
 		}
@@ -168,9 +176,11 @@ public class Pipeline {
 		// Then create the Query. The local repository is created and open in
 		// the query.
 		Query q = null;
-
 		try {
-			if (options.valueOf(TYPE).equals("SQL")) {
+			if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.RDBMS)) {
+				System.out.println("a");
+
 				if (options.has("db") && options.hasArgument("db")) {
 					if (options.has("user") && options.hasArgument("user")) {
 						if (options.has("pass") && options.hasArgument("pass")) {
@@ -192,13 +202,17 @@ public class Pipeline {
 					logger.error("You need to select a database");
 					System.exit(10);
 				}
-			} else if (options.valueOf(TYPE).equals("NATIVE")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.NATIVE)) {
 				q = new QueryNative(repository);
-			} else if (options.valueOf(TYPE).equals("MEMORY")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.MEMORY)) {
 				q = new QueryMemory(repository);
-			} else if (options.valueOf(TYPE).equals("HTTP")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.HTTP)) {
 				q = new QueryHTTP(repository);
-			} else if (options.valueOf("type").equals("VIRTUOSO")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.VIRTUOSO)) {
 				if (options.has("user") && options.hasArgument("user")) {
 					if (options.has("pass") && options.hasArgument("pass")) {
 						q = new QueryHTTPVirtuoso(new Dump(), repository,
@@ -212,18 +226,15 @@ public class Pipeline {
 				} else {
 					q = new QueryHTTPVirtuoso(new Dump(), repository);
 				}
-			} else {
-				logger.error("You need to define the type of the "
-				        + "local repository (SQL, NATIVE, MEMORY or HTTP)");
-				System.exit(10);
 			}
 		} catch (Exception e) {
 			// Fail at the connection, need to print the stack
-			logger.error(e.getStackTrace());
+
+			logger.error(e.getMessage());
 			try {
 				q.stopConnexion();
 			} catch (Exception e1) {
-				logger.error(e1.getStackTrace());
+				logger.error(e1.getMessage());
 			}
 			System.exit(10);
 		}
@@ -266,15 +277,15 @@ public class Pipeline {
 					}
 				} catch (RDFParseException e) {
 					// Invalid output RDF => print the stack
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				} catch (RepositoryException e) {
 					logger.warn("Repository not found\n");
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				} catch (IOException e) {
 					logger.warn("File not found or not readable\n");
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				}
 			}
@@ -302,19 +313,19 @@ public class Pipeline {
 			q.computePredicate();
 		} catch (Exception e) {
 			// print the stack, with big debug
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage());
 			logger.error("Wrong query");
 			try {
 				q.stopConnexion();
 			} catch (Exception e1) {
-				logger.error(e1.getStackTrace());
+				logger.error(e1.getMessage());
 			}
 			System.exit(13);
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e1) {
-				logger.error(e1.getStackTrace());
+				logger.error(e1.getMessage());
 			}
 		}
 	}
@@ -339,7 +350,8 @@ public class Pipeline {
 		Query q = null;
 
 		try {
-			if (options.valueOf(TYPE).equals("SQL")) {
+			if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.RDBMS)) {
 				if (options.has("db") && options.hasArgument("db")) {
 					if (options.has("user") && options.hasArgument("user")) {
 						if (options.has("pass") && options.hasArgument("pass")) {
@@ -361,13 +373,17 @@ public class Pipeline {
 					logger.error("You need to select a database");
 					System.exit(10);
 				}
-			} else if (options.valueOf(TYPE).equals("NATIVE")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.NATIVE)) {
 				q = new QueryNative(new Dump(), repository);
-			} else if (options.valueOf(TYPE).equals("MEMORY")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.MEMORY)) {
 				q = new QueryMemory(new Dump(), repository);
-			} else if (options.valueOf(TYPE).equals("HTTP")) {
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.HTTP)) {
 				q = new QueryHTTP(repository);
-			} else if (options.valueOf("type").equals("VIRTUOSO")) {
+			} else if (options.valueOf("type").equals(
+			        SesameBackendFactory.BackendType.VIRTUOSO)) {
 				if (options.has("user") && options.hasArgument("user")) {
 					if (options.has("pass") && options.hasArgument("pass")) {
 						q = new QueryHTTPVirtuoso(new Dump(), repository,
@@ -381,18 +397,14 @@ public class Pipeline {
 				} else {
 					q = new QueryHTTPVirtuoso(new Dump(), repository);
 				}
-			} else {
-				logger.error("You need to define the type of the "
-				        + "local repository (SQL, NATIVE, MEMORY, HTTP or VIRTUOSO)");
-				System.exit(10);
 			}
 		} catch (Exception e) {
 			// Fail at the connection, need to print the stack
-			logger.error(e.getStackTrace());
+			logger.error(e.getMessage());
 			try {
 				q.stopConnexion();
 			} catch (Exception e1) {
-				logger.error(e1.getStackTrace());
+				logger.error(e1.getMessage());
 			}
 			System.exit(10);
 		}
@@ -435,15 +447,15 @@ public class Pipeline {
 					}
 				} catch (RDFParseException e) {
 					// Invalid output RDF => print the stack
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				} catch (RepositoryException e) {
 					logger.warn("Repository not found\n");
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				} catch (IOException e) {
 					logger.warn("File not found or not readable\n");
-					logger.error(e.getStackTrace());
+					logger.error(e.getMessage());
 					System.exit(12);
 				}
 			}
@@ -452,7 +464,7 @@ public class Pipeline {
 		try {
 			q.stopConnexion();
 		} catch (Exception e1) {
-			logger.error(e1.getStackTrace());
+			logger.error(e1.getMessage());
 		}
 	}
 }

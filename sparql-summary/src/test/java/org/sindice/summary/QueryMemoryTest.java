@@ -77,7 +77,7 @@ public class QueryMemoryTest {
 				// Nothing for this test
 			}
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Something wrong append");
 		}
 	}
@@ -109,13 +109,13 @@ public class QueryMemoryTest {
 				q.addFileToRepository("src/test/resources/unit_test_pred.nt",
 				        RDFFormat.N3);
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 				fail("Cannot add files.");
 			}
 			q._queriesResults = new Stack<TupleQueryResult>();
 			// q.launchQuery("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 1");
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Something wrong append");
 		} finally {
 			try {
@@ -135,14 +135,14 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test.xml",
 			        RDFFormat.RDFXML);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -152,14 +152,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -173,7 +173,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_name.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -181,7 +181,7 @@ public class QueryMemoryTest {
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -192,14 +192,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 
@@ -214,7 +214,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_pred.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -223,7 +223,7 @@ public class QueryMemoryTest {
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -239,14 +239,14 @@ public class QueryMemoryTest {
 			        + "http://opengraphprotocol.org/schema/test	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>	\"\"double\" \"type\"\"	\"\"\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_name.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -269,7 +269,7 @@ public class QueryMemoryTest {
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -277,14 +277,14 @@ public class QueryMemoryTest {
 			String ref = "Nothing	\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -300,7 +300,7 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -309,7 +309,7 @@ public class QueryMemoryTest {
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -320,14 +320,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 
@@ -344,7 +344,7 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -353,7 +353,7 @@ public class QueryMemoryTest {
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -362,14 +362,14 @@ public class QueryMemoryTest {
 			String ref = "Nothing	\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 
@@ -386,14 +386,14 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -403,14 +403,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 
@@ -425,7 +425,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_name.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -435,7 +435,7 @@ public class QueryMemoryTest {
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -445,14 +445,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -466,7 +466,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_pred.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -475,7 +475,7 @@ public class QueryMemoryTest {
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -483,14 +483,14 @@ public class QueryMemoryTest {
 			String ref = "Nothing	\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>\tNothing\tNothing\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -506,7 +506,7 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -515,7 +515,7 @@ public class QueryMemoryTest {
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -532,14 +532,14 @@ public class QueryMemoryTest {
 
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -555,7 +555,7 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -564,7 +564,7 @@ public class QueryMemoryTest {
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -572,14 +572,14 @@ public class QueryMemoryTest {
 			String ref = "Nothing	\"0\"^^<http://www.w3.org/2001/XMLSchema#integer>\tNothing\tNothing\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -595,14 +595,14 @@ public class QueryMemoryTest {
 			                "<http://sparql.sindice.org>",
 			                new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -618,14 +618,14 @@ public class QueryMemoryTest {
 			        + "http://opengraphprotocol.org/schema/test	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>	\"\"double\" \"type\"\"	\"\"\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -639,7 +639,7 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_pred.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -649,7 +649,7 @@ public class QueryMemoryTest {
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -665,14 +665,14 @@ public class QueryMemoryTest {
 			        + "http://opengraphprotocol.org/schema/test	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>	\"\"double\" \"type\"\"	\"\"\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -686,14 +686,14 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_name.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -703,14 +703,14 @@ public class QueryMemoryTest {
 			        + "\"{\"double\",1} {\"type\",1}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -724,14 +724,14 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_pred.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -747,14 +747,14 @@ public class QueryMemoryTest {
 			        + "http://opengraphprotocol.org/schema/test	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>	\"\"double\" \"type\"\"	\"\"\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -769,14 +769,14 @@ public class QueryMemoryTest {
 			        "src/test/resources/unit_test_multidomain.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -785,14 +785,14 @@ public class QueryMemoryTest {
 			        + "\"{\"Thing\",0} {\"Thing\",2}\"	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -807,14 +807,14 @@ public class QueryMemoryTest {
 			        "src/test/resources/unit_test_multidomain.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -827,14 +827,14 @@ public class QueryMemoryTest {
 			        + "http://www.w3.org/1999/02/22-rdf-syntax-ns#type	\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>	\"\"Human\" \"Thing\"\"	\"\"\n";
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			_logger.error(d.getResult());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -848,14 +848,14 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_blank.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computeName();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -864,13 +864,13 @@ public class QueryMemoryTest {
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
 			_logger.error(d.getResult());
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -884,14 +884,14 @@ public class QueryMemoryTest {
 			q.addFileToRepository("src/test/resources/unit_test_blank.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
 		try {
 			q.computePredicate();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 
@@ -901,13 +901,13 @@ public class QueryMemoryTest {
 			assertEquals(ref, d.getResult());
 		} catch (Exception e) {
 			_logger.error(d.getResult());
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot parse the query.");
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e) {
-				_logger.error(e.getStackTrace());
+				_logger.error(e.getMessage());
 			}
 		}
 	}
@@ -920,7 +920,7 @@ public class QueryMemoryTest {
 			q = new QueryMemory(d, "/tmp/testUNIT/memorystore24");
 			q.stopConnexion();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Cannot close the connection");
 		}
 	}

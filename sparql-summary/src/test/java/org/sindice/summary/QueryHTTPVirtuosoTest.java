@@ -43,7 +43,7 @@ public class QueryHTTPVirtuosoTest {
 			q = new QueryHTTPVirtuoso(d);
 		} catch (Exception e) {
 			// useless
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("Invalide query intialization.");
 		}
 		String s = q.makeGroupConcat("?init", "?group");

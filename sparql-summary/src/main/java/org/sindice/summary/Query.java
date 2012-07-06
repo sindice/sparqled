@@ -335,7 +335,7 @@ abstract public class Query {
 		try {
 			_repository.closeConnection();
 		} catch (SesameBackendException e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 		}
 		_dump.closeRDF();
 	}

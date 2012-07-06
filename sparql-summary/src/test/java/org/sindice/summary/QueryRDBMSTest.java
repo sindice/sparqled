@@ -49,7 +49,7 @@
 //				// Nothing for this test
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("Something wrong append");
 //		}
 //	}
@@ -73,7 +73,7 @@
 //			}
 //
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("Something wrong append");
 //		} finally {
 //			try {
@@ -174,13 +174,13 @@
 //				q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //				q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //				fail("Cannot add files.");
 //			}
 //			q._queriesResults = new Stack<TupleQueryResult>();
 //			q.launchQuery("SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 1");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("Something wrong append");
 //		} finally {
 //			try {
@@ -198,7 +198,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT6", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -239,14 +239,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //
@@ -259,7 +259,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT7", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -301,14 +301,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -321,7 +321,7 @@
 //			;
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -362,14 +362,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //
@@ -382,7 +382,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT9", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -430,14 +430,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -449,7 +449,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT10", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -495,14 +495,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //
@@ -515,7 +515,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT11", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -560,14 +560,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -579,7 +579,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT12", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -634,14 +634,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //
@@ -654,7 +654,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT13", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -702,14 +702,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -721,7 +721,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT14", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -757,14 +757,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -776,7 +776,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT15", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -815,14 +815,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -834,7 +834,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT6", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -870,14 +870,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -889,7 +889,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT17", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -934,14 +934,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -953,7 +953,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT18", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_name.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -989,14 +989,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1008,7 +1008,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT19", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_pred.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -1050,14 +1050,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1069,7 +1069,7 @@
 //			q = new QueryMemory("./testUNIT/RDBMSstore20");
 //			q.addFileToRepository("src/test/resources/unit_test_multidomain.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -1105,14 +1105,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1124,7 +1124,7 @@
 //			q = new QueryMemory("./testUNIT/RDBMSstore21");
 //			q.addFileToRepository("src/test/resources/unit_test_multidomain.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -1163,14 +1163,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1182,7 +1182,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT23", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_blank.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -1217,14 +1217,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1236,7 +1236,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT24", "testuser", "miaou");
 //			q.addFileToRepository("src/test/resources/unit_test_blank.nt");
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("wrong initialisation");
 //		}
 //
@@ -1271,14 +1271,14 @@
 //				fail("The query and thee ref have differents outputs");
 //			}
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			_logger.error(result);
 //			fail("Cannot parse the query.");
 //		} finally {
 //			try {
 //				q.stopConnexion();
 //			} catch (Exception e) {
-//				_logger.error(e.getStackTrace());;
+//				_logger.error(e.getMessage());;
 //			}
 //		}
 //	}
@@ -1290,7 +1290,7 @@
 //			q = new QueryRDBMS("localhost", "testUNIT22", "testuser", "miaou");
 //			q.stopConnexion();
 //		} catch (Exception e) {
-//			_logger.error(e.getStackTrace());;
+//			_logger.error(e.getMessage());;
 //			fail("Cannot close the connection");
 //		}
 //	}
