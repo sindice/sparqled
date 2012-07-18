@@ -15,66 +15,60 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 19 Mar 2012 ]
- * @link stephane.campinas@deri.org
- */
 package org.sindice.analytics.queryProcessor;
 
 
-import static org.junit.Assert.assertArrayEquals;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.queryProcessor.ASTVarProcessor;
+import org.sindice.analytics.queryProcessor.Select2Ask;
 
 /**
- * 
+ * @author bibhas [Jul 2, 2012]
+ * @email bibhas.das@deri.org
+ *
  */
-public class TestASTVarProcessor {
+public class TestSelect2Ask {
 
   /**
    * @throws java.lang.Exception
    */
   @Before
-  public void setUp()
-  throws Exception {}
-
+  public void setUp() throws Exception {
+  }
+  
   /**
    * @throws java.lang.Exception
    */
   @After
-  public void tearDown()
-  throws Exception {}
-
-  @Test
-  public void testASTVar()
-  throws Exception {
-    final String query = "SELECT * { ?s ?p [ <name> ?n ] }";
-    final ASTQueryContainer ast = SyntaxTreeBuilder.parseQuery(query);
-
-    final String[] expectedVars = { "n", "p", "s" };
-    final String[] actualVars = ASTVarProcessor.process(ast).toArray(new String[0]);
-    Arrays.sort(actualVars);
-    assertArrayEquals(expectedVars, actualVars);
+  public void tearDown() throws Exception {
   }
-
+  
+  
   @Test
-  public void testPOF()
-  throws Exception {
-    final String query = "SELECT * { ?s < [ <name> ?n ] }";
+  public void testSelect2Ask() throws Exception{
+    final String query = "SELECT DISTINCT * WHERE {?s ?p ?o} LIMIT 10";
+    Select2Ask obj = new Select2Ask();
     final ASTQueryContainer ast = SyntaxTreeBuilder.parseQuery(query);
+    final ASTQueryContainer newAst = obj.convert(ast);
+    String expected = "QueryContainer\n" +
+                          " AskQuery\n"+
+                          "  WhereClause\n"+
+                          "   GraphPatternGroup\n"+
+                          "    BasicGraphPattern\n"+
+                          "     TriplesSameSubjectPath\n"+
+                          "      Var (s)\n"+
+                          "      PropertyListPath\n"+
+                          "       Var (p)\n"+
+                          "       ObjectList\n"+
+                          "        Var (o)";
 
-    final String[] expectedVars = { "?" + SyntaxTreeBuilder.PointOfFocus, "n", "s" };
-    final String[] actualVars = ASTVarProcessor.process(ast).toArray(new String[0]);
-    Arrays.sort(actualVars);
-    assertArrayEquals(expectedVars, actualVars);
+    assertEquals(expected, newAst.dump(""));
   }
 
 }

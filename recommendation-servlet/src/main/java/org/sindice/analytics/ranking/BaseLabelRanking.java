@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.sindice.analytics.queryProcessor.QueryProcessor;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
 import org.sindice.analytics.ranking.LabelsRankingFactory.RankingType;
 
 /**
@@ -88,10 +88,10 @@ extends AbstractLabelsRanking {
   }
 
   private boolean isNew(ScoreLabel sl, Label toAdd) {
-    final String pofResourceToAdd = (String) toAdd.getContext().get(QueryProcessor.POF_RESOURCE).get(0);
+    final String pofResourceToAdd = (String) toAdd.getContext().get(SparqlToDGSQueryInterface.POF_RESOURCE).get(0);
 
     for (Label label: sl.getLabels()) {
-      String pofResource = (String) label.getContext().get(QueryProcessor.POF_RESOURCE).get(0);
+      String pofResource = (String) label.getContext().get(SparqlToDGSQueryInterface.POF_RESOURCE).get(0);
       if (pofResource.equals(pofResourceToAdd)) {
         return false;
       }

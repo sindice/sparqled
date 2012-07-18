@@ -30,6 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
+import org.sindice.analytics.queryProcessor.SparqlTranslationProcessor;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 
@@ -57,7 +62,8 @@ public class TestSparqlTranslationProcessor {
   throws Exception {
     final String query = "SELECT * { ?s <name> ?o1 . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -98,7 +104,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        IRI (name)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -106,7 +112,8 @@ public class TestSparqlTranslationProcessor {
   throws Exception {
     final String query = "SELECT * { ?s a <Person> . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -137,7 +144,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        IRI (Person)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -146,7 +153,8 @@ public class TestSparqlTranslationProcessor {
     final String query = "SELECT * FROM <http://ste.live.com> { Graph <http://sindice.com> { ?s a <Person> . ?s ?p ?o } ." +
                                                               " ?s a <Person> . ?s ?p ?o }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(4, vars.length);
@@ -295,7 +303,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "live.com)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -303,7 +311,8 @@ public class TestSparqlTranslationProcessor {
   throws Exception {
     final String query = "SELECT * { Graph <http://sindice.com> { ?s a <Person> . OPTIONAL {?s ?p ?o } } }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -383,7 +392,7 @@ public class TestSparqlTranslationProcessor {
                             "         ObjectList\n" +
                             "          IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -391,7 +400,8 @@ public class TestSparqlTranslationProcessor {
   throws Exception {
     final String query = "SELECT * { GRAPH ?POF { ?s a <Person> . ?s <age> ?age } }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -399,9 +409,9 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( distinct * )\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
                             "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
@@ -409,7 +419,7 @@ public class TestSparqlTranslationProcessor {
                             "    GraphPatternGroup\n" +
                             "     BasicGraphPattern\n" +
                             "      TriplesSameSubjectPath\n" +
-                            "       Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "       Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
@@ -418,16 +428,16 @@ public class TestSparqlTranslationProcessor {
                             "        ObjectList\n" +
                             "         Var (POF)\n" +
                             "      TriplesSameSubjectPath\n" +
-                            "       Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "       Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
                             "           IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
                             "        ObjectList\n" +
-                            "         Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "         Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "      TriplesSameSubjectPath\n" +
-                            "       Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "       Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
@@ -452,7 +462,7 @@ public class TestSparqlTranslationProcessor {
                             "          PathElt\n" +
                             "           IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
                             "        ObjectList\n" +
-                            "         Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "         Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      TriplesSameSubjectPath\n" +
                             "       Var (" + vars[1] + ")\n" +
                             "       PropertyListPath\n" +
@@ -482,14 +492,15 @@ public class TestSparqlTranslationProcessor {
                             "        ObjectList\n" +
                             "         Var (POF)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
   public void testPOFonClass() throws Exception {
     final String query = "SELECT * { ?a a ?POF . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -497,20 +508,20 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( distinct * )\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_CARD_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
                             "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -528,14 +539,14 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
                             "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
-                            "        Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "        Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (" + vars[0] + ")\n" +
                             "      PropertyListPath\n" +
@@ -553,7 +564,7 @@ public class TestSparqlTranslationProcessor {
                             "         PathElt\n" +
                             "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
-                            "        Var (" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + ")\n" +
+                            "        Var (" + SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_CARD_VAR + ")\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (" + vars[1] + ")\n" +
                             "      PropertyListPath\n" +
@@ -562,16 +573,17 @@ public class TestSparqlTranslationProcessor {
                             "         PathElt\n" +
                             "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
-                            "        Var (" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + ")";
+                            "        Var (" + SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR + ")";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
   public void testConnectedObject1() throws Exception {
     final String query = "SELECT * { ?s ?p ?o . ?a ?POF ?s . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -579,9 +591,9 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( distinct * )\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
                             "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
@@ -620,7 +632,7 @@ public class TestSparqlTranslationProcessor {
                             "       IsLiteral\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -629,7 +641,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -638,7 +650,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -647,7 +659,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -656,14 +668,15 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
   public void testConnectedObject2() throws Exception {
     final String query = "SELECT * { ?s ?p ?o . ?a ?POF ?o . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -671,9 +684,9 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( distinct * )\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
                             "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
@@ -715,7 +728,7 @@ public class TestSparqlTranslationProcessor {
                             "       IsLiteral\n" +
                             "        Var (o)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -724,7 +737,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -733,7 +746,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (o)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -742,7 +755,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -751,14 +764,15 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
   public void testConnectedObject3() throws Exception {
     final String query = "SELECT * { ?s ?p ?o . ?a ?POF ?p . }";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    SparqlTranslationProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new SparqlTranslationProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -766,9 +780,9 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( distinct * )\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.CARDINALITY_VAR + ")\n" +
                             "   ProjectionElem\n" +
-                            "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "    Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
                             "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
@@ -807,7 +821,7 @@ public class TestSparqlTranslationProcessor {
                             "       IsLiteral\n" +
                             "        Var (p)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -816,7 +830,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -825,7 +839,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -834,7 +848,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
-                            "      Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
+                            "      Var (" + SparqlToDGSQueryInterface.POF_RESOURCE + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
@@ -843,7 +857,7 @@ public class TestSparqlTranslationProcessor {
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 
-    assertEquals(expected, ast.dump(""));
+    assertEquals(expected, po.getAst().dump(""));
   }
 
 }

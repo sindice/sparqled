@@ -58,15 +58,12 @@ import org.sindice.core.analytics.commons.util.URIUtil;
 /**
  * 
  */
-public final class SparqlTranslationProcessor {
+public final class SparqlTranslationProcessor implements BasicOperation{
 
   public static final String       BLANK_NODE_COLLECTION = "dummy class: " + Long.toString(Hash.getLong("dummy class")).replace('-', 'n');
 
   private final static IsLeaf      isLeaf                = new IsLeaf();
   private static ASTQueryContainer astQueryContainer;
-
-  private SparqlTranslationProcessor() {
-  }
 
   /**
    * Translate the SPARQL query to a Summary query.
@@ -75,14 +72,13 @@ public final class SparqlTranslationProcessor {
    * @throws MalformedQueryException
    * @throws VisitorException
    */
-  public static void process(ASTQueryContainer ast)
-  throws MalformedQueryException, VisitorException {
+  public PipelineObject process(PipelineObject po) throws MalformedQueryException, VisitorException {
     // get the default datasets + set the DGS graph in the clause
     // replace any dataset URI (graph and FROM) by their second-level domain name
-    final Dataset datasets = DGSDatasetClauseProcessor.process(ast);
+    final Dataset datasets = DGSDatasetClauseProcessor.process(po.getAst());
     final ASTIRI d;
 
-    astQueryContainer = ast;
+    astQueryContainer = po.getAst();
     if (datasets != null) {
       if (!datasets.getDefaultGraphs().isEmpty() || !datasets.getNamedGraphs().isEmpty()) {
         if (!datasets.getDefaultGraphs().isEmpty() && !datasets.getNamedGraphs().isEmpty()) {
@@ -114,12 +110,15 @@ public final class SparqlTranslationProcessor {
     final GraphGraphPatternRemoval g = new GraphGraphPatternRemoval();
     final SparqlTranslationVisitor v = new SparqlTranslationVisitor(d);
 
-    final List<String> pofMetadata = (List<String>) v.visit(ast, new ArrayList<String>());
-    g.visit(ast, null);
+    final List<String> pofMetadata = (List<String>) v.visit(po.getAst(), new ArrayList<String>());
+    if(po.getVarsToProject()!=null)
+    	pofMetadata.addAll(po.getVarsToProject());
+    g.visit(po.getAst(), null);
     // Change variable name of the POF ressource
-    change.visit(ast, v.pofResourceName);
+    change.visit(po.getAst(), v.pofResourceName);
     // Add POF metadata to the SELECT clause
-    addPofMetadata(ast, pofMetadata);
+    addPofMetadata(po.getAst(), pofMetadata);
+    return po;
   }
 
   private static class ChangeToPofRessource extends ASTVisitorBase {
@@ -130,7 +129,7 @@ public final class SparqlTranslationProcessor {
       final String pofResource = (String) data;
 
       if (node.getName().equals(pofResource)) {
-        node.setName(QueryProcessor.POF_RESOURCE);
+        node.setName(SparqlToDGSQueryInterface.POF_RESOURCE);
       }
       return super.visit(node, data);
     }
@@ -215,10 +214,10 @@ public final class SparqlTranslationProcessor {
           final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
           cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
           final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-          pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
+          pofCardinality.setName(SparqlToDGSQueryInterface.CARDINALITY_VAR);
 
           final ASTVar pofResource = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-          pofResource.setName(QueryProcessor.POF_RESOURCE);
+          pofResource.setName(SparqlToDGSQueryInterface.POF_RESOURCE);
 
           final ASTTriplesSameSubjectPath t1 = ASTProcessorUtil.createTriple(pofResource, cardinality, pofCardinality);
           final ASTTriplesSameSubjectPath t3 = ASTProcessorUtil.createTriple(pofResource, origin, graphName);
@@ -228,9 +227,9 @@ public final class SparqlTranslationProcessor {
           gpg.jjtAppendChild(bgp);
           node.jjtAppendChild(gpg);
 
-          pofResourceName = QueryProcessor.POF_RESOURCE; // the resource here is a newly created bgp
-          pofMetadata.add(QueryProcessor.POF_RESOURCE);
-          pofMetadata.add(QueryProcessor.CARDINALITY_VAR);
+          pofResourceName = SparqlToDGSQueryInterface.POF_RESOURCE; // the resource here is a newly created bgp
+          pofMetadata.add(SparqlToDGSQueryInterface.POF_RESOURCE);
+          pofMetadata.add(SparqlToDGSQueryInterface.CARDINALITY_VAR);
           return data;
         }
       }
@@ -335,24 +334,24 @@ public final class SparqlTranslationProcessor {
       // Predicate recommendation
       if (verb instanceof ASTVar && ((ASTVar) verb).getName().equals(SyntaxTreeBuilder.PointOfFocus)) {
         // the Subject of the POF
-        pofMetadata.add(QueryProcessor.POF_RESOURCE);
+        pofMetadata.add(SparqlToDGSQueryInterface.POF_RESOURCE);
         pofResourceName = s.getName();
 
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
         cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
+        pofCardinality.setName(SparqlToDGSQueryInterface.CARDINALITY_VAR);
 
         final ASTTriplesSameSubjectPath t5 = ASTProcessorUtil.createTriple(s, cardinality, pofCardinality);
         bgp.jjtAppendChild(t5);
-        pofMetadata.add(QueryProcessor.CARDINALITY_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CARDINALITY_VAR);
       }
       // edge origin
       if (dataset != null) {
         final ASTTriplesSameSubjectPath t4 = ASTProcessorUtil.createTriple(s, origin, dataset);
         bgp.jjtAppendChild(t4);
         if (datasetEdgePOF(data, node.jjtGetChild(0), dataset, bgp)) {
-          pofMetadata.add(QueryProcessor.POF_RESOURCE);
+          pofMetadata.add(SparqlToDGSQueryInterface.POF_RESOURCE);
           pofResourceName = ((ASTVar) node.jjtGetChild(0)).getName();
         }
       }
@@ -371,7 +370,7 @@ public final class SparqlTranslationProcessor {
         final ASTTriplesSameSubjectPath t1 = ASTProcessorUtil.createTriple(node.jjtGetChild(0), origin, dataset);
         bgp.jjtAppendChild(t1);
         if (datasetClassPOF(data, node.jjtGetChild(0), dataset, bgp)) {
-          pofMetadata.add(QueryProcessor.POF_RESOURCE);
+          pofMetadata.add(SparqlToDGSQueryInterface.POF_RESOURCE);
           pofResourceName = ((ASTVar) node.jjtGetChild(0)).getName();
         }
       }
@@ -382,7 +381,7 @@ public final class SparqlTranslationProcessor {
        */
       if (subject instanceof ASTVar && ((ASTVar) subject).getName().equals(SyntaxTreeBuilder.PointOfFocus)) {
         // the Subject of the POF
-        pofMetadata.add(QueryProcessor.POF_RESOURCE);
+        pofMetadata.add(SparqlToDGSQueryInterface.POF_RESOURCE);
         pofResourceName = ((ASTVar) node.jjtGetChild(0)).getName();
 
         final ASTVar varLabel = ASTVarGenerator.getASTVar("dgs");
@@ -395,7 +394,7 @@ public final class SparqlTranslationProcessor {
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
         cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
+        pofCardinality.setName(SparqlToDGSQueryInterface.CARDINALITY_VAR);
 
         final ASTTriplesSameSubjectPath t5 = ASTProcessorUtil.createTriple(node.jjtGetChild(0), cardinality, pofCardinality);
         bgp.jjtAppendChild(t5);
@@ -406,9 +405,9 @@ public final class SparqlTranslationProcessor {
         type.setValue(AnalyticsVocab.TYPE.toString());
 
         final ASTVar varTypeLabel = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        varTypeLabel.setName(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR);
+        varTypeLabel.setName(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR);
         final ASTVar varTypeCard = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        varTypeCard.setName(QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR);
+        varTypeCard.setName(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_CARD_VAR);
         final ASTTriplesSameSubjectPath t7 = ASTProcessorUtil.createTriple(varLabel, type, varType);
         final ASTTriplesSameSubjectPath t8 = ASTProcessorUtil.createTriple(varType, cardinality, varTypeCard);
         final ASTTriplesSameSubjectPath t9 = ASTProcessorUtil.createTriple(varType, label, varTypeLabel);
@@ -416,9 +415,9 @@ public final class SparqlTranslationProcessor {
         bgp.jjtAppendChild(t8);
         bgp.jjtAppendChild(t9);
 
-        pofMetadata.add(QueryProcessor.CARDINALITY_VAR);
-        pofMetadata.add(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR);
-        pofMetadata.add(QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CARDINALITY_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_CARD_VAR);
       } else {
         final ASTVar s = ASTVarGenerator.getASTVar("dgs");
         final ASTTriplesSameSubjectPath t1 = ASTProcessorUtil.createTriple(node.jjtGetChild(0), label, s);
@@ -439,7 +438,7 @@ public final class SparqlTranslationProcessor {
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
         cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
+        pofCardinality.setName(SparqlToDGSQueryInterface.CARDINALITY_VAR);
         final ASTIRI originClass = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
         originClass.setValue(AnalyticsVocab.DOMAIN_URI.toString());
 
@@ -448,7 +447,7 @@ public final class SparqlTranslationProcessor {
         final ASTTriplesSameSubjectPath t2 = ASTProcessorUtil.createTriple(subject, cardinality, pofCardinality);
         bgp.jjtAppendChild(t2);
 
-        pofMetadata.add(QueryProcessor.CARDINALITY_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CARDINALITY_VAR);
         return true;
       }
       return false;
@@ -464,12 +463,12 @@ public final class SparqlTranslationProcessor {
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
         cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-        pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
+        pofCardinality.setName(SparqlToDGSQueryInterface.CARDINALITY_VAR);
 
         final ASTTriplesSameSubjectPath t2 = ASTProcessorUtil.createTriple(subject, cardinality, pofCardinality);
         bgp.jjtAppendChild(t2);
 
-        pofMetadata.add(QueryProcessor.CARDINALITY_VAR);
+        pofMetadata.add(SparqlToDGSQueryInterface.CARDINALITY_VAR);
         return true;
       }
       return false;

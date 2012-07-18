@@ -35,14 +35,12 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTObjectList;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPathElt;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTProjectionElem;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyListPath;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTSelect;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTSelectQuery;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTVar;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 /**
@@ -52,53 +50,50 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
  * - Add the POF, and any other variables name passed in argument, to the SELECT clause
  * - Return the type of the recommendation, e.g., predicate or class or graph name.
  */
-public final class PointOfFocusProcessor {
+public final class PointOfFocusProcessor implements BasicOperation{
 
-  private PointOfFocusProcessor() {
-  }
-
-  public static RecommendationType process(ASTQueryContainer ast, List<String> varsToProject)
-  throws VisitorException {
+  public PipelineObject process(PipelineObject obj) throws VisitorException {
     final List<String> v = new ArrayList<String>();
 
-    if (varsToProject != null) {
-      v.addAll(varsToProject);
+    if (obj.getVarsToProject() != null) {
+      v.addAll(obj.getVarsToProject());
     }
-    if (!(ast.getQuery() instanceof ASTSelectQuery)) { // Change to a SelectQuery
+    if (!(obj.getAst().getQuery() instanceof ASTSelectQuery)) { // Change to a SelectQuery
       final ASTSelectQuery selectQuery = new ASTSelectQuery(SyntaxTreeBuilderTreeConstants.JJTSELECTQUERY);
       final ASTSelect select = new ASTSelect(SyntaxTreeBuilderTreeConstants.JJTSELECT);
 
       selectQuery.jjtAppendChild(select);
-      for (ASTDatasetClause d : ast.getQuery().getDatasetClauseList()) {
+      for (ASTDatasetClause d : obj.getAst().getQuery().getDatasetClauseList()) {
         selectQuery.jjtAppendChild(d);
       }
-      selectQuery.jjtAppendChild(ast.getQuery().getWhereClause());
-      if (!(ast.getQuery() instanceof ASTAskQuery)) {
-        if (ast.getQuery().getGroupClause() != null) {
-          selectQuery.jjtAppendChild(ast.getQuery().getGroupClause());
+      selectQuery.jjtAppendChild(obj.getAst().getQuery().getWhereClause());
+      if (!(obj.getAst().getQuery() instanceof ASTAskQuery)) {
+        if (obj.getAst().getQuery().getGroupClause() != null) {
+          selectQuery.jjtAppendChild(obj.getAst().getQuery().getGroupClause());
         }
-        if (ast.getQuery().getHavingClause() != null) {
-          selectQuery.jjtAppendChild(ast.getQuery().getHavingClause());
+        if (obj.getAst().getQuery().getHavingClause() != null) {
+          selectQuery.jjtAppendChild(obj.getAst().getQuery().getHavingClause());
         }
-        if (ast.getQuery().getOrderClause() != null) {
-          selectQuery.jjtAppendChild(ast.getQuery().getOrderClause());
+        if (obj.getAst().getQuery().getOrderClause() != null) {
+          selectQuery.jjtAppendChild(obj.getAst().getQuery().getOrderClause());
         }
-        if (ast.getQuery().getLimit() != null) {
-          selectQuery.jjtAppendChild(ast.getQuery().getLimit());
+        if (obj.getAst().getQuery().getLimit() != null) {
+          selectQuery.jjtAppendChild(obj.getAst().getQuery().getLimit());
         }
-        if (ast.getQuery().getOffset() != null) {
-          selectQuery.jjtAppendChild(ast.getQuery().getOffset());
+        if (obj.getAst().getQuery().getOffset() != null) {
+          selectQuery.jjtAppendChild(obj.getAst().getQuery().getOffset());
         }
       }
-      if (ast.getQuery().getBindingsClause() != null) {
-        selectQuery.jjtAppendChild(ast.getQuery().getBindingsClause());
+      if (obj.getAst().getQuery().getBindingsClause() != null) {
+        selectQuery.jjtAppendChild(obj.getAst().getQuery().getBindingsClause());
       }
-      ast.getQuery().jjtReplaceWith(selectQuery);
+      obj.getAst().getQuery().jjtReplaceWith(selectQuery);
     }
     final ASTMaterializePointOfFocus matPOF = new ASTMaterializePointOfFocus();
-    matPOF.visit(ast, v);
+    matPOF.visit(obj.getAst(), v);
     final POFRecType type = new POFRecType();
-    return (RecommendationType) type.visit(ast, RecommendationType.NONE);
+    obj.setType((RecommendationType) type.visit(obj.getAst(), RecommendationType.NONE));
+    return obj;
   }
 
   private static class POFRecType extends ASTVisitorBase {

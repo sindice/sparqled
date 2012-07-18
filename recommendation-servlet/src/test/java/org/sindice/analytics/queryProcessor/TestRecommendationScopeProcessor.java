@@ -30,6 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.RecommendationScopeProcessor;
+import org.sindice.analytics.queryProcessor.RecommendationType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 /**
@@ -57,8 +61,9 @@ public class TestRecommendationScopeProcessor {
     ast = SyntaxTreeBuilder.parseQuery(q);
 
     final String expected = ast.dump("");
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -79,8 +84,9 @@ public class TestRecommendationScopeProcessor {
                             "       Var (POF)\n" +
                             "       ObjectList\n" +
                             "        Var (o)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -101,8 +107,9 @@ public class TestRecommendationScopeProcessor {
                             "       Var (POF)\n" +
                             "       ObjectList\n" +
                             "        Var (o)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -149,8 +156,9 @@ public class TestRecommendationScopeProcessor {
                             "               IRI (http://www.w3.org/1999/02/22-rdf-syntax-ns#type)\n" +
                             "            ObjectList\n" +
                             "             Var (POF)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -178,8 +186,9 @@ public class TestRecommendationScopeProcessor {
                             "       ObjectList\n" +
                             "        Var (POF)";
     ast = SyntaxTreeBuilder.parseQuery(query);
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -213,8 +222,9 @@ public class TestRecommendationScopeProcessor {
                             "               IRI (http://www.w3.org/1999/02/22-rdf-syntax-ns#type)\n" +
                             "            ObjectList\n" +
                             "             Var (POF)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -245,8 +255,9 @@ public class TestRecommendationScopeProcessor {
                             "       Var (b)\n" +
                             "       ObjectList\n" +
                             "        Var (p)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
   @Test
@@ -277,8 +288,9 @@ public class TestRecommendationScopeProcessor {
                             "         Var (p)\n" +
                             "         ObjectList\n" +
                             "          Var (s)";
-    RecommendationScopeProcessor.process(ast);
-    assertEquals(expected, ast.dump(""));
+    PipelineObject po=new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new RecommendationScopeProcessor().process(po);
+    assertEquals(expected, po.getAst().dump(""));
   }
 
 }
