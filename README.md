@@ -8,8 +8,12 @@ Thanks for using SparQLed.
 #### General Information
 
 * Project and contact information: [http://sindicetech.com/sindice-suite/sparqled/](http://sindicetech.com/sindice-suite/sparqled/)
-* [Live Demo](http://hcls.sindicetech.com/sparql-editor/) on the Health Care Life Science datasets
 * Instructions for installing SparQLed are available in the **Downloads** section
+
+#### Live Demos
+
+* [SparQLed](http://hcls.sindicetech.com/sparql-editor/) on the Health Care Life Science datasets
+* [SparQLed](http://demo.sindice.net/dbpedia-sparqled/) on the English part of DBpedia 3.7
 
 #### Distribution Content
 
