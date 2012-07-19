@@ -564,11 +564,9 @@ public class AST2TextTranslator {
     throws VisitorException {
       final StringBuilder sb = (StringBuilder) data;
       
-//      if (node.getName().startsWith("?")) { // only the POF can start with '?'
-//        sb.append(node.getName()).append("< ");
-//      }
-      if (node.getName().equals("?POF"))
-        sb.append(node.getName()).append(' ');
+      if (node.getName().startsWith("?")) { // only the POF can start with '?'
+        sb.append("< ");
+      }
       else
         sb.append('?').append(node.getName()).append(' ');
       return data;

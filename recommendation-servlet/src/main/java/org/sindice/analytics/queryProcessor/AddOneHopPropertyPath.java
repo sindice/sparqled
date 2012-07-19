@@ -38,7 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * This module keeps on adding a property path between two nodes until either
+ * the maximum limit is reached or a valid recommendation is obtained.
  * @author bibhas [Jul 9, 2012]
  * @email bibhas.das@deri.org
  * 
@@ -54,6 +55,10 @@ public class AddOneHopPropertyPath implements BasicOperation {
     this.sparql2dgs = sparql2dgs;
   }
 
+  /* The type of object to be sent to the visitor method.
+   * It stores the path length from one node to another(hops).
+   * It also stores all the variables to be projected for recommendation (varsToProject).
+   * */
   private class HopsVarsPair {
     int hops;
     final ArrayList<String> varsToProject = new ArrayList<String>();
@@ -76,6 +81,10 @@ public class AddOneHopPropertyPath implements BasicOperation {
     final HopsVarsPair hopsVars = new HopsVarsPair();
     while (hops <= po.getMAX_HOPS()) {
       po = sparql2dgs.process(po);
+      
+      /* convert the DGS query to an ASK query to check if recommendations
+       * are obtained with the current property paths.
+       */
       ASTQueryContainer ast = selectToAsk.convert(po.getAst());
       QueryIterator<Label, Context> qit = po.getBackend().submit(
           AST2TextTranslator.translate(ast));
@@ -88,6 +97,7 @@ public class AddOneHopPropertyPath implements BasicOperation {
         break;
       hopsVars.reset(hops);
       po.setAst(SyntaxTreeBuilder.parseQuery(query));
+      // add another hop to the existing query
       obj.visit(po.getAst(), hopsVars);
       query = AST2TextTranslator.translate(po.getAst());
       po.getVarsToProject().addAll(hopsVars.varsToProject);
@@ -96,6 +106,10 @@ public class AddOneHopPropertyPath implements BasicOperation {
     return po;
   }
 
+  /*The visitor searches for the triple pattern containing the POF
+   *and adds the requisite number of triples(as mentioned by hops)
+   *after the found triple.
+   * */
   public class AddHopVisitor extends ASTVisitorBase {
     public Object visit(ASTBasicGraphPattern node, Object data)
         throws VisitorException {
@@ -121,6 +135,7 @@ public class AddOneHopPropertyPath implements BasicOperation {
         bgpDGS.jjtAppendChild(triple);
       }
 
+      // add hops number of triples after the triple containing POF
       if (foundPOF) {
         for (int i = 2; i < hops; i++) {
           bgpDGS.jjtAppendChild(triple);
