@@ -64,7 +64,6 @@ public class TestSparqlToDGSQueryManager {
   @After
   public void tearDown() throws Exception {
   }
-
   @Test
   public void testPOFTargetIsLeaf() throws Exception {
       final String query = "SELECT * WHERE { ?s ?p ?o. ?s2 < ?o }";

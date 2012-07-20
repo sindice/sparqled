@@ -58,37 +58,7 @@ public final class PointOfFocusProcessor implements BasicOperation{
     if (obj.getVarsToProject() != null) {
       v.addAll(obj.getVarsToProject());
     }
-    if (!(obj.getAst().getQuery() instanceof ASTSelectQuery)) { // Change to a SelectQuery
-      final ASTSelectQuery selectQuery = new ASTSelectQuery(SyntaxTreeBuilderTreeConstants.JJTSELECTQUERY);
-      final ASTSelect select = new ASTSelect(SyntaxTreeBuilderTreeConstants.JJTSELECT);
-
-      selectQuery.jjtAppendChild(select);
-      for (ASTDatasetClause d : obj.getAst().getQuery().getDatasetClauseList()) {
-        selectQuery.jjtAppendChild(d);
-      }
-      selectQuery.jjtAppendChild(obj.getAst().getQuery().getWhereClause());
-      if (!(obj.getAst().getQuery() instanceof ASTAskQuery)) {
-        if (obj.getAst().getQuery().getGroupClause() != null) {
-          selectQuery.jjtAppendChild(obj.getAst().getQuery().getGroupClause());
-        }
-        if (obj.getAst().getQuery().getHavingClause() != null) {
-          selectQuery.jjtAppendChild(obj.getAst().getQuery().getHavingClause());
-        }
-        if (obj.getAst().getQuery().getOrderClause() != null) {
-          selectQuery.jjtAppendChild(obj.getAst().getQuery().getOrderClause());
-        }
-        if (obj.getAst().getQuery().getLimit() != null) {
-          selectQuery.jjtAppendChild(obj.getAst().getQuery().getLimit());
-        }
-        if (obj.getAst().getQuery().getOffset() != null) {
-          selectQuery.jjtAppendChild(obj.getAst().getQuery().getOffset());
-        }
-      }
-      if (obj.getAst().getQuery().getBindingsClause() != null) {
-        selectQuery.jjtAppendChild(obj.getAst().getQuery().getBindingsClause());
-      }
-      obj.getAst().getQuery().jjtReplaceWith(selectQuery);
-    }
+    Change2Select.process(obj.getAst());
     final ASTMaterializePointOfFocus matPOF = new ASTMaterializePointOfFocus();
     matPOF.visit(obj.getAst(), v);
     final POFRecType type = new POFRecType();
