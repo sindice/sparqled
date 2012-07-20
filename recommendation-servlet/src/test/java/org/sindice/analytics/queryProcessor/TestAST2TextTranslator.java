@@ -15,66 +15,65 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 19 Mar 2012 ]
- * @link stephane.campinas@deri.org
- */
 package org.sindice.analytics.queryProcessor;
 
 
-import static org.junit.Assert.assertArrayEquals;
-
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.queryProcessor.ASTVarProcessor;
 
 /**
- * 
+ * @author bibhas [Jul 19, 2012]
+ * @email bibhas.das@deri.org
+ *
  */
-public class TestASTVarProcessor {
+public class TestAST2TextTranslator {
 
+  private ASTQueryContainer ast;
   /**
    * @throws java.lang.Exception
    */
   @Before
-  public void setUp()
-  throws Exception {}
+  public void setUp() throws Exception {
+  }
 
   /**
    * @throws java.lang.Exception
    */
   @After
-  public void tearDown()
-  throws Exception {}
-
-  @Test
-  public void testASTVar()
-  throws Exception {
-    final String query = "SELECT * { ?s ?p [ <name> ?n ] }";
-    final ASTQueryContainer ast = SyntaxTreeBuilder.parseQuery(query);
-
-    final String[] expectedVars = { "n", "p", "s" };
-    final String[] actualVars = ASTVarProcessor.process(ast).toArray(new String[0]);
-    Arrays.sort(actualVars);
-    assertArrayEquals(expectedVars, actualVars);
+  public void tearDown() throws Exception {
   }
-
+  
   @Test
-  public void testPOF()
-  throws Exception {
-    final String query = "SELECT * { ?s < [ <name> ?n ] }";
-    final ASTQueryContainer ast = SyntaxTreeBuilder.parseQuery(query);
-
-    final String[] expectedVars = { "?" + SyntaxTreeBuilder.PointOfFocus, "n", "s" };
-    final String[] actualVars = ASTVarProcessor.process(ast).toArray(new String[0]);
-    Arrays.sort(actualVars);
-    assertArrayEquals(expectedVars, actualVars);
+  public void testPOF() 
+   throws Exception {
+    final String query = "SELECT * WHERE { ?s < ?o .}";
+    ast = SyntaxTreeBuilder.parseQuery(query);
+    String translatedQuery = AST2TextTranslator.translate(ast);
+    String expected = "SELECT *\n" +
+                      "WHERE {\n" +
+                      "  ?s < ?o .\n" +
+                      "}\n";
+    assertEquals(expected, translatedQuery);
+  }
+  
+  @Test
+  public void testGraphPOF()
+   throws Exception {
+    final String query = "SELECT * { GRAPH < { ?s ?p ?o .}}";
+    ast = SyntaxTreeBuilder.parseQuery(query);
+    String translatedQuery = AST2TextTranslator.translate(ast);
+    String expected = "SELECT *\n" +
+                      "WHERE {\n" +
+                      "GRAPH < {\n" +
+                      "  ?s ?p ?o .\n" +
+                      "}\n" +
+                      "}\n";
+    assertEquals(expected, translatedQuery);
   }
 
 }

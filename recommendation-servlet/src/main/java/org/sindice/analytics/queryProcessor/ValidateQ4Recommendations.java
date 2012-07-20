@@ -22,20 +22,16 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPathAlternative;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPathElt;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPathSequence;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTVar;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
-public final class ValidateQ4Recommendations {
+public final class ValidateQ4Recommendations implements BasicOperation{
 
-  private ValidateQ4Recommendations() {
-  }
-
-  public static void process(ASTQueryContainer ast)
-  throws VisitorException {
+  public PipelineObject process(PipelineObject obj) throws VisitorException {
     final ASTValidateAST validate = new ASTValidateAST();
-    validate.visit(ast, null);
+    validate.visit(obj.getAst(), null);
+    return obj;
   }
 
   private static class ASTValidateAST extends ASTVisitorBase {

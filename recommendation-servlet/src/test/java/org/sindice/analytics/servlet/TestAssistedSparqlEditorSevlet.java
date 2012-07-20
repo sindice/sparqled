@@ -21,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import info.aduna.io.FileUtil;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,6 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.testing.ServletTester;
@@ -57,8 +54,12 @@ import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.sindice.core.sesame.backend.testHelper.SesameNxParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestAssistedSparqlEditorSevlet {
+
+	private static final Logger            logger       = LoggerFactory.getLogger(TestAssistedSparqlEditorSevlet.class);
 
   private static final String  dgsInput = "./src/test/resources/DGSBackend/test-data-graph-summary_cascade.nt.gz";
 
@@ -148,8 +149,8 @@ public class TestAssistedSparqlEditorSevlet {
 
     aseBaseUrl = url + "/SparqlEditorServlet";
 
-    System.out.println("dgsRepoURL: [" + dgsRepoServletUrl + "]");
-    System.out.println("aseURL: [" + aseBaseUrl + "]");
+    logger.debug("dgsRepoURL: [{}]", dgsRepoServletUrl);
+    logger.debug("aseURL: [{}]", aseBaseUrl);
 
     aseTester.start();
   }

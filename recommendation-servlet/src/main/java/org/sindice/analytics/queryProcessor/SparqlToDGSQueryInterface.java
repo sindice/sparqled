@@ -15,45 +15,28 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @link stephane.campinas@deri.org
- */
 package org.sindice.analytics.queryProcessor;
 
 import java.util.List;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
-import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.TokenMgrError;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 /**
- * Issue ASE-16
+ * @author bibhas [Jul 12, 2012]
+ * @email bibhas.das@deri.org
+ * 
  */
-public interface QueryProcessor {
-
-  public static final String POF_RESOURCE              = "POFresource";
-  public static final String CARDINALITY_VAR           = SyntaxTreeBuilder.PointOfFocus + "cardinality";
-  public static final String CLASS_ATTRIBUTE_CARD_VAR  = "CAcardinality";
+public interface SparqlToDGSQueryInterface {
+  public static final String POF_RESOURCE = "POFresource";
+  public static final String CARDINALITY_VAR = SyntaxTreeBuilder.PointOfFocus
+      + "cardinality";
+  public static final String CLASS_ATTRIBUTE_CARD_VAR = "CAcardinality";
   public static final String CLASS_ATTRIBUTE_LABEL_VAR = "CAlabel";
 
-  public static enum RecommendationType {
-    NONE, PREDICATE, CLASS, GRAPH
-  }
-
-  public class POFMetadata {
-    // the POF ast node
-    public SimpleNode pofNode;
-    /*
-     * The class attribute of the POF, in case of CLASS recommendation
-     */
-    public SimpleNode pofClassAttribute;
-  }
-
   /**
    * Parse a query, perform the mapping to a Data Graph Summary query and reduce
    * its scope.
@@ -67,69 +50,77 @@ public interface QueryProcessor {
    * @throws ParseException
    * @throws TokenMgrError
    */
-  public void load(String query)
-  throws DGSException;
+  public void load(String query) throws Exception;
 
   /**
    * Parse a query, perform the mapping to a Data Graph Summary query and reduce
    * its scope.
    * 
    * @param query
-   * @param varsToProject The variables to project in the DataGraphSummary query (By Default, it is the POF)
+   * @param varsToProject
+   *          The variables to project in the DataGraphSummary query (By
+   *          Default, it is the POF)
    * @throws MalformedQueryException
    * @throws VisitorException
    * @throws TokenMgrError
    * @throws ParseException
    */
-  public void load(String query, List<String> varsToProject)
-  throws DGSException;
+  public void load(String query, List<String> varsToProject) throws Exception;
 
   /**
-   * Return the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
-   * Only valid after the call to load.
+   * Return the Data Graph Summary query from the one passed in
+   * {@link AbstractQueryProcessor#load(String)}. Only valid after the call to
+   * load.
+   * 
    * @return
-   * @throws VisitorException 
+   * @throws VisitorException
    */
-  public String getDGSQuery()
-  throws DGSException;
+  public String getDGSQuery() throws DGSException;
 
   /**
-   * returns a list of metadata for the given field,
-   * associated to the POF while building the AST.
+   * returns a list of metadata for the given field, associated to the POF while
+   * building the AST.
+   * 
    * @return
    */
   public POFMetadata getPofASTMetadata();
 
   /**
    * Returns a query for getting the set of properties from the specified domain
-   * @param domain if empty string, returns all the properties available
-   * @param limit limit the response to the first "limit" solutions
+   * 
+   * @param domain
+   *          if empty string, returns all the properties available
+   * @param limit
+   *          limit the response to the first "limit" solutions
    * @return
-   * @throws DGSException 
+   * @throws DGSException
    */
   public String getPropertiesQuery(String domain, int limit)
-  throws DGSException;
+      throws DGSException;
 
   /**
    * Returns a query for getting the set of classes from the specified domain
-   * @param domain if empty string, returns all the classes available
-   * @param limit limit the response to the first "limit" solutions
+   * 
+   * @param domain
+   *          if empty string, returns all the classes available
+   * @param limit
+   *          limit the response to the first "limit" solutions
    * @return
    * @throws DGSException
    */
-  public String getClassesQuery(String domain, int limit)
-  throws DGSException;
+  public String getClassesQuery(String domain, int limit) throws DGSException;
 
   /**
    * Returns a query for getting the set of domains
-   * @param domain if empty string, returns all the domains available
-   * @param limit limit the response to the first "limit" solutions
+   * 
+   * @param domain
+   *          if empty string, returns all the domains available
+   * @param limit
+   *          limit the response to the first "limit" solutions
    * @return
    * @throws DGSException
    */
-  public String getDomainsQuery(String domain, int limit)
-  throws DGSException;
+  public String getDomainsQuery(String domain, int limit) throws DGSException;
 
   public RecommendationType getRecommendationType();
-
 }

@@ -15,38 +15,50 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package org.sindice.analytics.servlet;
+package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
+import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 
-import org.sindice.analytics.queryProcessor.POFMetadata;
-import org.sindice.analytics.queryProcessor.RecommendationType;
-import org.sindice.analytics.ranking.LabelsRanking;
-
-public interface ResponseWriter<C> {
+/**
+ * @author bibhas [Jul 12, 2012]
+ * @email bibhas.das@deri.org
+ * 
+ */
+public class POFMetadata {
+  // the POF ast node
+  private SimpleNode pofNode;
+  /*
+   * The class attribute of the POF, in case of CLASS recommendation
+   */
+  private SimpleNode pofClassAttribute;
 
   /**
-   * Returns an object storing the list of recommendations
-   * @param type
-   * @param pofMetadata TODO
-   * @param recommendations
-   * @param rankingName
-   * @return
+   * @param pofNode
+   *          the pofNode to set
    */
-  public C createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, List<LabelsRanking> recommendations);
+  public void setPofNode(SimpleNode pofNode) {
+    this.pofNode = pofNode;
+  }
 
   /**
-   * Returns an object with an explanation of the failure
-   * @param type
-   * @return
+   * @return the pofNode
    */
-  public C createErrorAnswer(RecommendationType type, Throwable e);
+  public SimpleNode getPofNode() {
+    return pofNode;
+  }
 
   /**
-   * Returns an object with an explanation of the failure
-   * @param type
-   * @return
+   * @param pofClassAttribute
+   *          the pofClassAttribute to set
    */
-  public C createEmptyAnswer(String msg);
+  public void setPofClassAttribute(SimpleNode pofClassAttribute) {
+    this.pofClassAttribute = pofClassAttribute;
+  }
 
+  /**
+   * @return the pofClassAttribute
+   */
+  public SimpleNode getPofClassAttribute() {
+    return pofClassAttribute;
+  }
 }

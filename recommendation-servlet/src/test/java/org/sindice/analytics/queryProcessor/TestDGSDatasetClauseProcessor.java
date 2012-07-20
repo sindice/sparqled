@@ -30,6 +30,8 @@ import org.openrdf.model.URI;
 import org.openrdf.query.Dataset;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.DGSDatasetClauseProcessor;
 
 
 /**

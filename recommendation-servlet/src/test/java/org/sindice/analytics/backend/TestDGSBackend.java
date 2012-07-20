@@ -41,6 +41,7 @@ import java.util.zip.GZIPInputStream;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
@@ -50,8 +51,8 @@ import org.openrdf.rio.RDFParserFactory;
 import org.openrdf.rio.RDFParserRegistry;
 import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
 import org.sindice.analytics.queryProcessor.DGSException;
-import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryManager;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
@@ -70,7 +71,7 @@ public class TestDGSBackend {
 
   private static final SesameBackend<Label, Context> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
   private static final String dgsInput = "./src/test/resources/DGSBackend/test-data-graph-summary_cascade.nt.gz";
-  private final DGSQueryProcessor dgsQProcessor = new DGSQueryProcessor();
+  private final SparqlToDGSQueryManager dgsQProcessor = new SparqlToDGSQueryManager();
   private final ArrayList<Label> actualLabels = new ArrayList<Label>();
 
   private final Comparator<Label> cmpLabels = new Comparator<Label>() {
@@ -122,6 +123,7 @@ public class TestDGSBackend {
     actualLabels.clear();
   }
 
+  
   @Test
   public void testPredicateRecommendation()
   throws Exception {
@@ -134,6 +136,8 @@ public class TestDGSBackend {
     executeQuery(query, expected);
   }
 
+  
+  
   @Test
   public void testClassRecommendation()
   throws Exception {
@@ -142,13 +146,13 @@ public class TestDGSBackend {
       add(new Label(LabelType.LITERAL, "country", 1));
       // it appears in two nodes and one has two class attributes definition
       final Label l1 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
-      l1.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+      l1.addContext(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
       add(l1);
       final Label l2 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
-      l2.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+      l2.addContext(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
       add(l2);
       final Label l3 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
-      l3.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://ogp.me/ns#type");
+      l3.addContext(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR, "http://ogp.me/ns#type");
       add(l3);
       // it appears in two nodes
       add(new Label(LabelType.URI, "http://www.countries.eu/beer", 1));
@@ -210,8 +214,7 @@ public class TestDGSBackend {
   }
 
   private void executeQuery(String query, ArrayList<Label> expected)
-  throws DGSException, IllegalArgumentException, IllegalAccessException,
-  SecurityException, NoSuchFieldException, SesameBackendException {
+  throws Exception {
     dgsQProcessor.load(query);
     final QueryIterator<Label, Context> qit = backend.submit(dgsQProcessor.getDGSQuery());
     Field f = qit.getContext().getClass().getDeclaredField("type");
