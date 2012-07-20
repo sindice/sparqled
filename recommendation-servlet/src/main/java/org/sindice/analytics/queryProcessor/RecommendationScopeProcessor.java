@@ -30,7 +30,6 @@ import org.openrdf.sindice.query.parser.sparql.ASTVisitorBase;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTDatasetClause;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTIRI;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTRDFLiteral;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTSelectQuery;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTriplesSameSubjectPath;
@@ -49,15 +48,11 @@ import org.slf4j.LoggerFactory;
  * @email stephane.campinas@deri.org
  *
  */
-public final class RecommendationScopeProcessor {
+public final class RecommendationScopeProcessor implements BasicOperation{
 
   private static final Logger logger = LoggerFactory.getLogger(RecommendationScopeProcessor.class);
 
-  private RecommendationScopeProcessor() {
-  }
-
-  public static void process(ASTQueryContainer ast)
-  throws VisitorException {
+  public PipelineObject process(PipelineObject obj) throws VisitorException {
     final ScopedVariables scopedVariables = new ScopedVariables();
     final POFConnected scope = new POFConnected();
 
@@ -66,10 +61,11 @@ public final class RecommendationScopeProcessor {
     // Define the recommendation scope
     do {
       scopedVariables.updateVars();
-      scope.visit(ast, scopedVariables);
+      scope.visit(obj.getAst(), scopedVariables);
     } while (!scopedVariables.newConnectedVars.isEmpty());
     // Prune disconnected parts of the AST
-    pruneToScope(ast);
+    pruneToScope(obj.getAst());
+    return obj;
   }
 
   private static class ScopedVariables {

@@ -24,8 +24,8 @@ import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
@@ -50,27 +50,34 @@ implements QueryResultProcessor<Label, DGSQueryResultProcessor.Context> {
   @Override
   public Label process(Object o, Context c) {
     final Label label;
-    final BindingSet set = (BindingSet) o; // The DGS query is a SELECT query
-    final Iterator<Binding> it = set.iterator();
+    if(o instanceof BindingSet) {
+    	final BindingSet set = (BindingSet) o; // The DGS query is a SELECT query
+    	final Iterator<Binding> it = set.iterator();
 
-    final Value pof = set.getValue(SyntaxTreeBuilder.PointOfFocus);
-    final Value pofCard = set.getValue(QueryProcessor.CARDINALITY_VAR);
-    final Value pofResource = set.getValue(QueryProcessor.POF_RESOURCE);
+    	final Value pof = set.getValue(SyntaxTreeBuilder.PointOfFocus);
+    	final Value pofCard = set.getValue(SparqlToDGSQueryInterface.CARDINALITY_VAR);
+    	final Value pofResource = set.getValue(SparqlToDGSQueryInterface.POF_RESOURCE);
 
-    if (pof != null && pofCard != null && pofResource != null) {
-      final LabelType type = (pof instanceof URI) ? LabelType.URI : LabelType.LITERAL;
-      label = new Label(type, pof.stringValue(), Long.valueOf(pofCard.stringValue()));
-      while (it.hasNext()) {
-        final Binding binding = it.next();
+    	if (pof != null && pofCard != null && pofResource != null) {
+    		final LabelType type = (pof instanceof URI) ? LabelType.URI : LabelType.LITERAL;
+    		label = new Label(type, pof.stringValue(), Long.valueOf(pofCard.stringValue()));
+    		while (it.hasNext()) {
+    			final Binding binding = it.next();
 
-        if (!binding.getName().equals(SyntaxTreeBuilder.PointOfFocus) &&
-            !binding.getName().equals(QueryProcessor.CARDINALITY_VAR)) {
-          label.addContext(binding.getName(), binding.getValue().stringValue());
-        }
-      }
-      return label;
+    			if (!binding.getName().equals(SyntaxTreeBuilder.PointOfFocus) &&
+    					!binding.getName().equals(SparqlToDGSQueryInterface.CARDINALITY_VAR)) {
+    				label.addContext(binding.getName(), binding.getValue().stringValue());
+    			}
+    		}
+    		return label;
+    	}
+    }
+    else if(o instanceof Boolean){
+    	final Boolean ans = (Boolean) o;
+    	return new Label(LabelType.NONE, ans.toString(), -1);
     }
     return new Label(LabelType.NONE, "", -1);
+    
   }
 
 }

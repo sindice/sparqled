@@ -33,7 +33,11 @@ import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.DGSException;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.PointOfFocusProcessor;
+import org.sindice.analytics.queryProcessor.RecommendationType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 /**
@@ -95,8 +99,9 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -122,8 +127,9 @@ public class TestPointOfFocusProcessor {
                                 "        Var (POF)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test(expected=DGSException.class)
@@ -131,7 +137,8 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s <name> < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
   }
 
   @Test(expected=DGSException.class)
@@ -139,7 +146,8 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s ?p < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
   }
 
   public void testAdditionalProjectionVars()
@@ -166,8 +174,9 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, Arrays.asList("var2"));
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, Arrays.asList("var2"), org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -195,16 +204,19 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(qAsk);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
 
     ast = SyntaxTreeBuilder.parseQuery(qConstruct);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
 
     ast = SyntaxTreeBuilder.parseQuery(qDescribe);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -233,8 +245,9 @@ public class TestPointOfFocusProcessor {
                                 "    Var (s)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -242,8 +255,9 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s a < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
-    assertEquals(RecommendationType.CLASS, type);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(RecommendationType.CLASS, po.getType());
   }
 
   @Test
@@ -251,8 +265,9 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s < ?o }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
-    assertEquals(RecommendationType.PREDICATE, type);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(RecommendationType.PREDICATE, po.getType());
   }
 
   @Test
@@ -260,8 +275,9 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { GRAPH < { ?s ?p ?o } }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
-    assertEquals(RecommendationType.GRAPH, type);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    po = new PointOfFocusProcessor().process(po);
+    assertEquals(RecommendationType.GRAPH, po.getType());
   }
 
   @Test(expected=DGSException.class)
@@ -269,7 +285,8 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { GRAPH ?g { < ?p ?o } }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PipelineObject po = new PipelineObject(ast, null, org.sindice.analytics.queryProcessor.RecommendationType.NONE, null, 10, null);
+    new PointOfFocusProcessor().process(po);
   }
 
 }

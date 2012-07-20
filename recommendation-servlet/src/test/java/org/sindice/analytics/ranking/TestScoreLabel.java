@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
 import org.sindice.analytics.ranking.Label.LabelType;
 
 public class TestScoreLabel {
@@ -129,7 +129,7 @@ public class TestScoreLabel {
     int cnt = 0;
 
     for (Label label: results) {
-      label.addContext(QueryProcessor.POF_RESOURCE, QueryProcessor.POF_RESOURCE + (cnt++));
+      label.addContext(SparqlToDGSQueryInterface.POF_RESOURCE, SparqlToDGSQueryInterface.POF_RESOURCE + (cnt++));
     }
   }
 

@@ -23,6 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.DGSException;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.ValidateQ4Recommendations;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 public class TestValidateQ4Recommendations {
@@ -46,7 +51,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { GRAPH <http://sindice.com>  }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test
@@ -55,7 +61,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { GRAPH <  }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test(expected=DGSException.class)
@@ -64,7 +71,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { ?s < ?o ; a <  }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test(expected=DGSException.class)
@@ -73,7 +81,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { ?s <  ; ?p }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test(expected=DGSException.class)
@@ -82,7 +91,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { ?s ?p }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test(expected=DGSException.class)
@@ -91,7 +101,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { ?s <name> }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
   @Test
@@ -100,7 +111,8 @@ public class TestValidateQ4Recommendations {
     final String q = "SELECT ?s WHERE { ?s < }";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ValidateQ4Recommendations.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    new ValidateQ4Recommendations().process(po);
   }
 
 }

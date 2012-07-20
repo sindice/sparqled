@@ -30,6 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.ContentRemovalProcessor;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.RecommendationType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 
@@ -56,7 +60,8 @@ public class TestContentRemovalProcessor {
   throws Exception {
     final String q = "SELECT * { ?s ?p \"test\". ?s a <Person>. ?s ?p True. ?s ?p False }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ContentRemovalProcessor.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new ContentRemovalProcessor().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(3, vars.length);
@@ -95,7 +100,7 @@ public class TestContentRemovalProcessor {
                                 "        Var (" + vars[2] + ")";
 
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -143,8 +148,9 @@ public class TestContentRemovalProcessor {
                                 "        Var (IRI4869599639157439053)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    ContentRemovalProcessor.process(ast);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 10, null);
+    po = new ContentRemovalProcessor().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
 }

@@ -31,32 +31,26 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTPrefixDecl;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyList;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyListPath;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQName;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTVar;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
-import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
 
-public final class PofNodesMetadata {
-
-  private PofNodesMetadata() {
-  }
+public final class PofNodesMetadata implements BasicOperation{
 
   /**
    * Retrieve the POF metadata, gathered at the AST creation time.
-   * To be run after denormalizing the ast
+   * To be run before denormalizing the ast
+   * The denormalization is creating new objects and metadata is lost
    * @param ast
    * @return
    * @throws VisitorException 
    * @throws MalformedQueryException 
    */
-  public static POFMetadata retrieve(ASTQueryContainer ast)
-  throws VisitorException, MalformedQueryException {
-    final POFMetadata meta = new POFMetadata();
+  public PipelineObject process(PipelineObject obj) throws VisitorException, MalformedQueryException {
     RetrievePofASTMetadata retrieve = new RetrievePofASTMetadata();
 
-    List<ASTPrefixDecl> prefixDeclList = ast.getPrefixDeclList();
+    List<ASTPrefixDecl> prefixDeclList = obj.getAst().getPrefixDeclList();
 
     // Build a prefix --> IRI map
     final Map<String, String> prefixes = new LinkedHashMap<String, String>();
@@ -67,10 +61,10 @@ public final class PofNodesMetadata {
       prefixes.put(prefix, iri);
     }
 
-    retrieve.visit(ast, prefixes);
-    meta.pofNode = retrieve.pofNode;
-    meta.pofClassAttribute = retrieve.pofClassAttribute;
-    return meta;
+    retrieve.visit(obj.getAst(), prefixes);
+    obj.getMeta().setPofNode(retrieve.pofNode);
+    obj.getMeta().setPofClassAttribute(retrieve.pofClassAttribute);
+    return obj;
   }
 
   private static class RetrievePofASTMetadata extends ASTVisitorBase {

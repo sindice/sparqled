@@ -36,6 +36,10 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.ASTVarGenerator;
+import org.sindice.analytics.queryProcessor.DeNormalizeAST;
+import org.sindice.analytics.queryProcessor.PipelineObject;
+import org.sindice.analytics.queryProcessor.RecommendationType;
 
 /**
  * 
@@ -93,8 +97,9 @@ public class TestDeNormalizeASTVisitor {
                                "       ObjectList\n" +
                                "        Var (o)";
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -120,8 +125,9 @@ public class TestDeNormalizeASTVisitor {
                                "       ObjectList\n" +
                                "        Var (o)";
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump(""));
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test(expected=MalformedQueryException.class)
@@ -129,7 +135,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s foaf:name ?o }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
   }
 
   @Test
@@ -146,8 +153,9 @@ public class TestDeNormalizeASTVisitor {
 
     ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -164,8 +172,9 @@ public class TestDeNormalizeASTVisitor {
 
     ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -181,8 +190,9 @@ public class TestDeNormalizeASTVisitor {
     }
     ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -198,8 +208,9 @@ public class TestDeNormalizeASTVisitor {
     }
     ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -207,7 +218,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s a / <foaf:type> / <dc:type> ?o }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
@@ -245,7 +257,7 @@ public class TestDeNormalizeASTVisitor {
                                 "       ObjectList\n" +
                                 "        Var (o)";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -253,7 +265,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s a / <dc:type> ?o1, ?o2 }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -291,7 +304,7 @@ public class TestDeNormalizeASTVisitor {
                                 "       ObjectList\n" +
                                 "        Var (o2)";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -299,7 +312,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s a / ^<dc:type> ?o }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -328,7 +342,7 @@ public class TestDeNormalizeASTVisitor {
                                 "       ObjectList\n" +
                                 "        Var (" + vars[0] + ")";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -336,7 +350,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s a / ^<dc:type> ?o1, ?o2 }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -374,7 +389,7 @@ public class TestDeNormalizeASTVisitor {
                                 "       ObjectList\n" +
                                 "        Var (" + vars[0] + ")";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -390,8 +405,9 @@ public class TestDeNormalizeASTVisitor {
       expectedAst += line + "\n";
     }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -407,8 +423,9 @@ public class TestDeNormalizeASTVisitor {
       expectedAst += line + "\n";
     }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -424,8 +441,9 @@ public class TestDeNormalizeASTVisitor {
       expectedAst += line + "\n";
     }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -441,8 +459,9 @@ public class TestDeNormalizeASTVisitor {
       expectedAst += line + "\n";
     }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
   @Test
@@ -450,8 +469,9 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { ?s a | <foaf:type> / <dc:type> ?o1,?o2 }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
-
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
@@ -510,7 +530,7 @@ public class TestDeNormalizeASTVisitor {
                                 "         ObjectList\n" +
                                 "          Var (o2)";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -518,7 +538,8 @@ public class TestDeNormalizeASTVisitor {
   throws Exception {
     final String q = "SELECT * WHERE { SERVICE ?s { ?a ?b ?c1,?c2. OPTIONAL { SELECT * { ?e a / <foaf:name> ?f }}} }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    DeNormalizeAST.process(ast);
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
 
     final String[] vars = ASTVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
@@ -568,7 +589,7 @@ public class TestDeNormalizeASTVisitor {
                                 "             ObjectList\n" +
                                 "              Var (f)";
 
-    assertEquals(expectedAst, ast.dump(""));
+    assertEquals(expectedAst, po.getAst().dump(""));
   }
 
   @Test
@@ -587,8 +608,9 @@ public class TestDeNormalizeASTVisitor {
     while ((line = r.readLine()) != null) {
       expectedAst += line + "\n";
     }
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+    PipelineObject po = new PipelineObject(ast, null, RecommendationType.NONE, null, 0, null);
+    po = new DeNormalizeAST().process(po);
+    assertEquals(expectedAst, po.getAst().dump("") + "\n");
   }
 
 }

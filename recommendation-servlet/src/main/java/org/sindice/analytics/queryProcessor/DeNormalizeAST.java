@@ -35,7 +35,6 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphPatternGroup;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTIRI;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTOptionalGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQName;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTriplesSameSubjectPath;
 import org.openrdf.sindice.query.parser.sparql.ast.Node;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
@@ -49,20 +48,17 @@ import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
  * @email stephane.campinas@deri.org
  *
  */
-public final class DeNormalizeAST {
+public final class DeNormalizeAST implements BasicOperation{
 
-  private DeNormalizeAST() {
-  }
-
-  public static void process(ASTQueryContainer ast)
-  throws MalformedQueryException, VisitorException {
+  public PipelineObject process(PipelineObject obj) throws MalformedQueryException, VisitorException {
     final DeNormalizeASTVisitor deNorm = new DeNormalizeASTVisitor();
     final DeNormalizeQualifiedName qname = new DeNormalizeQualifiedName();
 
-    final Map<String, String> prefixes = PrefixDeclProcessor.process(ast);
-    qname.visit(ast, prefixes);
-    BlankNodeVarProcessor.process(ast);
-    deNorm.visit(ast, null);
+    final Map<String, String> prefixes = PrefixDeclProcessor.process(obj.getAst());
+    qname.visit(obj.getAst(), prefixes);
+    BlankNodeVarProcessor.process(obj.getAst());
+    deNorm.visit(obj.getAst(), null);
+    return obj;
   }
 
   private static class DeNormalizeQualifiedName extends ASTVisitorBase {

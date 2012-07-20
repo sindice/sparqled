@@ -29,7 +29,6 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTNumericLiteral;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPathAlternative;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyList;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyListPath;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTRDFLiteral;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTriplesSameSubjectPath;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTrue;
@@ -47,15 +46,12 @@ import org.sindice.core.analytics.commons.util.Hash;
  * @email stephane.campinas@deri.org
  *
  */
-public final class ContentRemovalProcessor {
+public final class ContentRemovalProcessor implements BasicOperation{
 
-  private ContentRemovalProcessor() {
-  }
-
-  public static void process(ASTQueryContainer ast)
-  throws VisitorException {
+  public PipelineObject process(PipelineObject obj) throws VisitorException {
     final ContentRemovalVisitor c = new ContentRemovalVisitor();
-    c.visit(ast, null);
+    c.visit(obj.getAst(), null);
+    return obj;
   }
 
   private static class ContentRemovalVisitor extends ASTVisitorBase {

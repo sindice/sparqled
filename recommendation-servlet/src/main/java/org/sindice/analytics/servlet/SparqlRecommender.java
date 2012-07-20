@@ -29,10 +29,10 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.backend.DGSQueryResultProcessor;
 import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
 import org.sindice.analytics.queryProcessor.DGSException;
-import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.POFMetadata;
+import org.sindice.analytics.queryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryManager;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.analytics.ranking.LabelsRanking;
@@ -83,16 +83,16 @@ public final class SparqlRecommender {
       /*
        * Get the DataGraphSummary query
        */
-      final QueryProcessor qp = new DGSQueryProcessor();
+      final SparqlToDGSQueryInterface qp = new SparqlToDGSQueryManager();
       qp.load(query);
       final String dgsQuery = qp.getDGSQuery();
 
       meta = qp.getPofASTMetadata();
-      final List<Object> keyword = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+      final List<Object> keyword = meta.getPofNode().getMetadata() == null ? null : meta.getPofNode()
       .getMetadata(SyntaxTreeBuilder.Keyword);
-      final List<Object> prefix = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+      final List<Object> prefix = meta.getPofNode().getMetadata() == null ? null : meta.getPofNode()
       .getMetadata(SyntaxTreeBuilder.Prefix);
-      final List<Object> qname = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+      final List<Object> qname = meta.getPofNode().getMetadata() == null ? null : meta.getPofNode()
       .getMetadata(SyntaxTreeBuilder.Qname);
       recommendationType = qp.getRecommendationType();
 
@@ -102,8 +102,10 @@ public final class SparqlRecommender {
          * Get the list of candidates and rank them
          */
         final ArrayList<Label> labels = new ArrayList<Label>();
+       
         final QueryIterator<Label, Context> qrp = dgsBackend.submit(dgsQuery);
         qrp.getContext().type = recommendationType;
+        
         qrp.setPagination(pagination);
         while (qrp.hasNext()) {
           final Label label = qrp.next();

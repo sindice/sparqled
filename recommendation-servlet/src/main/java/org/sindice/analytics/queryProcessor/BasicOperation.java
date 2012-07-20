@@ -15,38 +15,16 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package org.sindice.analytics.servlet;
+package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
+import org.sindice.analytics.queryProcessor.PipelineObject;
 
-import org.sindice.analytics.queryProcessor.POFMetadata;
-import org.sindice.analytics.queryProcessor.RecommendationType;
-import org.sindice.analytics.ranking.LabelsRanking;
+/**
+ * @author bibhas [Jul 11, 2012]
+ * @email bibhas.das@deri.org
+ * 
+ */
+public interface BasicOperation {
 
-public interface ResponseWriter<C> {
-
-  /**
-   * Returns an object storing the list of recommendations
-   * @param type
-   * @param pofMetadata TODO
-   * @param recommendations
-   * @param rankingName
-   * @return
-   */
-  public C createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, List<LabelsRanking> recommendations);
-
-  /**
-   * Returns an object with an explanation of the failure
-   * @param type
-   * @return
-   */
-  public C createErrorAnswer(RecommendationType type, Throwable e);
-
-  /**
-   * Returns an object with an explanation of the failure
-   * @param type
-   * @return
-   */
-  public C createEmptyAnswer(String msg);
-
+  public PipelineObject process(PipelineObject obj) throws Exception;
 }

@@ -151,6 +151,7 @@ public class AST2TextTranslator {
       final StringBuilder sb = (StringBuilder) data;
 
       sb.append("ASK\n");
+      node.childrenAccept(this, data);
       return data;
     }
 
@@ -562,8 +563,12 @@ public class AST2TextTranslator {
     public Object visit(ASTVar node, Object data)
     throws VisitorException {
       final StringBuilder sb = (StringBuilder) data;
-
-      sb.append('?').append(node.getName()).append(' ');
+      
+      if (node.getName().startsWith("?")) { // only the POF can start with '?'
+        sb.append("< ");
+      }
+      else
+        sb.append('?').append(node.getName()).append(' ');
       return data;
     }
 

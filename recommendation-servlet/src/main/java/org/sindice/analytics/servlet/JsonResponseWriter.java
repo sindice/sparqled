@@ -31,9 +31,9 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTIRI;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQName;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.POFMetadata;
+import org.sindice.analytics.queryProcessor.RecommendationType;
+import org.sindice.analytics.queryProcessor.SparqlToDGSQueryInterface;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.LabelsRanking;
 import org.sindice.analytics.ranking.ScoreLabel;
@@ -124,14 +124,14 @@ implements ResponseWriter<String> {
 
   private void addRecSubstitution(final POFMetadata pofMetadata,
                                   final Map<String, Object> jsonStructure) {
-    final List<Object> keyword = pofMetadata.pofNode.getMetadata() == null ? null : pofMetadata.pofNode
+    final List<Object> keyword = pofMetadata.getPofNode().getMetadata() == null ? null : pofMetadata.getPofNode()
     .getMetadata(SyntaxTreeBuilder.Keyword);
-    final List<Object> prefix = pofMetadata.pofNode.getMetadata() == null ? null : pofMetadata.pofNode
+    final List<Object> prefix = pofMetadata.getPofNode().getMetadata() == null ? null : pofMetadata.getPofNode()
     .getMetadata(SyntaxTreeBuilder.Prefix);
-    final ArrayList<Object> lineStart = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginLine);
-    final ArrayList<Object> lineEnd = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndLine);
-    final ArrayList<Object> columnStart = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginColumn);
-    final ArrayList<Object> columnEnd = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndColumn);
+    final ArrayList<Object> lineStart = pofMetadata.getPofNode().getMetadata(SyntaxTreeBuilder.BeginLine);
+    final ArrayList<Object> lineEnd = pofMetadata.getPofNode().getMetadata(SyntaxTreeBuilder.EndLine);
+    final ArrayList<Object> columnStart = pofMetadata.getPofNode().getMetadata(SyntaxTreeBuilder.BeginColumn);
+    final ArrayList<Object> columnEnd = pofMetadata.getPofNode().getMetadata(SyntaxTreeBuilder.EndColumn);
     final String value;
 
     if ((keyword != null || prefix != null) &&
@@ -154,11 +154,11 @@ implements ResponseWriter<String> {
 
   private void addClassAttributeSubstitution(final POFMetadata pofMetadata,
                                              final Map<String, Object> jsonStructure) {
-    final String value = getValue(pofMetadata.pofClassAttribute);
-    final ArrayList<Object> lineStart = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginLine);
-    final ArrayList<Object> lineEnd = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndLine);
-    final ArrayList<Object> columnStart = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginColumn);
-    final ArrayList<Object> columnEnd = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndColumn);
+    final String value = getValue(pofMetadata.getPofClassAttribute());
+    final ArrayList<Object> lineStart = pofMetadata.getPofClassAttribute().getMetadata(SyntaxTreeBuilder.BeginLine);
+    final ArrayList<Object> lineEnd = pofMetadata.getPofClassAttribute().getMetadata(SyntaxTreeBuilder.EndLine);
+    final ArrayList<Object> columnStart = pofMetadata.getPofClassAttribute().getMetadata(SyntaxTreeBuilder.BeginColumn);
+    final ArrayList<Object> columnEnd = pofMetadata.getPofClassAttribute().getMetadata(SyntaxTreeBuilder.EndColumn);
 
     if (lineStart == null || lineEnd == null ||
         columnStart == null || columnEnd == null) {
@@ -197,8 +197,8 @@ implements ResponseWriter<String> {
     final ArrayList<Map<String, Object>> contexts = new ArrayList<Map<String, Object>>();
 
     for (Label label : sug.getLabels()) {
-      final String value = (String) label.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR).get(0);
-      final int count = Integer.valueOf(label.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR).get(0).toString());
+      final String value = (String) label.getContext().get(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_LABEL_VAR).get(0);
+      final int count = Integer.valueOf(label.getContext().get(SparqlToDGSQueryInterface.CLASS_ATTRIBUTE_CARD_VAR).get(0).toString());
       if (contexts.isEmpty()) { // init
         final Map<String, Object> types = new HashMap<String, Object>();
         types.put(ResponseStructure.VALUE, value);
