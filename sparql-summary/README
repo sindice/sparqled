@@ -12,10 +12,11 @@ To get the .jar you need to follow this procedure:
 go to the main repository, then do:
 > mvn assembly:assembly
 The good jar will be:
-./target/sparqled-assembly.jar
+./target/sparql-summary-0.9-assembly.jar
 
 I suggest you to do an alias:
-alias graphsummary="java -cp PWD/sparqled-assembly.jar org.sindice.summary.Pipeline"
+alias graphsummary="java -cp PWD/sparql-summary-0.9-assembly.jar \
+org.sindice.summary.Pipeline"
 (You must change the PWD by something, in most of case "target")
 
 WARNING:
@@ -71,7 +72,7 @@ LAUNCH:
 In order to launch the program you need to well formated command line.
 This line depend of the type of the repository, which contain the data.
 The software handle two type of local repository (NATIVE or MEMORY),
-one MYSQL database connexion (SQL) and can connect to a web server (HTTP)
+one MYSQL database connexion (RDBMS) and can connect to a web server (HTTP)
 or a virtuoso server (VIRTUOSO).
 
 
@@ -83,11 +84,11 @@ COMMAND LINE:
 
 	to get the connexion to a virtuoso server
 	graphsummary --type=VIRTUOSO --input=[path] --outputfile=[path]		\
-		--user=[user] --pass=[pass] (--add=[file]) 			\
+		(--user=[user]) (--pass=[pass]) (--add=[file]) 			\
 		(--addformat=[NT|RDFXML]) (--pagination=5) (--DOMAIN=url)
 
 	for a MYSQL connexion:
-	graphsummary --type=SQL --input=[path] --outputfile=[path]		\
+	graphsummary --type=RDBMS --input=[path] --outputfile=[path]		\
 		--database=[database] --user=[user] --pass=[pass]		\
 		(--add=[file]) (--addformat=[NT|RDFXML]) (--pagination=5)	\
 		(--DOMAIN=url)
@@ -96,7 +97,7 @@ COMMAND LINE:
 OPTIONS:
 ===============
 	--type
-		Type of the input file (NATIVE, MEMORY, SQL, HTTP or VIRTUOSO)
+		Type of the input file (NATIVE, MEMORY, RDBMS, HTTP or VIRTUOSO)
 		[MANDATORY]
  	--feed, --feedmode
 		The feed mode allow you to create a repository without
@@ -107,7 +108,7 @@ OPTIONS:
 		[MANDATORY FOR MEMORY AND NATIVE]
 	--url
 		The adress of the external repository.
-		[MANDATORY FOR HTTP, VIRTUOSO AND SQL]
+		[MANDATORY FOR HTTP, VIRTUOSO AND RDBMS]
 	--input
 		Can be use instead of "--repository" or "--url".
 	--add
@@ -140,13 +141,15 @@ OPTIONS:
 		[MANDATORY]
 	--database
 		The database in the MYSQL.
-		[MANDATORY FOR SQL]
+		[MANDATORY FOR RDBMS]
 	--user
 		The user for a MYSQL connection.
-		[MANDATORY FOR VIRTUOSO and SQL]
+		[MANDATORY FOR RDBMS]
+		[OPTIONNAL FOR VIRTUOSO]
 	--pass, --password
 		The password for a MYSQL connection.
-		[MANDATORY FOR VIRTUOSO and SQL]
+		[MANDATORY FOR RDBMS]
+		[OPTIONNAL FOR VIRTUOSO]
 	--help
 		show help
 
@@ -160,21 +163,24 @@ graphsummary --type=NATIVE --input=example/nativestore/				\
 --outputfile=output2.nt 
 
 graphsummary --type=MEMORY --repository=example/memorystore/			\
---add=src/test/resources/unit_test_multidomain.nt --outputfile=ouput3.nt.gz
+--add=src/test/resources/unit_test_multidomain.nt --outputfile=output3.nt.gz	\
+--addformat=N3
 
 graphsummary --type=HTTP  --url=http://sparql.sindice.com/sparql		\
 --domain=http://www.rottentomatoes.com --outputfile=output4.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---user=testuser --pass=pass42 --outputfile=output5.nt.gz
+--outputfile=output5.nt.gz
 
+graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
+--user=testuser --pass=pass42 --outputfile=output6.nt.gz
 
-graphsummary --type=SQL --url=localhost --db=test --user=testuser		\
---pass=pass42 --outputfile=output5.nt.gz
+graphsummary --type=RDBMS --url=localhost --db=test --user=testuser		\
+--pass=pass42 --outputfile=output7.nt.gz
 
 graphsummary --feed --type=MEMORY --repository=example/memorystore/		\
 --add=src/test/resources/test.nt						\
---add=src/test/resources/unit_test_multidomain.nt
+--add=src/test/resources/unit_test_multidomain.nt --addformat=N3
 
 graphsummary --help
 

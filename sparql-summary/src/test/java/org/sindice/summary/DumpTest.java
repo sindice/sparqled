@@ -76,7 +76,7 @@ public class DumpTest {
 			q.addFileToRepository("src/test/resources/unit_test_no_bc.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -132,7 +132,7 @@ public class DumpTest {
 			assertEquals(ref, str);
 			in.close();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong computation");
 
 		} finally {
@@ -140,7 +140,7 @@ public class DumpTest {
 				q.stopConnexion();
 			} catch (Exception e1) {
 
-				_logger.error(e1.getStackTrace());
+				_logger.error(e1.getMessage());
 			}
 		}
 	}
@@ -156,7 +156,7 @@ public class DumpTest {
 			                .parseResource("<http://www.testunit.com>",
 			                        new MemValueFactory()));
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -212,7 +212,7 @@ public class DumpTest {
 			assertEquals(ref, str);
 			in.close();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong computation");
 
 		} finally {
@@ -220,7 +220,7 @@ public class DumpTest {
 				q.stopConnexion();
 			} catch (Exception e1) {
 
-				_logger.error(e1.getStackTrace());
+				_logger.error(e1.getMessage());
 			}
 		}
 	}
@@ -234,7 +234,7 @@ public class DumpTest {
 			q.addFileToRepository("src/test/resources/unit_test_encode.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 		}
 
@@ -265,14 +265,14 @@ public class DumpTest {
 			assertEquals(ref, str);
 			in.close();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong computation");
 
 		} finally {
 			try {
 				q.stopConnexion();
 			} catch (Exception e1) {
-				_logger.error(e1.getStackTrace());
+				_logger.error(e1.getMessage());
 			}
 		}
 	}
@@ -287,7 +287,7 @@ public class DumpTest {
 			        "src/test/resources/unit_test_multidomain.nt",
 			        RDFFormat.N3);
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong initialisation");
 
 		}
@@ -347,7 +347,7 @@ public class DumpTest {
 			assertEquals(ref, str);
 			in.close();
 		} catch (Exception e) {
-			_logger.error(e.getStackTrace());
+			_logger.error(e.getMessage());
 			fail("wrong computation");
 
 		} finally {
@@ -355,7 +355,7 @@ public class DumpTest {
 				q.stopConnexion();
 			} catch (Exception e1) {
 
-				_logger.error(e1.getStackTrace());
+				_logger.error(e1.getMessage());
 			}
 		}
 	}
