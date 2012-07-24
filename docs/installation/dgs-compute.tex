@@ -2,7 +2,7 @@
 
 The DGS implementation bundled with this documentation is based on SPARQL, and computes the summary over a single dataset. A high performance, hadoop-based, DGS implementation is also available, and allows to compute a summary across datasets. Therefore, links between datasets can also be recommended. However, this version is not shipped with this package. Please inquire\footnote{\url{http://groups.google.com/group/sindice-dev}}.
 
-The following command will create the DGS over the given dataset which lies in a SPARQL endpoint located at \url{http://url/to/sparql/endpoint/}. The output is a gzip compressed NTriple file \texttt{/path/to/\mbox{$<\!data\!>$}-summary.nt.gz}. It is strongly advised to give enough memory to prevent OOME, e.g., \texttt{-Xmx2048m}.
+The following command will create the DGS over the given dataset which lies in a SPARQL endpoint located at \url{http://url/to/sparql/endpoint/}. The output is a gzip compressed NQuads file \texttt{/path/to/\mbox{$<\!data\!>$}-summary.nt.gz}. It is strongly advised to give enough memory to prevent OOME, e.g., \texttt{-Xmx2048m}.
 
 \bigskip
 \begin{raggedleft}
@@ -14,5 +14,23 @@ The following command will create the DGS over the given dataset which lies in a
 \end{raggedleft}
 \hfill
 
-A SPARQL endpoint must then be loaded with the computed DGS NTriples, under the named graph \url{http://sindice.com/analytics}.
+A SPARQL endpoint must then be loaded with the computed DGS NQuads, under the named graph \url{http://sindice.com/analytics}.
+
+\subsection{Remarks: using Virtuoso}
+
+If using a \emph{Virtuoso} SPARQL endpoint, please write \mbox{-{}-type VIRTUOSO} instead of \mbox{-{}-type HTTP} in the previous command.
+Since the DGS computation is computationally demanding, you may want to increase the timeout parameter of Virtuoso by changing the following parameter in the \emph{virtuoso.ini} file:
+
+\bigskip
+\begin{raggedleft}
+\framebox[\linewidth][l]{
+    \texttt{
+        MaxQueryExecutionTime=X
+    }
+}
+\end{raggedleft}
+\hfill
+
+where the X value is the time in seconds.
+The Virtuoso server needs then to be restarted after changing that file.
 
