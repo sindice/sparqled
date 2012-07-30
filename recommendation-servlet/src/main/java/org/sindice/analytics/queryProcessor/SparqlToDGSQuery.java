@@ -49,6 +49,8 @@ public final class SparqlToDGSQuery {
     ASTVarGenerator.reset();
     // Retrieve the POF metadata
     final POFMetadata meta = PofNodesMetadata.retrieve(ast);
+    // Remove RDF tags
+    RDFTagRemover.remove(ast);
     // expand each TP into simple one: denormalize syntax sugar constructions
     DeNormalizeAST.process(ast);
 
@@ -68,6 +70,8 @@ public final class SparqlToDGSQuery {
     // TODO: Optimize the query by removing unnecessary parts, e.g., optional, unions
     // 3. Map to the DGS query
     SparqlTranslationProcessor.process(ast);
+    // Add DGS filters
+    PofFilterProcessor.process(ast, meta);
     return meta;
   }
 

@@ -3,6 +3,16 @@
 
     <recommender>
         <classAttributes>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</classAttributes>
+        <classAttributes>http://opengraphprotocol.org/schema/type</classAttributes>
+        <classAttributes>http://opengraph.org/schema/type</classAttributes>
+        <classAttributes>http://ogp.me/ns#type</classAttributes>
+        <classAttributes>http://purl.org/dc/elements/1.1/type</classAttributes>
+        <classAttributes>http://purl.org/stuff/rev#type</classAttributes>
+        <classAttributes>http://purl.org/dc/terms/type</classAttributes>
+        <classAttributes>http://dbpedia.org/property/type</classAttributes>
+        <classAttributes>http://dbpedia.org/ontology/type</classAttributes>
+        <classAttributes>http://dbpedia.org/ontology/Organisation/type</classAttributes>
+        <classAttributes>http://xmlns.com/foaf/0.1/type</classAttributes>
 
         <backend>HTTP</backend>
         <backendArgs>http://path/to/summary/repository</backendArgs>

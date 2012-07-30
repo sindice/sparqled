@@ -56,6 +56,56 @@ public class TestSparqlToDGSQuery {
   }
 
   @Test
+  public void testPOFWithLanguageTag()
+  throws Exception {
+    final String query = "SELECT * WHERE { ?s a \"test\"@en; < ?o }";
+
+    ast = SyntaxTreeBuilder.parseQuery(query);
+    SparqlToDGSQuery.process(ast, null);
+
+    final String[] vars = filter(ASTVarGenerator.getCurrentVarNames(), "s", "o");
+    assertEquals(2, vars.length);
+    vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
+    final String dgsQuery = AST2TextTranslator.translate(ast);
+    final String expected =
+    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    "WHERE {\n" +
+    "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
+    "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> \"test\" .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+    "}\n";
+    assertEquals(expected, dgsQuery);
+  }
+
+  @Test
+  public void testPOFWithDatatypeTag()
+  throws Exception {
+    final String query = "SELECT * WHERE { ?s a \"test\"^^<xsd:int>; < ?o }";
+
+    ast = SyntaxTreeBuilder.parseQuery(query);
+    SparqlToDGSQuery.process(ast, null);
+
+    final String[] vars = filter(ASTVarGenerator.getCurrentVarNames(), "s", "o");
+    assertEquals(2, vars.length);
+    vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
+    final String dgsQuery = AST2TextTranslator.translate(ast);
+    final String expected =
+    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    "WHERE {\n" +
+    "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
+    "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> \"test\" .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
+    "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+    "}\n";
+    assertEquals(expected, dgsQuery);
+  }
+
+  @Test
   public void testPOFTargetIsLeaf()
   throws Exception {
     final String query = "SELECT * WHERE { ?s ?p ?o. ?s2 < ?o }";

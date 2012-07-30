@@ -59,13 +59,15 @@ public final class SparqlRecommender {
    * @param query
    * @param rankings
    * @param pagination
+   * @param limit
    * @return
    */
   public static <C> C run(SesameBackend<Label, DGSQueryResultProcessor.Context> dgsBackend,
                           ResponseWriter<C> response,
                           String query,
                           List<LabelsRanking> rankings,
-                          int pagination) {
+                          int pagination,
+                          int limit) {
     // TODO: Support queries with multiple FROM clauses
     RecommendationType recommendationType = RecommendationType.NONE;
 
@@ -85,7 +87,6 @@ public final class SparqlRecommender {
        */
       final QueryProcessor qp = new DGSQueryProcessor();
       qp.load(query);
-      final String dgsQuery = qp.getDGSQuery();
 
       meta = qp.getPofASTMetadata();
       final List<Object> keyword = meta.pofNode.getMetadata() == null ? null : meta.pofNode
@@ -96,6 +97,12 @@ public final class SparqlRecommender {
       .getMetadata(SyntaxTreeBuilder.Qname);
       recommendationType = qp.getRecommendationType();
 
+      final String dgsQuery;
+      if (keyword != null || prefix != null | qname != null) {
+        dgsQuery = qp.getDGSQuery();
+      } else {
+        dgsQuery = qp.getDGSQueryWithLimit(limit);
+      }
       logger.debug("RecommendationType: {}\nDGS query: [{}]", recommendationType, dgsQuery);
       if (!recommendationType.equals(RecommendationType.NONE)) {
         /*
@@ -108,16 +115,7 @@ public final class SparqlRecommender {
         while (qrp.hasNext()) {
           final Label label = qrp.next();
 
-          // filter If the POF contains keyword or Prefix metadata 
-          // toString(), but the Object is an instance of String, so it is OK
-          if (keyword != null && !label.getLabel().toLowerCase().contains(keyword.get(0).toString())) { // case insensitive: keyword is lowercased
-            continue;
-          }
-          if (prefix != null &&
-              !label.getLabel().toLowerCase().startsWith(prefix.get(0).toString().substring(1))) { // case insensitive: prefix is lowercased
-            // the first character is the opening <
-            continue;
-          }
+          // QName filtering
           if (qname != null) {
             final String value = qname.get(0).toString();
             if (!label.getLabel().startsWith(value)) {

@@ -21,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import info.aduna.io.FileUtil;
 
 import java.io.File;
@@ -29,8 +28,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +41,12 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.mortbay.jetty.testing.ServletTester;
 import org.openrdf.http.protocol.Protocol;
 import org.openrdf.rio.RDFFormat;
@@ -58,6 +60,7 @@ import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.sindice.core.sesame.backend.testHelper.SesameNxParser;
 
+@RunWith(value=Parameterized.class)
 public class TestAssistedSparqlEditorSevlet {
 
   private static final String  dgsInput = "./src/test/resources/DGSBackend/test-data-graph-summary_cascade.nt.gz";
@@ -103,8 +106,20 @@ public class TestAssistedSparqlEditorSevlet {
 
   }
 
-  @BeforeClass
-  public static void setUpBeforeClass()
+  private static int limit;
+
+  public TestAssistedSparqlEditorSevlet(int l) {
+    limit = l;
+  }
+
+  @Parameters
+  public static Collection<Object[]> configure() {
+    Object[][] data = new Object[][] { { 0 }, { 1 } }; // Limit values
+    return Arrays.asList(data);
+  }
+
+  @Before
+  public void setUp()
   throws Exception {
     // Add the nquads parser
     RDFParserRegistry.getInstance().add(new RDFParserFactory() {
@@ -140,6 +155,8 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION, 1000);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
+    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH.toString());
+    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.LIMIT, limit);
     /*
      * Comment it to prevent it from creating the sindice.home_IS_UNDEFINED folder, or from writing into sindice.home/ROOT
      * TODO: Update the Listener to enable a Test mode -> the log files are created in a temp folder
@@ -154,8 +171,8 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.start();
   }
 
-  @AfterClass
-  public static void tearDownAfterClass()
+  @After
+  public void tearDown()
   throws Exception {
     if (aseTester != null) {
       aseTester.stop();
@@ -294,6 +311,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testPredicateRecommendationWithQName()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     final String query = "PREFIX unipi: <http://www.di.unipi.it/#> SELECT * { ?s unipi:< ?o }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -320,6 +345,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testClassRecommendationWithQName()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     final String query = "PREFIX c: <http://www.countries.eu/> SELECT * { ?s a c:< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -347,6 +380,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testClassRecommendationWithKeyword()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     final String query = "SELECT * { ?s a count< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -468,6 +509,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testDatatypeLiteral()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     final String query = "SELECT * { ?s <http://www.di< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -493,6 +542,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testPredicateRecommendationWithPrefix()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     final String query = "SELECT * { ?s <http://www.di< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -518,6 +575,14 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testKeywordAndLiteral()
   throws Exception {
+    if (limit != 0) {
+      /*
+       * Disable test if there is a limit: the limit is removed when executing
+       * FILTER queries in SparqlRecommender
+       */
+      return;
+    }
+
     /*
      * the literal is removed by the DGS processing as it is not a query
      * structural element
@@ -637,7 +702,11 @@ public class TestAssistedSparqlEditorSevlet {
     // check the number of results
     final Map results = (Map) jsonMap.get(ResponseStructure.RESULTS);
     assertTrue(results.containsKey(ResponseStructure.COUNT));
-    assertEquals(expectedResults.size(), results.get(ResponseStructure.COUNT));
+    if (limit == 0) { // No Limit: all results are returned
+      assertEquals(expectedResults.size(), results.get(ResponseStructure.COUNT));
+    } else {
+      assertEquals(limit > expectedResults.size() ? expectedResults.size() : limit, results.get(ResponseStructure.COUNT));
+    }
 
     // Check the substitution
     assertTrue(jsonMap.containsKey(ResponseStructure.CA_REPLACE));
@@ -660,16 +729,34 @@ public class TestAssistedSparqlEditorSevlet {
     final List<Map<String, Object>> bindings = (List<Map<String, Object>>) ((List<Map>) results
     .get(ResponseStructure.RANKINGS)).get(0).get(ResponseStructure.BINDINGS);
 
-    assertEquals(expectedResults.size(), bindings.size());
+    if (limit == 0) { // No Limit: all results are returned
+      assertEquals(expectedResults.size(), bindings.size());
+    } else {
+      assertEquals(limit > expectedResults.size() ? expectedResults.size() : limit, bindings.size());
+    }
 
     final ArrayList<Results> actualResults = new ArrayList<Results>();
     for (Map<String, Object> r : bindings) {
       actualResults.add(new Results(Float.valueOf(r.get(ResponseStructure.COUNT).toString())
       .intValue(), r.get(ResponseStructure.VALUE).toString()));
     }
-    Collections.sort(actualResults);
-    Collections.sort(expectedResults);
-    assertArrayEquals(expectedResults.toArray(new Results[0]), actualResults.toArray(new Results[0]));
+    if (limit == 0) {
+      Collections.sort(actualResults);
+      Collections.sort(expectedResults);
+      assertArrayEquals(expectedResults.toArray(new Results[0]), actualResults.toArray(new Results[0]));
+    } else {
+      for (int i = 0; i < limit; i++) {
+        for (int res_i = 0; res_i < expectedResults.size(); res_i++) {
+          for (int act_i = 0; act_i < actualResults.size(); act_i++) {
+            if (expectedResults.get(res_i).label.equals(actualResults.get(act_i).label)) {
+              actualResults.remove(act_i);
+              break;
+            }
+          }
+        }
+      }
+      assertTrue("expected=" + expectedResults.toString() + " actual=" + actualResults.toString(), actualResults.isEmpty());
+    }
   }
 
 }

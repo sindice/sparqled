@@ -71,6 +71,7 @@ extends HttpServlet {
   private final List<LabelsRanking>     labelsRankings   = new ArrayList<LabelsRanking>();
   private SesameBackend<Label, Context> dgsBackend       = null;
   private int                           pagination;
+  private int                           limit;
 
   @Override
   public void init(ServletConfig config)
@@ -84,12 +85,16 @@ extends HttpServlet {
     final String[] backendArgs = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND_ARGS);
     // The path to the ranking configuration
     final String rankingConfigPath = (String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.RANKING_CONFIGURATION);
-    // The pagination limit
+    // The pagination value
     pagination = (Integer) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION);
+    // The Limit of results to be retrieved
+    limit = (Integer) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.LIMIT);
     // The ClassAttributes
     final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
     AnalyticsVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
+    // Set the graph summary graph
+    AnalyticsVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
     // Set the dataset label definition
     AnalyticsVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
 
@@ -105,9 +110,9 @@ extends HttpServlet {
       dgsBackend = SesameBackendFactory.getDgsBackend(backend, qrp, backendArgs);
       dgsBackend.initConnection();
 
-      logger.info("RankingConfiguration={} Backend={} BackendArgs={} ClassAttributes={} Pagination={} DomainUriPrefix={} DatasetLabelDef={}",
+      logger.info("RankingConfiguration={} Backend={} BackendArgs={} ClassAttributes={} Pagination={} DomainUriPrefix={} DatasetLabelDef={} GraphSummaryGraph={} LIMIT={}",
         new Object[] { rankingConfigPath, backend, Arrays.toString(backendArgs), Arrays.toString(classAttributes),
-      pagination, AnalyticsVocab.DOMAIN_URI_PREFIX, AnalyticsVocab.DATASET_LABEL_DEF});
+      pagination, AnalyticsVocab.DOMAIN_URI_PREFIX, AnalyticsVocab.DATASET_LABEL_DEF, AnalyticsVocab.GRAPH_SUMMARY_GRAPH, limit});
     } catch (Exception e) {
       logger.error("Failed to start the DGS backend", e);
     }
@@ -189,7 +194,7 @@ extends HttpServlet {
       if (request.getParameter(Protocol.QUERY_PARAM_NAME) != null) {
         final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
         // Get recommendation
-        response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, this.labelsRankings, pagination);
+        response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, this.labelsRankings, pagination, limit);
       }
     }
     return response;

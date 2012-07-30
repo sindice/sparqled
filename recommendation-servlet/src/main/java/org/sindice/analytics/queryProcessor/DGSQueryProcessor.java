@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.openrdf.query.MalformedQueryException;
+import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
+import org.openrdf.sindice.query.parser.sparql.ast.ASTLimit;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
@@ -50,10 +52,31 @@ implements QueryProcessor {
   private POFMetadata                    pofMetadata; // The Point Of Focus metadata
 
   @Override
-  public String getDGSQuery()
+  public String getDGSQueryWithLimit(int limit, ASTConstraint... contraints)
+  throws DGSException {
+    final ASTLimit astLimit;
+
+    if (limit != 0) {
+      if (ast.getQuery().getLimit() == null) {
+        astLimit = new ASTLimit(SyntaxTreeBuilder.LIMIT);
+        ast.getQuery().jjtAppendChild(astLimit);
+      } else {
+        astLimit = ast.getQuery().getLimit();
+      }
+      astLimit.setValue(limit);
+    }
+    return this.getDGSQuery(contraints);
+  }
+
+  @Override
+  public String getDGSQuery(ASTConstraint... contraints)
   throws DGSException {
     if (dgsQuery == null) {
       try {
+        if (contraints != null && contraints.length != 0) {
+          // TODO: add possible constraints to the query
+          ast.getQuery().getWhereClause();
+        }
         dgsQuery = AST2TextTranslator.translate(ast);
       } catch (VisitorException e) {
         throw new DGSException(e);

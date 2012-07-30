@@ -52,8 +52,10 @@ extends ServletConfigurationContextListener {
   public static final String     BACKEND               = "backend";
   public static final String     BACKEND_ARGS          = "backendArgs";
   public static final String     PAGINATION            = "pagination";
+  public static final String     LIMIT                 = "limit";
   public static final String     DOMAIN_URI_PREFIX     = "domainUriPrefix";
   public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
+  public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
 
   public static final String     RANKING_CONFIGURATION = "rankingConfig";
   private static final String    DEFAULT_RANKING       = "default-ranking.yaml";
@@ -77,13 +79,19 @@ extends ServletConfigurationContextListener {
     final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, AnalyticsVocab.DOMAIN_URI_PREFIX);
     context.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, domainUriPrefix);
 
+    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
+    context.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, gsg);
+
     final String backend = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND, BackendType.HTTP.toString());
     context.setAttribute(RECOMMENDER_WRAPPER + BACKEND, backend);
     final String[] backendArgs = getParametersWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND_ARGS, new String[] { "http://sparql.sindice.com/sparql" });
     context.setAttribute(RECOMMENDER_WRAPPER + BACKEND_ARGS, backendArgs);
 
-    final String limit = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + PAGINATION, Integer.toString(SesameBackend.LIMIT));
-    context.setAttribute(RECOMMENDER_WRAPPER + PAGINATION, Integer.valueOf(limit));
+    final String pagination = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + PAGINATION, Integer.toString(SesameBackend.LIMIT));
+    context.setAttribute(RECOMMENDER_WRAPPER + PAGINATION, Integer.valueOf(pagination));
+
+    final String limit = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + LIMIT, "0"); // No limit by default
+    context.setAttribute(RECOMMENDER_WRAPPER + LIMIT, Integer.valueOf(limit));
 
     final String[] classAttributes = getParametersWithLogging(config, RECOMMENDER_WRAPPER + "." + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
     context.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, classAttributes);

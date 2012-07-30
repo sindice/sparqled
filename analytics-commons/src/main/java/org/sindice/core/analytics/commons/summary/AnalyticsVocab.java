@@ -88,7 +88,8 @@ public enum AnalyticsVocab {
   /*
    * Analytics Graphs Names
    */
-  public static final String  GRAPH_SUMMARY_GRAPH      = "http://sindice.com/analytics";
+  private static final String DEFAULT_GSG              = "http://sindice.com/analytics";
+  public static String        GRAPH_SUMMARY_GRAPH      = DEFAULT_GSG;
   public static final String  DOMAIN_ANALYTICS_GRAPH   = "http://sindice.com/analytics/domain";
   public static final String  EXTENDED_ANALYTICS_GRAPH = "http://sindice.com/analytics/extended";       // TODO: where is this used ?
 
@@ -115,9 +116,14 @@ public enum AnalyticsVocab {
     DOMAIN_URI_PREFIX = dup;
   }
 
+  public static void setGraphSummaryGraph(String gsg) {
+    GRAPH_SUMMARY_GRAPH = gsg;
+  }
+
   public static void resetToDefaults() {
     DOMAIN_URI_PREFIX = DEFAULT_DUP;
     DATASET_LABEL_DEF = DatasetLabel.SECOND_LEVEL_DOMAIN;
+    GRAPH_SUMMARY_GRAPH = DEFAULT_GSG;
   }
 
   @Override
