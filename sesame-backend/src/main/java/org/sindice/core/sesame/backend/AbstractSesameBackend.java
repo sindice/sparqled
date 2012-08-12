@@ -72,8 +72,6 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import virtuoso.sesame2.driver.VirtuosoRepositoryConnection;
-
 /**
  * @author Stephane Campinas
  * @email stephane.campinas@deri.org
@@ -227,7 +225,9 @@ implements SesameBackend<VALUE, CONTEXT> {
     }
     finally {
       try {
-        con.getRepository().shutDown();
+        if (con != null) {
+          con.getRepository().shutDown();
+        }
       } catch (RepositoryException e) {
         logger.error("{}", e);
         throw new SesameBackendException(e);

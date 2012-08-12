@@ -88,7 +88,7 @@ public enum AnalyticsVocab {
   /*
    * Analytics Graphs Names
    */
-  private static final String DEFAULT_GSG              = "http://sindice.com/analytics";
+  public static final String  DEFAULT_GSG              = "http://sindice.com/analytics";
   public static String        GRAPH_SUMMARY_GRAPH      = DEFAULT_GSG;
   public static final String  DOMAIN_ANALYTICS_GRAPH   = "http://sindice.com/analytics/domain";
   public static final String  EXTENDED_ANALYTICS_GRAPH = "http://sindice.com/analytics/extended";       // TODO: where is this used ?

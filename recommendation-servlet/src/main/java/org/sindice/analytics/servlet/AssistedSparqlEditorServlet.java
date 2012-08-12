@@ -62,12 +62,9 @@ extends HttpServlet {
 
   private static final Logger           logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String            QUERY            = "query";
   public static final String            DATA_REQUEST     = "data";
   public static final String            DEFAULT          = "DEFAULT";
-  public static final String            RESPONSE         = "response";
 
-  private static final int              EXPIR_DATE       = 604800;                                     //One week in seconds
   private final List<LabelsRanking>     labelsRankings   = new ArrayList<LabelsRanking>();
   private SesameBackend<Label, Context> dgsBackend       = null;
   private int                           pagination;
