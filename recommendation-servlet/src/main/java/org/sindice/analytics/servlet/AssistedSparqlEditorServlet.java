@@ -62,6 +62,7 @@ extends HttpServlet {
 
   private static final Logger           logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
+  public static final String            DGS_GRAPH        = "dg";
   public static final String            DATA_REQUEST     = "data";
   public static final String            DEFAULT          = "DEFAULT";
 
@@ -90,8 +91,6 @@ extends HttpServlet {
     final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
     DataGraphSummaryVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
-    // Set the graph summary graph
-    DataGraphSummaryVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
     // Set the dataset label definition
     DataGraphSummaryVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
 
