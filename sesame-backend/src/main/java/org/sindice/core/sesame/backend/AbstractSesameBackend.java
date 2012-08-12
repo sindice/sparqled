@@ -222,7 +222,9 @@ public abstract class AbstractSesameBackend<VALUE, CONTEXT> implements
       throw new SesameBackendException(e);
     } finally {
       try {
-        con.getRepository().shutDown();
+        if (con != null) {
+          con.getRepository().shutDown();
+        }
       } catch (RepositoryException e) {
         logger.error("{}", e);
         throw new SesameBackendException(e);

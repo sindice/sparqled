@@ -53,7 +53,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.RDFParserFactory;
 import org.openrdf.rio.RDFParserRegistry;
-import org.sindice.analytics.servlet.ResponseWriterFactory.ResponseType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
@@ -191,7 +190,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -216,7 +215,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -240,7 +239,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -265,7 +264,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -288,7 +287,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -324,7 +323,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -358,7 +357,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -393,7 +392,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -421,7 +420,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -444,7 +443,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -467,7 +466,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -490,7 +489,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -522,7 +521,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -555,7 +554,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -592,7 +591,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -621,7 +620,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -649,7 +648,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -676,7 +675,7 @@ public class TestAssistedSparqlEditorSevlet {
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     post.addParameter(AssistedSparqlEditorServlet.DATA_REQUEST, "autocomplete");
-    post.addParameter(AssistedSparqlEditorServlet.RESPONSE, ResponseType.JSON.toString());
+
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
