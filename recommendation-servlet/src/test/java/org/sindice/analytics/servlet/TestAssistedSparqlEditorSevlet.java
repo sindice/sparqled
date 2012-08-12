@@ -628,8 +628,8 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
       final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
       final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
-        add(new Results(2, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu"));
-        add(new Results(4, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it"));
+        add(new Results(2, AnalyticsVocab.DOMAIN_URI_PREFIX + "countries.eu"));
+        add(new Results(4, AnalyticsVocab.DOMAIN_URI_PREFIX + "unipi.it"));
       }};
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
