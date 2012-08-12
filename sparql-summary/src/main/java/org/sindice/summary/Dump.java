@@ -328,6 +328,23 @@ public class Dump {
     }
   }
 
+		try {
+			// Create file
+			_output = new BufferedWriter(new OutputStreamWriter(
+			        new GZIPOutputStream(new FileOutputStream(outputFile))));
+			_domain = domain;
+			if (domain.equals("sindice.com")) {
+				_sndDomain = domain;
+			} else {
+				_sndDomain = URIUtil.getSndDomainFromUrl(domain);
+			}
+			_nodeCounter = 0;
+
+    } catch (Exception e) {// Catch exception if any
+      logger.debug("Error: " + e.getMessage());
+    }
+  }
+
   /**
    * close the RDF file.
    */

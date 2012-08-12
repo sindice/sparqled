@@ -23,7 +23,7 @@
     </repositories>
 
     <build>
-        <finalName>sparqled</finalName>
+      <finalName>sparqled</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

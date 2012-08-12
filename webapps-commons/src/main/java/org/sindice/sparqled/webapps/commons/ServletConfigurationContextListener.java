@@ -17,7 +17,6 @@ package org.sindice.sparqled.webapps.commons;
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -137,7 +136,6 @@ implements ServletContextListener {
       logger.warn("Missing configuration folder {}", configFolder);
       if (configFolder.mkdirs()) {
         logger.warn("Creating default configuration at " + configFolder);
-
       } else {
         // set logging level to INFO
         configureLogging(context, configFolder);
@@ -218,8 +216,7 @@ implements ServletContextListener {
         }
       } catch (ConfigurationException e) {
         logger.error("could not load default-config.xml", e);
-      }
-      finally {
+      } finally {
         try {
           in.close();
         } catch (IOException e) {
@@ -271,8 +268,7 @@ implements ServletContextListener {
         logger.warn("using servlet container logging configuration");
       }
       StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-    }
-    finally {
+    } finally {
       try {
         in.close();
       } catch (IOException e) {
@@ -328,12 +324,10 @@ implements ServletContextListener {
             while ((read = in.read(buff)) > 0) {
               out.write(buff, 0, read);
             }
-          }
-          finally {
+          } finally {
             out.close();
           }
-        }
-        finally {
+        } finally {
           in.close();
         }
       }
