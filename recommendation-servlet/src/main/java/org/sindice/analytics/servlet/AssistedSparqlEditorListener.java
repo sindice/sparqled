@@ -55,7 +55,6 @@ extends ServletConfigurationContextListener {
   public static final String     LIMIT                 = "limit";
   public static final String     DOMAIN_URI_PREFIX     = "domainUriPrefix";
   public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
-  public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
 
   public static final String     RANKING_CONFIGURATION = "rankingConfig";
   private static final String    DEFAULT_RANKING       = "default-ranking.yaml";
@@ -78,9 +77,6 @@ extends ServletConfigurationContextListener {
 
     final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, AnalyticsVocab.DOMAIN_URI_PREFIX);
     context.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, domainUriPrefix);
-
-    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
-    context.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, gsg);
 
     final String backend = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND, BackendType.HTTP.toString());
     context.setAttribute(RECOMMENDER_WRAPPER + BACKEND, backend);

@@ -154,7 +154,6 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION, 1000);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
-    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.LIMIT, limit);
     /*
      * Comment it to prevent it from creating the sindice.home_IS_UNDEFINED folder, or from writing into sindice.home/ROOT
