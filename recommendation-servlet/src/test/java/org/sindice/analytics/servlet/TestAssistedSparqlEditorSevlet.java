@@ -170,6 +170,10 @@ public class TestAssistedSparqlEditorSevlet {
     System.out.println("aseURL: [" + aseBaseUrl + "]");
 
     aseTester.start();
+
+    // reinit the graph summary graph
+    PutMethod put = new PutMethod(aseBaseUrl);
+    client.executeMethod(put);
   }
 
   @After

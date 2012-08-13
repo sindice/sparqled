@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -37,11 +35,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.openrdf.model.URI;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.BindingSet;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
@@ -266,61 +260,6 @@ public class SummaryRest {
   private String getJson(Status status,
                          String message) {
     return "{\"status\":\"" + status + "\",\"message\":\"" + message + "\"}";
-  }
-
-  /*
-   * Retrieve triples from the given input-graph. The endpoint used is the one
-   * configured in the recommender tag.
-   */
-
-  @GET
-  @Path("/peek")
-  @Produces(MediaType.APPLICATION_JSON)
-  public String getDataPeek(@QueryParam("input-graph") String inputGraph,
-                            @QueryParam("limit") String limit) {
-    final BackendType type = getRecommenderType();
-    String response = getJson(Status.ERROR, "");
-    SesameBackend<?, ?> backend = null;
-
-    try {
-      backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
-      backend.initConnection();
-      final QueryIterator<?, ?> it;
-      if (inputGraph == null) {
-        it = backend.submit(
-          "SELECT * {" +
-          "  ?s ?p ?o " +
-          "}" +
-          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
-        );
-      } else {
-        it = backend.submit(
-          "SELECT * FROM <" + inputGraph + "> {" +
-          "  ?s ?p ?o " +
-          "}" +
-          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
-        );
-      }
-      final ArrayList<String> triples = new ArrayList<String>();
-      while (it.hasNext()) {
-        final BindingSet b = (BindingSet) it.next();
-        triples.add("\"" + b.getValue("s").stringValue().replace("\"", "\\\"") + " " +
-                    b.getValue("p").stringValue().replace("\"", "\\\"") + " " +
-                    b.getValue("o").stringValue().replace("\"", "\\\"") + " .\"");
-      }
-      response = getJson(Status.SUCCESS, "Peeking into the " + (inputGraph == null ? "whole endpoint" : "graph " + inputGraph), triples.toString());
-    } catch (SesameBackendException e) {
-      response = getJson(Status.ERROR, e.getLocalizedMessage());
-    } finally {
-      if (backend != null) {
-        try {
-          backend.closeConnection();
-        } catch (SesameBackendException e) {
-          logger.error("Unable to close the connection to the SPARQL endpoint", e);
-        }
-      }
-    }
-    return response;
   }
 
 }

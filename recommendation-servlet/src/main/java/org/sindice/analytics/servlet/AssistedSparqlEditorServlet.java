@@ -143,9 +143,9 @@ extends HttpServlet {
   protected void doPut(HttpServletRequest request, HttpServletResponse resp)
   throws ServletException, IOException {
     if (request.getParameter(DGS_GRAPH) != null) {
-      AnalyticsVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
+      DataGraphSummaryVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
     } else {
-      AnalyticsVocab.setGraphSummaryGraph(AnalyticsVocab.DEFAULT_GSG);
+      DataGraphSummaryVocab.setGraphSummaryGraph(AnalyticsVocab.DEFAULT_GSG);
     }
   }
 

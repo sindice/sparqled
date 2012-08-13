@@ -231,7 +231,7 @@ implements ServletContextListener {
     addToContext(context, System.getProperties());
   }
 
-  private void addToContext(ServletContext context, Map<?, ?> map) {
+  private void addToContext(ServletContext context, Map map) {
     for (Object key : map.keySet()) {
       if (context.getAttribute(key.toString()) == null) {
         context.setAttribute(key.toString(), map.get(key));
