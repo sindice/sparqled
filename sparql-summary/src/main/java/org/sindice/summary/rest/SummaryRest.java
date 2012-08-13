@@ -25,12 +25,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.openrdf.query.BindingSet;
@@ -55,8 +57,29 @@ public class SummaryRest {
   private final static String  HAS_PART_URI    = "<http://purl.org/dc/terms/hasPart>";
   private final static String  SUMMARIES_GRAPH = "http://sindice.com/analytics/summaries";
 
+  @Context
+  private ServletContext       context;
+
   public static enum Status {
     SUCCESS, ERROR
+  }
+
+  private BackendType getRecommenderType() {
+    final String type = (String) context.getAttribute(SummaryRestContextListener.RECOMMENDER_BACKEND);
+    return type == null ? null : BackendType.valueOf(type);
+  }
+
+  private String[] getRecommenderArgs() {
+    return (String[]) context.getAttribute(SummaryRestContextListener.RECOMMENDER_BACKEND_ARGS);
+  }
+
+  private BackendType getProxyType() {
+    final String type = (String) context.getAttribute(SummaryRestContextListener.PROXY_BACKEND);
+    return type == null ? null : BackendType.valueOf(type);
+  }
+
+  private String[] getProxyArgs() {
+    return (String[]) context.getAttribute(SummaryRestContextListener.PROXY_BACKEND_ARGS);
   }
 
   /*
@@ -64,37 +87,16 @@ public class SummaryRest {
    */
 
   @GET
-  @Path("/list/native")
+  @Path("/list")
   @Produces(MediaType.APPLICATION_JSON)
-  public String getSummariesNative(@QueryParam("input-repo") String repo) {
-    return getSummaries(BackendType.NATIVE, repo);
-  }
-
-  @GET
-  @Path("/list/http")
-  @Produces(MediaType.APPLICATION_JSON)
-  public String getSummariesHttp(@QueryParam("input-repo") String repo) {
-    return getSummaries(BackendType.HTTP, repo);
-  }
-
-  @GET
-  @Path("/list/virtuoso")
-  @Produces(MediaType.APPLICATION_JSON)
-  public String getSummariesVirtuoso(@QueryParam("input-repo") String repo) {
-    // NOTE: to query a VIRTUOSO endpoint, using a HTTP backend is enough
-    return getSummaries(BackendType.HTTP, repo);
-  }
-
-  private String getSummaries(BackendType repoType,
-                              String repo) {
-    if (repo == null) {
-      throw new IllegalArgumentException("You must specify the input repository");
-    }
-
+  public String getSummaries() {
+    // For VIRTUOSO, it is enough to use a HTTP endpoint for only querying
+    final BackendType type = getRecommenderType() == BackendType.VIRTUOSO ? BackendType.HTTP : getRecommenderType();
     String response = getJson(Status.ERROR, "");
     SesameBackend<?, ?> backend = null;
+
     try {
-      backend = SesameBackendFactory.getDgsBackend(repoType, repo);
+      backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
       backend.initConnection();
       final QueryIterator<?, ?> it = backend.submit(
         "SELECT ?summary FROM <" + SUMMARIES_GRAPH + "> {" +
@@ -128,75 +130,43 @@ public class SummaryRest {
    */
 
   @POST
-  @Path("/create/native")
+  @Path("/create")
   @Produces(MediaType.APPLICATION_JSON)
-  public String computeSummaryNative(@QueryParam("input-repo") String inputRepo,
-                                     @QueryParam("outut-repo") String outputRepo,
-                                     @QueryParam("input-graph") String inputGraph,
-                                     @QueryParam("output-graph")
-                                     @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
-                                     String outputGraph) {
-    return doComputeSummary(BackendType.NATIVE, inputRepo, outputRepo, inputGraph, outputGraph);
-  }
-
-  @POST
-  @Path("/create/http")
-  @Produces(MediaType.APPLICATION_JSON)
-  public String computeSummaryHttp(@QueryParam("input-repo") String inputRepo,
-                                   @QueryParam("outut-repo") String outputRepo,
-                                   @QueryParam("input-graph") String inputGraph,
-                                   @QueryParam("output-graph")
-                                   @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
-                                   String outputGraph) {
-    return doComputeSummary(BackendType.HTTP, inputRepo, outputRepo, inputGraph, outputGraph);
-  }
-
-  @POST
-  @Path("/create/virtuoso")
-  @Produces(MediaType.APPLICATION_JSON)
-  public String computeSummaryVirtuoso(@QueryParam("input-repo") String repoPath,
-                                       @QueryParam("outut-repo") String outputRepo,
-                                       @QueryParam("input-graph") String inputGraph,
-                                       @QueryParam("output-graph")
-                                       @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
-                                       String outputGraph) {
-    return doComputeSummary(BackendType.VIRTUOSO, repoPath, outputRepo, inputGraph, outputGraph);
-  }
-
-  private String doComputeSummary(BackendType repoType,
-                                  String inputRepo,
-                                  String outputRepo,
-                                  String inputGraph,
-                                  String outputGraph) {
-    if (inputRepo == null) {
-      throw new IllegalArgumentException("You must specify the input repository");
-    }
-
+  public String computeSummary(@QueryParam("input-graph") String inputGraph,
+                               @QueryParam("output-graph")
+                               @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
+                               String outputGraph) {
+    System.out.println(context.getAttribute("recommender.backend"));
     final File summaryPath = new File(tmpPath, SUMMARY_NAME);
     String response = getJson(Status.ERROR, "");
     try {
-      // Compute the summary
+      /*
+       * Compute the summary
+       */
       final String[] create;
       if (inputGraph == null) {
         create = (
-          "--type " + repoType + " --repository " + inputRepo +
+          "--type " + getProxyType() + " --repository " + getProxyArgs()[0] +
           " --outputfile " + summaryPath.getAbsolutePath()
         ).split(" ");
       } else {
         create = (
-          "--type " + repoType + " --repository " + inputRepo +
+          "--type " + getProxyType() + " --repository " + getProxyArgs()[0] +
           " --outputfile " + summaryPath.getAbsolutePath() + " --domain " + inputGraph
         ).split(" ");
       }
       Pipeline.main(create);
-      // Load the summary into the repository
-      final String oRepo = (outputRepo == null ? inputRepo : outputRepo);
+      /*
+       * Load the summary into the repository
+       */
       final String[] ingest = (
-        "--feed --type " + repoType + " --repository " + oRepo +
+        "--feed --type " + getRecommenderType() + " --repository " + getRecommenderArgs()[0] +
         " --add " + summaryPath.getAbsolutePath() + " --domain " + outputGraph
       ).split(" ");
       Pipeline.main(ingest);
-      // Register this summary
+      /*
+       * Register this summary
+       */
       final String triple = "<" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> " +
       HAS_PART_URI + " <" + outputGraph + "> .\n";
       final File regPath = new File(tmpPath, "reg-path");
@@ -205,14 +175,12 @@ public class SummaryRest {
         w.append(triple);
         w.close();
         final String[] register = (
-          "--feed --type " + repoType + " --repository " + oRepo +
+          "--feed --type " + getRecommenderType() + " --repository " + getRecommenderArgs()[0] +
           " --add " + regPath + " --domain " + SUMMARIES_GRAPH
         ).split(" ");
         Pipeline.main(register);
         response = getJson(Status.SUCCESS, "Created summary from " +
-        (inputGraph == null ? inputRepo : inputGraph) + ", ingested it in " +
-        oRepo
-        );
+          getProxyArgs()[0] + ", ingested it in " + getRecommenderArgs()[0]);
       } catch (IOException e) {
         logger.debug("Unable to register the summary");
         response = getJson(Status.ERROR, "Created the summary, but unable to register it.");

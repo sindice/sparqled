@@ -141,7 +141,11 @@ function FlintEditor(container, imagesPath, config) {
 		//var endpointMimeTypeItem = createEndpointBar.getItems()[3];
 		var endpointMimeTypeItem = createEndpointBar.getItems()[2];
 		endpointMimeTypeItem.setDisableElements("SELECT");
-		
+
+	    // Add errorbox - this reuses the standard Flint dialog
+	    var errorBox = new FlintError(flint);
+	    this.getErrorBox = function() {return errorBox}
+
 		// endpointGetInfoButton.setClickAction(
 		//     function() {
 		// 	try {
@@ -201,10 +205,6 @@ function FlintEditor(container, imagesPath, config) {
 	    // Get a handle to the formats bar
 	    var datasetMimeTypeItem = createCoolbar.getItems()[2];
 	    datasetMimeTypeItem.setDisableElements("SELECT");
-
-	    // Add errorbox - this reuses the standard Flint dialog
-	    var errorBox = new FlintError(flint);
-	    this.getErrorBox = function() {return errorBox}
 
 	    // Add about box
 	    var aboutBox = new FlintAbout(flint);
@@ -2204,8 +2204,8 @@ function FlintEditor(container, imagesPath, config) {
 
 		//constructChooser = "<div id='flint-endpoint-mimeset-construct-chooser' title='Select the output type that you wish to request'><select id='flint-endpoint-mimeset-construct' name='output'>" + constructChooser + "</select></div>";
 
-		$('#flint-endpoint-output-formats').append(selectChooser);			
-		//$('#flint-endpoint-output-formats').append(constructChooser);		
+		$('#flint-endpoint-output-formats').append(selectChooser);
+		//$('#flint-endpoint-output-formats').append(constructChooser);
 	    }
 	    catch (e) {editor.getErrorBox().show(e);}
 	}

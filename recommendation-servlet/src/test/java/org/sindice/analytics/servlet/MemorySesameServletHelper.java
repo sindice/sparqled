@@ -77,7 +77,7 @@ extends HttpServlet {
 
       memBackend.initialize();
       memBackend.getConnection().setAutoCommit(true);
-      memBackend.getConnection().add(dgsInputStream, "", format, memBackend.getValueFactory().createURI(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH));
+      memBackend.getConnection().add(dgsInputStream, "", format, memBackend.getValueFactory().createURI(DataGraphSummaryVocab.DEFAULT_GSG));
     } catch (RDFParseException e) {
       e.printStackTrace();
     } catch (RepositoryException e) {

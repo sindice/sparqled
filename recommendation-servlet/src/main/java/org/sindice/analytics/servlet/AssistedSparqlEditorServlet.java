@@ -136,6 +136,20 @@ extends HttpServlet {
   }
 
   /**
+   * Update the Graph name of the summary, where the data summary was
+   * saved in
+   */
+  @Override
+  protected void doPut(HttpServletRequest request, HttpServletResponse resp)
+  throws ServletException, IOException {
+    if (request.getParameter(DGS_GRAPH) != null) {
+      AnalyticsVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
+    } else {
+      AnalyticsVocab.setGraphSummaryGraph(AnalyticsVocab.DEFAULT_GSG);
+    }
+  }
+
+  /**
    * Process request from editor, provides recommendations
    */
   @Override
@@ -179,7 +193,7 @@ extends HttpServlet {
   throws IOException {
     String response = "";
 
-    String queryType = DEFAULT;
+    String queryType = DEFAULT_DATA_REQUEST;
     if (request.getParameter(DATA_REQUEST) != null) {
       queryType = request.getParameter(DATA_REQUEST);
     }
