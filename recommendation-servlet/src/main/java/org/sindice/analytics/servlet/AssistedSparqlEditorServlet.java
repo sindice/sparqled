@@ -62,9 +62,9 @@ extends HttpServlet {
 
   private static final Logger           logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String            DGS_GRAPH        = "dg";
-  public static final String            DATA_REQUEST     = "data";
-  public static final String            DEFAULT          = "DEFAULT";
+  public static final String            DGS_GRAPH            = "dg";
+  public static final String            DATA_REQUEST         = "data";
+  public static final String            DEFAULT_DATA_REQUEST = "DEFAULT";
 
   private final List<LabelsRanking>     labelsRankings   = new ArrayList<LabelsRanking>();
   private SesameBackend<Label, Context> dgsBackend       = null;
@@ -91,6 +91,8 @@ extends HttpServlet {
     final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
     DataGraphSummaryVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
+    // Set the graph summary graph
+    DataGraphSummaryVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
     // Set the dataset label definition
     DataGraphSummaryVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
 
@@ -133,6 +135,20 @@ extends HttpServlet {
       }
     }
     super.destroy();
+  }
+
+  /**
+   * Update the Graph name of the summary, where the data summary was
+   * saved in
+   */
+  @Override
+  protected void doPut(HttpServletRequest request, HttpServletResponse resp)
+  throws ServletException, IOException {
+    if (request.getParameter(DGS_GRAPH) != null) {
+      DataGraphSummaryVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
+    } else {
+      DataGraphSummaryVocab.setGraphSummaryGraph(AnalyticsVocab.DEFAULT_GSG);
+    }
   }
 
   /**
@@ -179,20 +195,10 @@ extends HttpServlet {
   throws IOException {
     String response = "";
 
-    // recommendation type
-    String queryType = DEFAULT;
+    String queryType = DEFAULT_DATA_REQUEST;
     if (request.getParameter(DATA_REQUEST) != null) {
       queryType = request.getParameter(DATA_REQUEST);
     }
-    // Set the graph summary graph
-    final String dg;
-    if (request.getParameter(DGS_GRAPH) != null) {
-      dg = request.getParameter(DGS_GRAPH);
-    } else {
-      dg = AnalyticsVocab.DEFAULT_GSG;
-    }
-    AnalyticsVocab.setGraphSummaryGraph(dg);
-
     final ResponseWriter<?> responseWriter = ResponseWriterFactory.getResponseWriter(ResponseType.JSON);
 
     if (queryType.equalsIgnoreCase("autocomplete")) {

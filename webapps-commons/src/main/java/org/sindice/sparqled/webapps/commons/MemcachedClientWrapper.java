@@ -1,3 +1,4 @@
+package org.sindice.sparqled.webapps.commons;
 /*******************************************************************************
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
@@ -15,10 +16,10 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package org.sindice.servlet.sparqlqueryservlet;
+
 
 /**
- * @author Thomas Perry <thomas.perry@deri.org>
+ * @author thomas
  *
  */
 import java.math.BigInteger;

@@ -40,7 +40,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <!-- JSON wrapping -->
     <filter>
         <filter-name>jsonpCallbackFilter</filter-name>
-        <filter-class>org.sindice.analytics.servlet.JsonpCallbackFilter</filter-class>
+        <filter-class>org.sindice.sparqled.webapps.commons.JsonpCallbackFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -77,5 +77,9 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <servlet-name>summaries</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+
+    <listener>
+        <listener-class>org.sindice.summary.rest.SummaryRestContextListener</listener-class>
+    </listener>
 
 </web-app>
