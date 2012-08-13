@@ -35,6 +35,8 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
+import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,7 @@ extends ServletConfigurationContextListener {
   public static final String     LIMIT                 = "limit";
   public static final String     DOMAIN_URI_PREFIX     = "domainUriPrefix";
   public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
+  public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
 
   public static final String     RANKING_CONFIGURATION = "rankingConfig";
   private static final String    DEFAULT_RANKING       = "default-ranking.yaml";
@@ -77,6 +80,9 @@ extends ServletConfigurationContextListener {
 
     final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, AnalyticsVocab.DOMAIN_URI_PREFIX);
     context.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, domainUriPrefix);
+
+    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
+    context.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, gsg);
 
     final String backend = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND, BackendType.HTTP.toString());
     context.setAttribute(RECOMMENDER_WRAPPER + BACKEND, backend);
