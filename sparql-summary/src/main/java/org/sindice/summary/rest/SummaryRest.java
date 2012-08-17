@@ -27,11 +27,11 @@ import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -132,8 +132,8 @@ public class SummaryRest {
   @POST
   @Path("/create")
   @Produces(MediaType.APPLICATION_JSON)
-  public String computeSummary(@QueryParam("input-graph") String inputGraph,
-                               @QueryParam("output-graph")
+  public String computeSummary(@FormParam("input-graph") String inputGraph,
+                               @FormParam("output-graph")
                                @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
                                String outputGraph) {
     System.out.println(context.getAttribute("recommender.backend"));

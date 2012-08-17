@@ -22,6 +22,7 @@ import org.sindice.summary.Pipeline;
 import org.sindice.summary.rest.SummaryRest.Status;
 
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.representation.Form;
 import com.sun.jersey.test.framework.JerseyTest;
 import com.sun.jersey.test.framework.WebAppDescriptor;
 
@@ -67,7 +68,9 @@ extends JerseyTest {
   throws IOException, SesameBackendException {
     final String graph = "http://www.acme.org/cs";
     WebResource webResource = resource();
-    webResource.path("summaries/create").queryParam("output-graph", graph).post(String.class);
+    Form form = new Form();
+    form.add("output-graph", graph);
+    webResource.path("summaries/create").post(String.class, form);
     String responseMsg = webResource.path("summaries/list").get(String.class);
 
     assertTrue(responseMsg.contains(Status.SUCCESS.toString()));

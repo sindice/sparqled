@@ -1,9 +1,12 @@
-Package: lod2-sparqled
+Package: sparqled
 Version: 0.9
 Section: misc
 Priority: optional
 Architecture: all
 Depends: tomcat6 | tomcat7, openjdk-6-jre | sun-java6-jre
 Maintainer: Stephane Campinas <stephane.campinas@deri.org>
-Description: SparQLed, an Assisted SPARQL Editor for LOD2
 Distribution: development
+Homepage: http://sindicetech.com/sindice-suite/sparqled/
+Vcs-Git: git://github.com/sindicetech/sparqled.git
+Description: SparQLed, an Assisted SPARQL Editor for LOD2
+ SparQLed is an interactive SPARQL editor that provides context-aware recommendations, helping users in formulating complex SPARQL queries across multiple heterogeneous data sources.
