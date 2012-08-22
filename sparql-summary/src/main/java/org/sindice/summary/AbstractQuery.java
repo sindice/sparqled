@@ -43,8 +43,7 @@ import org.sindice.core.sesame.backend.SesameBackendException;
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
 abstract public class AbstractQuery {
-  // protected static RepositoryConnection _con;
-  //  protected Stack<TupleQueryResult> _queriesResults;
+
   protected String _graphFrom;
   protected static SesameBackend<BindingSet, Context> _repository;
   protected Logger _logger;
