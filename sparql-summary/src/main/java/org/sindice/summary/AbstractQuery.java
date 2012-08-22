@@ -99,8 +99,7 @@ abstract public class AbstractQuery {
       Random rand = new Random();
       int r = rand.nextInt();
       initDump("/tmp/Graph-Summary-out/out" + r);
-      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out"
-          + r);
+      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" + r);
     }
     _logger.info("LAUNCH QUERY");
     QueryIterator<BindingSet, Context> queryIt = _repository.submit(query);
@@ -243,4 +242,5 @@ abstract public class AbstractQuery {
     }
     _dump.closeRDF();
   }
+
 }
