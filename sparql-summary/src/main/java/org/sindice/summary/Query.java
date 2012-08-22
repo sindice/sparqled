@@ -271,7 +271,7 @@ abstract public class Query {
              + "FILTER(?label != \"\")\n" + "}\n"
              + "GROUP BY ?label ?pType ?pDescription\n";
 
-    _logger.debug(query);
+    _logger.debug("Get the class node collection: [" + query + "]");
     launchQueryNode(query);
   }
 
@@ -321,7 +321,7 @@ abstract public class Query {
 
     query += "}\n" + "GROUP BY ?label ?source ?target \n";
 
-    _logger.debug(query);
+    _logger.debug("Get the class node collections relationships: [" + query + "]");
     launchQueryPred(query);
   }
 

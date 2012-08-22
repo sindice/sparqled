@@ -32,6 +32,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
@@ -90,8 +91,7 @@ public class SummaryRest {
   @Path("/list")
   @Produces(MediaType.APPLICATION_JSON)
   public String getSummaries() {
-    // For VIRTUOSO, it is enough to use a HTTP endpoint for only querying
-    final BackendType type = getRecommenderType() == BackendType.VIRTUOSO ? BackendType.HTTP : getRecommenderType();
+    final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
     SesameBackend<?, ?> backend = null;
 
@@ -107,7 +107,7 @@ public class SummaryRest {
       final ArrayList<String> summaries = new ArrayList<String>();
       while (it.hasNext()) {
         final BindingSet b = (BindingSet) it.next();
-        summaries.add(b.getValue("summary").stringValue());
+        summaries.add("\"" + b.getValue("summary").stringValue() + "\"");
       }
       final int size = summaries.size();
       response = getJson(Status.SUCCESS, "There " + (size <= 1 ? "is " : "are ") + size + " registered summaries", summaries.toString());
@@ -136,7 +136,6 @@ public class SummaryRest {
                                @FormParam("output-graph")
                                @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
                                String outputGraph) {
-    System.out.println(context.getAttribute("recommender.backend"));
     final File summaryPath = new File(tmpPath, SUMMARY_NAME);
     String response = getJson(Status.ERROR, "");
     try {
@@ -147,12 +146,14 @@ public class SummaryRest {
       if (inputGraph == null) {
         create = (
           "--type " + getProxyType() + " --repository " + getProxyArgs()[0] +
-          " --outputfile " + summaryPath.getAbsolutePath()
+          " --outputfile " + summaryPath.getAbsolutePath() +
+          (getProxyType() == BackendType.VIRTUOSO ? " --user " + getProxyArgs()[1] + " --pass " + getProxyArgs()[2] : "")
         ).split(" ");
       } else {
         create = (
           "--type " + getProxyType() + " --repository " + getProxyArgs()[0] +
-          " --outputfile " + summaryPath.getAbsolutePath() + " --domain " + inputGraph
+          " --outputfile " + summaryPath.getAbsolutePath() + " --domain " + inputGraph +
+          (getProxyType() == BackendType.VIRTUOSO ? " --user " + getProxyArgs()[1] + " --pass " + getProxyArgs()[2] : "")
         ).split(" ");
       }
       Pipeline.main(create);
@@ -161,7 +162,8 @@ public class SummaryRest {
        */
       final String[] ingest = (
         "--feed --type " + getRecommenderType() + " --repository " + getRecommenderArgs()[0] +
-        " --add " + summaryPath.getAbsolutePath() + " --domain " + outputGraph
+        " --add " + summaryPath.getAbsolutePath() + " --domain " + outputGraph +
+        (getRecommenderType() == BackendType.VIRTUOSO ? " --user " + getRecommenderArgs()[1] + " --pass " + getRecommenderArgs()[2] : "")
       ).split(" ");
       Pipeline.main(ingest);
       /*
@@ -176,12 +178,13 @@ public class SummaryRest {
         w.close();
         final String[] register = (
           "--feed --type " + getRecommenderType() + " --repository " + getRecommenderArgs()[0] +
-          " --add " + regPath + " --domain " + SUMMARIES_GRAPH
+          " --add " + regPath + " --domain " + SUMMARIES_GRAPH +
+          (getRecommenderType() == BackendType.VIRTUOSO ? " --user " + getRecommenderArgs()[1] + " --pass " + getRecommenderArgs()[2] : "")
         ).split(" ");
         Pipeline.main(register);
         response = getJson(Status.SUCCESS, "Created summary from " +
           getProxyArgs()[0] + ", ingested it in " + getRecommenderArgs()[0]);
-      } catch (IOException e) {
+      } catch (Exception e) {
         logger.debug("Unable to register the summary");
         response = getJson(Status.ERROR, "Created the summary, but unable to register it.");
       }
@@ -207,6 +210,61 @@ public class SummaryRest {
   private String getJson(Status status,
                          String message) {
     return "{\"status\":\"" + status + "\",\"message\":\"" + message + "\"}";
+  }
+
+  /*
+   * Retrieve triples from the given input-graph. The endpoint used is the one
+   * configured in the recommender tag.
+   */
+
+  @GET
+  @Path("/peek")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getDataPeek(@QueryParam("input-graph") String inputGraph,
+                            @QueryParam("limit") String limit) {
+    final BackendType type = getRecommenderType();
+    String response = getJson(Status.ERROR, "");
+    SesameBackend<?, ?> backend = null;
+
+    try {
+      backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
+      backend.initConnection();
+      final QueryIterator<?, ?> it;
+      if (inputGraph == null) {
+        it = backend.submit(
+          "SELECT * {" +
+          "  ?s ?p ?o " +
+          "}" +
+          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
+        );
+      } else {
+        it = backend.submit(
+          "SELECT * FROM <" + inputGraph + "> {" +
+          "  ?s ?p ?o " +
+          "}" +
+          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
+        );
+      }
+      final ArrayList<String> triples = new ArrayList<String>();
+      while (it.hasNext()) {
+        final BindingSet b = (BindingSet) it.next();
+        triples.add("\"" + b.getValue("s").stringValue().replace("\"", "\\\"") + " " +
+                    b.getValue("p").stringValue().replace("\"", "\\\"") + " " +
+                    b.getValue("o").stringValue().replace("\"", "\\\"") + " .\"");
+      }
+      response = getJson(Status.SUCCESS, "Peeking into the " + (inputGraph == null ? "whole endpoint" : "graph " + inputGraph), triples.toString());
+    } catch (SesameBackendException e) {
+      response = getJson(Status.ERROR, e.getLocalizedMessage());
+    } finally {
+      if (backend != null) {
+        try {
+          backend.closeConnection();
+        } catch (SesameBackendException e) {
+          logger.error("Unable to close the connection to the SPARQL endpoint", e);
+        }
+      }
+    }
+    return response;
   }
 
 }

@@ -237,7 +237,7 @@ public class QueryHTTPVirtuoso extends Query {
 		        + "        }\n" + "        }\n" + "        GROUP BY ?s\n"
 		        + "    }\n" + "}\n" + "GROUP BY ?label\n";
 
-		_logger.debug(query);
+		_logger.debug("Virtuoso query to get the class node collection: [" + query + "]");
 
 		launchQueryNode(query);
 	}
