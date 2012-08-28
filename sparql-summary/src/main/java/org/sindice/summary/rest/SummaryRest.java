@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -36,7 +37,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.BindingSet;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
