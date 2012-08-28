@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -36,7 +37,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.BindingSet;
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
@@ -100,7 +105,7 @@ public class SummaryRest {
       backend.initConnection();
       final QueryIterator<?, ?> it = backend.submit(
         "SELECT ?summary FROM <" + SUMMARIES_GRAPH + "> {" +
-        "  <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> " +
+        "  <" + AnalyticsVocab.DEFAULT_GSG + "> " +
         HAS_PART_URI + " ?summary " +
         "}"
       );
@@ -112,6 +117,57 @@ public class SummaryRest {
       final int size = summaries.size();
       response = getJson(Status.SUCCESS, "There " + (size <= 1 ? "is " : "are ") + size + " registered summaries", summaries.toString());
     } catch (SesameBackendException e) {
+      response = getJson(Status.ERROR, e.getLocalizedMessage());
+    } finally {
+      if (backend != null) {
+        try {
+          backend.closeConnection();
+        } catch (SesameBackendException e) {
+          logger.error("Unable to close the connection to the SPARQL endpoint", e);
+        }
+      }
+    }
+    return response;
+  }
+
+  /*
+   * Delete the given graph from the endpoint, and unregister it from the list
+   * of available summaries.
+   */
+
+  @DELETE
+  @Path("/delete")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String deleteSummary(@QueryParam("graph") String graph) {
+    final BackendType type = getRecommenderType();
+    String response = getJson(Status.ERROR, "");
+    SesameBackend<?, ?> backend = null;
+
+    if (graph == null) {
+      response = getJson(Status.ERROR, "You need to specify the graph summary to delete");
+      return response;
+    }
+    try {
+      backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
+      backend.initConnection();
+
+      final ValueFactoryImpl factory = new ValueFactoryImpl();
+      // Delete the graph
+      backend.getConnection().clear(NTriplesUtil.parseURI("<" + graph  + ">", factory));
+      // Unregister the graph
+      final URI context = NTriplesUtil.parseURI("<" + SUMMARIES_GRAPH  + ">", factory);
+      final URI s = NTriplesUtil.parseURI("<" + AnalyticsVocab.DEFAULT_GSG  + ">", factory);
+      final URI p = NTriplesUtil.parseURI(HAS_PART_URI, factory);
+      final URI o = NTriplesUtil.parseURI("<" + graph  + ">", factory);
+      backend.getConnection().remove(s, p, o, context);
+      backend.getConnection().commit();
+
+      response = getJson(Status.SUCCESS, "Deleted the Summary Graph: " + graph);
+    } catch (SesameBackendException e) {
+      response = getJson(Status.ERROR, e.getLocalizedMessage());
+    } catch (RepositoryException e) {
+      response = getJson(Status.ERROR, e.getLocalizedMessage());
+    } catch (IllegalArgumentException e) {
       response = getJson(Status.ERROR, e.getLocalizedMessage());
     } finally {
       if (backend != null) {
@@ -169,7 +225,7 @@ public class SummaryRest {
       /*
        * Register this summary
        */
-      final String triple = "<" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> " +
+      final String triple = "<" + AnalyticsVocab.DEFAULT_GSG + "> " +
       HAS_PART_URI + " <" + outputGraph + "> .\n";
       final File regPath = new File(tmpPath, "reg-path");
       try {

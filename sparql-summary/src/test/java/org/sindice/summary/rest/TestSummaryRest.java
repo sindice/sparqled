@@ -55,7 +55,7 @@ extends JerseyTest {
   }
 
   @Test
-  public void testCreateSummaryNative()
+  public void testCreate()
   throws IOException, SesameBackendException {
     WebResource webResource = resource();
     webResource.path("summaries/create").post(String.class);
@@ -64,7 +64,7 @@ extends JerseyTest {
   }
 
   @Test
-  public void testListNative()
+  public void testList()
   throws IOException, SesameBackendException {
     final String graph = "http://www.acme.org/cs";
     WebResource webResource = resource();
@@ -75,6 +75,29 @@ extends JerseyTest {
 
     assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
     assertTrue(responseMsg.contains(graph));
+  }
+
+  @Test
+  public void testDelete()
+  throws IOException, SesameBackendException {
+    final String graph = "http://www.acme.org/cs";
+    WebResource webResource = resource();
+    Form form = new Form();
+    form.add("output-graph", graph);
+    webResource.path("summaries/create").post(String.class, form);
+
+    // Check that the summary is there
+    String responseMsg = webResource.path("summaries/list").get(String.class);
+    assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
+    assertTrue(responseMsg.contains(graph));
+    // Check that it is removed
+    responseMsg = webResource.path("summaries/delete").queryParam("graph", graph).delete(String.class);
+    assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
+    assertTrue(responseMsg.contains(graph));
+    // Check that the summary is not there anymore
+    responseMsg = webResource.path("summaries/list").get(String.class);
+    assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
+    assertFalse(responseMsg.contains(graph));
   }
 
   private void checkSummary(SesameBackend<?, ?> backend, String graphName)
