@@ -35,12 +35,12 @@ public class DumpString extends Dump {
 	 * Write a node in the output.
 	 * 
 	 * @param BindingSet
-	 *            Result of the query from computeName()
+	 *          Result of the query from computeName()
 	 * @throws QueryEvaluationException
 	 * @throws IOException
 	 */
 	public void dumpRDFNode(BindingSet bindingSet)
-	        throws QueryEvaluationException, IOException {
+	    throws QueryEvaluationException, IOException {
 
 		if (bindingSet.hasBinding("label")) {
 			_outputstr += bindingSet.getValue("label").toString() + "\t";
@@ -57,8 +57,7 @@ public class DumpString extends Dump {
 		for (String name : bindingSet.getBindingNames()) {
 			if (!name.equals("label") && !name.equals("cardinality")) {
 				otherResult = true;
-				_outputstr += name + " "
-				        + bindingSet.getValue(name).toString() + "\t";
+				_outputstr += name + " " + bindingSet.getValue(name).toString() + "\t";
 			}
 
 		}
@@ -71,12 +70,13 @@ public class DumpString extends Dump {
 	 * Write an edge in the output..
 	 * 
 	 * @param bindingSet
-	 *            Result of the query from computePredicate()
+	 *          Result of the query from computePredicate()
 	 * @throws QueryEvaluationException
 	 * @throws IOException
 	 */
 	public void dumpRDFPred(BindingSet bindingSet)
-	        throws QueryEvaluationException, IOException {
+	    throws QueryEvaluationException, IOException {
+
 		if (bindingSet.hasBinding("label")) {
 			_outputstr += bindingSet.getValue("label").toString() + "\t";
 		} else {
@@ -104,9 +104,9 @@ public class DumpString extends Dump {
 	 * Reset the output string.
 	 * 
 	 * @param outputFile
-	 *            Useless.
+	 *          Useless.
 	 * @param domain
-	 *            Useless.
+	 *          Useless.
 	 */
 	public void openRDF(String outputFile, String domain) {
 		_outputstr = "";

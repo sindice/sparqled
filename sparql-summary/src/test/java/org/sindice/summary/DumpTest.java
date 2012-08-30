@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
+import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 
 /**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
@@ -43,6 +44,13 @@ public class DumpTest {
 	@Before
 	public void initLogger() {
 		_logger = Logger.getLogger(DumpTest.class);
+		String[] type = { "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+		    "http://opengraphprotocol.org/schema/type", "http://ogp.me/ns#type",
+		    "http://opengraph.org/schema/type",
+		    "http://purl.org/dc/elements/1.1/type",
+		    "http://dbpedia.org/property/type" };
+		AnalyticsClassAttributes.initClassAttributes(type);
+
 	}
 
 	@After
@@ -74,7 +82,7 @@ public class DumpTest {
 			Dump d = new Dump();
 			q = new QueryNative(d, "/tmp/testUNIT/dumpstore1");
 			q.addFileToRepository("src/test/resources/unit_test_no_bc.nt",
-			        RDFFormat.N3);
+			    RDFFormat.N3);
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 			fail("wrong initialisation");
@@ -85,9 +93,9 @@ public class DumpTest {
 			q.computeName();
 			q.computePredicate();
 			q.stopConnexion();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-			        new GZIPInputStream(new FileInputStream(
-			                "/tmp/testUNIT/dumpoutput1"))));
+			BufferedReader in = new BufferedReader(
+			    new InputStreamReader(new GZIPInputStream(new FileInputStream(
+			        "/tmp/testUNIT/dumpoutput1"))));
 			String strLine;
 			String str = "";
 
@@ -95,39 +103,39 @@ public class DumpTest {
 				// Print the content on the console
 				str += strLine + "\n";
 			}
-			String ref = "<http://vocab.sindice.net/analytics#ecn2632377909699768787> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ecn2632377909699768787> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type6050911082534250786> .\n"
-			        + "<http://vocab.sindice.net/analytics#type6050911082534250786> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type6050911082534250786> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec6922471454695406043> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec6922471454695406043> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen8129793483941736198> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen8129793483941736198> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen8129793483941736198> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn2632377909699768787> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec6922471454695406043> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ecn9168467491505453220> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ecn9168467491505453220> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen383307764049858914> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen383307764049858914> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen383307764049858914> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn9168467491505453220> .\n"
-			        + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node8479274785035382848> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node8479274785035382848> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n";
+			String ref = "<http://vocab.sindice.net/analytics#ecn3255220933140741900> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3255220933140741900> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type9060739085762443355> .\n"
+			    + "<http://vocab.sindice.net/analytics#type9060739085762443355> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type9060739085762443355> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3452033840092798384> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3452033840092798384> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type7954279899684930709> .\n"
+			    + "<http://vocab.sindice.net/analytics#type7954279899684930709> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type7954279899684930709> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn3255220933140741900> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn3452033840092798384> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ec3220177607457310356> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ec3220177607457310356> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type7092576437160209772> .\n"
+			    + "<http://vocab.sindice.net/analytics#type7092576437160209772> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type7092576437160209772> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec3220177607457310356> .\n"
+			    + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node8479274785035382848> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edge1164459644941289088> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node8479274785035382848> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen5025709426772691178> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n";
 
 			assertEquals(ref, str);
 			in.close();
@@ -152,9 +160,8 @@ public class DumpTest {
 			q = new QueryNative("/tmp/testUNIT/dumpstore4");
 			q.setGraph("http://www.testunit.com");
 			q.addFileToRepository("src/test/resources/unit_test_no_bc.nt",
-			        RDFFormat.N3, NTriplesUtil
-			                .parseResource("<http://www.testunit.com>",
-			                        new MemValueFactory()));
+			    RDFFormat.N3, NTriplesUtil.parseResource(
+			        "<http://www.testunit.com>", new MemValueFactory()));
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 			fail("wrong initialisation");
@@ -165,9 +172,9 @@ public class DumpTest {
 			q.computeName();
 			q.computePredicate();
 			q.stopConnexion();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-			        new GZIPInputStream(new FileInputStream(
-			                "/tmp/testUNIT/dumpoutput4"))));
+			BufferedReader in = new BufferedReader(
+			    new InputStreamReader(new GZIPInputStream(new FileInputStream(
+			        "/tmp/testUNIT/dumpoutput4"))));
 			String strLine;
 			String str = "";
 
@@ -175,39 +182,39 @@ public class DumpTest {
 				// Print the content on the console
 				str += strLine + "\n";
 			}
-			String ref = "<http://vocab.sindice.net/analytics#ecn4879940977782842428> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ecn4879940977782842428> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type8962431044451625816> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8962431044451625816> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8962431044451625816> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec3325049966733734037> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec3325049966733734037> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type3316698421729436947> .\n"
-			        + "<http://vocab.sindice.net/analytics#type3316698421729436947> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type3316698421729436947> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn4879940977782842428> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec3325049966733734037> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/domain> \"http://www.testunit.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/domain_uri> <http://www.testunit.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec3364966105920994942> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec3364966105920994942> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen2234149760394822962> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen2234149760394822962> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen2234149760394822962> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec3364966105920994942> .\n"
-			        + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/domain> \"http://www.testunit.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/domain_uri> <http://www.testunit.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden4058114687952750473> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node6879956730694495624> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#publishedIn> <http://www.testunit.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node6879956730694495624> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden4058114687952750473> .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#publishedIn> <http://www.testunit.com> .\n";
+			String ref = "<http://vocab.sindice.net/analytics#ec3097702782833926223> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ec3097702782833926223> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type8125897376959617486> .\n"
+			    + "<http://vocab.sindice.net/analytics#type8125897376959617486> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type8125897376959617486> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3441261523793581228> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3441261523793581228> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen4795071118078071783> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen4795071118078071783> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen4795071118078071783> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec3097702782833926223> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn3441261523793581228> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/domain> \"http://www.testunit.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/domain_uri> <http://www.testunit.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden4058114687952750473> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ec2485048267420148715> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ec2485048267420148715> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen9151021515892793100> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen9151021515892793100> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen9151021515892793100> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec2485048267420148715> .\n"
+			    + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/domain> \"http://www.testunit.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/domain_uri> <http://www.testunit.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#node6879956730694495624> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden4058114687952750473> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node6879956730694495624> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edge3039431683361620530> <http://vocab.sindice.net/analytics#publishedIn> <http://www.testunit.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node6879956730694495624> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden4058114687952750473> .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edgen148178575938144458> <http://vocab.sindice.net/analytics#publishedIn> <http://www.testunit.com> .\n";
 
 			assertEquals(ref, str);
 			in.close();
@@ -232,7 +239,7 @@ public class DumpTest {
 			Dump d = new Dump();
 			q = new QueryNative(d, "/tmp/testUNIT/dumpstore4");
 			q.addFileToRepository("src/test/resources/unit_test_encode.nt",
-			        RDFFormat.N3);
+			    RDFFormat.N3);
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 			fail("wrong initialisation");
@@ -243,9 +250,9 @@ public class DumpTest {
 			q.computeName();
 			q.computePredicate();
 			q.stopConnexion();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-			        new GZIPInputStream(new FileInputStream(
-			                "/tmp/testUNIT/dumpoutput4"))));
+			BufferedReader in = new BufferedReader(
+			    new InputStreamReader(new GZIPInputStream(new FileInputStream(
+			        "/tmp/testUNIT/dumpoutput4"))));
 			String strLine;
 			String str = "";
 
@@ -253,14 +260,14 @@ public class DumpTest {
 				// Print the content on the console
 				str += strLine + "\n";
 			}
-			String ref = "<http://vocab.sindice.net/analytics#ecn425465284613948583> <http://vocab.sindice.net/analytics#label> \"test complexe\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ecn425465284613948583> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type8420808726175792342> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8420808726175792342> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8420808726175792342> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn425465284613948583> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n";
+			String ref = "<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#label> \"test complexe\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type5362401009120084618> .\n"
+			    + "<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn5758280603750808292> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n";
 
 			assertEquals(ref, str);
 			in.close();
@@ -283,9 +290,8 @@ public class DumpTest {
 		try {
 			Dump d = new Dump();
 			q = new QueryNative(d, "/tmp/testUNIT/dumpstore2");
-			q.addFileToRepository(
-			        "src/test/resources/unit_test_multidomain.nt",
-			        RDFFormat.N3);
+			q.addFileToRepository("src/test/resources/unit_test_multidomain.nt",
+			    RDFFormat.N3);
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
 			fail("wrong initialisation");
@@ -297,9 +303,9 @@ public class DumpTest {
 			q.computeName();
 			q.computePredicate();
 			q.stopConnexion();
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-			        new GZIPInputStream(new FileInputStream(
-			                "/tmp/testUNIT/dumpoutput2"))));
+			BufferedReader in = new BufferedReader(
+			    new InputStreamReader(new GZIPInputStream(new FileInputStream(
+			        "/tmp/testUNIT/dumpoutput2"))));
 			String strLine;
 			String str = "";
 
@@ -307,42 +313,42 @@ public class DumpTest {
 				// Print the content on the console
 				str += strLine + "\n";
 			}
-			String ref = "<http://vocab.sindice.net/analytics#ec5508683872620990028> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec5508683872620990028> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type7591235237956244434> .\n"
-			        + "<http://vocab.sindice.net/analytics#type7591235237956244434> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type7591235237956244434> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec1788964349007812996> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec1788964349007812996> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen400740466730078072> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen400740466730078072> <http://vocab.sindice.net/analytics#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .\n"
-			        + "<http://vocab.sindice.net/analytics#typen400740466730078072> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec5508683872620990028> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec1788964349007812996> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec6913158645553928482> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
-			        + "<http://vocab.sindice.net/analytics#ec6913158645553928482> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type8898944007109205443> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8898944007109205443> <http://vocab.sindice.net/analytics#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type8898944007109205443> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#ec6913158645553928482> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type5405188375134122674> .\n"
-			        + "<http://vocab.sindice.net/analytics#type5405188375134122674> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#type> .\n"
-			        + "<http://vocab.sindice.net/analytics#type5405188375134122674> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec6913158645553928482> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
-			        + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#label> <http://purl.org/dc/elements/1.1/like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden6477249737249481171> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#like> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden6477249737249481171> .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
-			        + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n";
+			String ref = "<http://vocab.sindice.net/analytics#ecn5753034232538501600> <http://vocab.sindice.net/analytics#label> \"Human\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn5753034232538501600> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type246547693393602847> .\n"
+			    + "<http://vocab.sindice.net/analytics#type246547693393602847> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type246547693393602847> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn6683975562870503685> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn6683975562870503685> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen8402080796321829300> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen8402080796321829300> <http://vocab.sindice.net/analytics#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen8402080796321829300> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn5753034232538501600> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn6683975562870503685> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden3957347606309447496> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3975695461925131529> <http://vocab.sindice.net/analytics#label> \"Thing\" .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3975695461925131529> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen8909804185554478110> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen8909804185554478110> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#type> .\n"
+			    + "<http://vocab.sindice.net/analytics#typen8909804185554478110> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#ecn3975695461925131529> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type1501581613054864726> .\n"
+			    + "<http://vocab.sindice.net/analytics#type1501581613054864726> <http://vocab.sindice.net/analytics#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .\n"
+			    + "<http://vocab.sindice.net/analytics#type1501581613054864726> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn3975695461925131529> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			    + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#noden6477249737249481171> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#label> <http://purl.org/dc/elements/1.1/like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden6477249737249481171> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#like> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#noden3957347606309447496> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#noden6477249737249481171> .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#target> \"dummy class: 4841526962763945421\" .\n"
+			    + "<http://vocab.sindice.net/analytics#edge7415651533969219553> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .\n";
 
 			assertEquals(ref, str);
 			in.close();
@@ -355,6 +361,69 @@ public class DumpTest {
 				q.stopConnexion();
 			} catch (Exception e1) {
 
+				_logger.error(e1.getMessage());
+			}
+		}
+	}
+
+	@Test
+	public void testWrongClassAtrribute() {
+		String[] type = { "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" };
+		AnalyticsClassAttributes.initClassAttributes(type);
+		Query q = null;
+		try {
+			Dump d = new Dump();
+			q = new QueryNative(d, "/tmp/testUNIT/dumpstore5");
+			q.addFileToRepository("src/test/resources/unit_test_encode.nt",
+			    RDFFormat.N3);
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+			fail("wrong initialisation");
+		}
+
+		try {
+			q.initDump("/tmp/testUNIT/dumpoutput4");
+			q.computeName();
+			q.computePredicate();
+			q.stopConnexion();
+			BufferedReader in = new BufferedReader(
+			    new InputStreamReader(new GZIPInputStream(new FileInputStream(
+			        "/tmp/testUNIT/dumpoutput4"))));
+			String strLine;
+			String str = "";
+
+			while ((strLine = in.readLine()) != null) {
+				// Print the content on the console
+				str += strLine + "\n";
+			}
+			String ref = "";
+			// String ref =
+			// "<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#label> \"test complexe\" .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type5362401009120084618> .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn5758280603750808292> .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain> \"sindice.com\" .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .\n"
+			// +
+			// "<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#cardinality> \"1\"^^<http://www.w3.org/2001/XMLSchema#integer> .\n";
+
+			assertEquals(ref, str);
+			in.close();
+		} catch (Exception e) {
+			_logger.error(e.getMessage());
+			fail("wrong computation");
+
+		} finally {
+			try {
+				q.stopConnexion();
+			} catch (Exception e1) {
 				_logger.error(e1.getMessage());
 			}
 		}

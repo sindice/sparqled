@@ -12,7 +12,7 @@ To get the .jar you need to follow this procedure:
 go to the main repository, then do:
 > mvn assembly:assembly
 The good jar will be:
-./target/sparql-summary-0.9-assembly.jar
+./target/sparql-summary-0.9.jar
 
 I suggest you to do an alias:
 alias graphsummary="java -cp PWD/sparql-summary-0.9-assembly.jar \

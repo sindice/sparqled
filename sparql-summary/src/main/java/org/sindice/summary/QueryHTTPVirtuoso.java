@@ -9,6 +9,7 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
@@ -41,18 +42,17 @@ public class QueryHTTPVirtuoso extends Query {
 	 * This constructor make a connection with a virtuoso SPARQL repository.
 	 * 
 	 * @param d
-	 *            The dump object.
+	 *          The dump object.
 	 * @param websiteURL
-	 *            URL of the web SPARQL repository
+	 *          URL of the web SPARQL repository
 	 * @throws RepositoryException
 	 * @throws SesameBackendException
 	 */
 	public QueryHTTPVirtuoso(Dump d, String websiteURL, String user,
-	        String password) throws RepositoryException,
-	        SesameBackendException {
+	    String password) throws RepositoryException, SesameBackendException {
 		super(d);
 		_repository = SesameBackendFactory.getDgsBackend(BackendType.VIRTUOSO,
-		        websiteURL, user, password);
+		    websiteURL, user, password);
 		_repository.initConnection();
 		_identified = true;
 
@@ -63,17 +63,17 @@ public class QueryHTTPVirtuoso extends Query {
 	 * HTTP repository.
 	 * 
 	 * @param d
-	 *            The dump object.
+	 *          The dump object.
 	 * @param websiteURL
-	 *            URL of the web SPARQL repository
+	 *          URL of the web SPARQL repository
 	 * @throws RepositoryException
 	 * @throws SesameBackendException
 	 */
 	public QueryHTTPVirtuoso(Dump d, String websiteURL)
-	        throws RepositoryException, SesameBackendException {
+	    throws RepositoryException, SesameBackendException {
 		super(d);
 		_repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP,
-		        websiteURL);
+		    websiteURL);
 		_repository.initConnection();
 		_identified = false;
 
@@ -83,14 +83,14 @@ public class QueryHTTPVirtuoso extends Query {
 	 * This constructor make a connection with a virtuoso SPARQL repository.
 	 * 
 	 * @param websiteURL
-	 *            URL of the web SPARQL repository
+	 *          URL of the web SPARQL repository
 	 * @throws RepositoryException
 	 * @throws SesameBackendException
 	 */
 	public QueryHTTPVirtuoso(String websiteURL, String user, String password)
-	        throws RepositoryException, SesameBackendException {
+	    throws RepositoryException, SesameBackendException {
 		_repository = SesameBackendFactory.getDgsBackend(BackendType.VIRTUOSO,
-		        websiteURL, user, password);
+		    websiteURL, user, password);
 		_repository.initConnection();
 		_identified = true;
 	}
@@ -100,14 +100,14 @@ public class QueryHTTPVirtuoso extends Query {
 	 * HTTP repository.
 	 * 
 	 * @param websiteURL
-	 *            URL of the web SPARQL repository
+	 *          URL of the web SPARQL repository
 	 * @throws RepositoryException
 	 * @throws SesameBackendException
 	 */
 	public QueryHTTPVirtuoso(String websiteURL) throws RepositoryException,
-	        SesameBackendException {
+	    SesameBackendException {
 		_repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP,
-		        websiteURL);
+		    websiteURL);
 		_repository.initConnection();
 		_identified = false;
 
@@ -117,12 +117,12 @@ public class QueryHTTPVirtuoso extends Query {
 	 * This constructor without connection, for JUNIT test.
 	 * 
 	 * @param d
-	 *            The dump object.
+	 *          The dump object.
 	 * @throws RepositoryException
 	 * @throws SesameBackendException
 	 */
 	public QueryHTTPVirtuoso(Dump d) throws RepositoryException,
-	        SesameBackendException {
+	    SesameBackendException {
 		super(d);
 	}
 
@@ -131,19 +131,18 @@ public class QueryHTTPVirtuoso extends Query {
 	 * functions.
 	 * 
 	 * @param unchangedVar
-	 *            All the variable which will be keep after the GROUP_CONCAT
+	 *          All the variable which will be keep after the GROUP_CONCAT
 	 * @param initialVar
-	 *            The variable to group.
+	 *          The variable to group.
 	 * @param newVar
-	 *            The new name of this variable.
+	 *          The new name of this variable.
 	 */
 	@Override
 	protected String makeGroupConcat(String initialVar, String newVar) {
 		return " (sql:GROUP_CONCAT(IF(isURI(" + initialVar + "),\n"
-		        + "                bif:concat('<', str(" + initialVar
-		        + "), '>'),\n"
-		        + "                bif:concat('\"', ENCODE_FOR_URI("
-		        + initialVar + "), '\"')), \" \") AS " + newVar + ")\n";
+		    + "                bif:concat('<', str(" + initialVar + "), '>'),\n"
+		    + "                bif:concat('\"', ENCODE_FOR_URI(" + initialVar
+		    + "), '\"')), \" \") AS " + newVar + ")\n";
 
 	}
 
@@ -151,9 +150,9 @@ public class QueryHTTPVirtuoso extends Query {
 	 * Add an RDF file to the local repository.
 	 * 
 	 * @param RDFFile
-	 *            The path of the new RDF file
+	 *          The path of the new RDF file
 	 * @param Ressource
-	 *            Optional argument for the file (example : The domain).
+	 *          Optional argument for the file (example : The domain).
 	 * @throws RDFParseException
 	 * @throws RepositoryException
 	 * @throws IOException
@@ -161,12 +160,13 @@ public class QueryHTTPVirtuoso extends Query {
 	 */
 	@Override
 	public void addFileToRepository(String RDFFile, RDFFormat format,
-	        Resource... contexts) throws RDFParseException,
-	        RepositoryException, IOException, SesameBackendException {
+	    Resource... contexts) throws RDFParseException, RepositoryException,
+	    IOException, SesameBackendException {
 		if (_identified) {
 			_repository.addToRepository(new File(RDFFile), format, contexts);
 		} else {
-			_logger.error("You should identify yourself to the database before adding triples inside.");
+			_logger
+			    .error("You should identify yourself to the database before adding triples inside.");
 			_logger.error("OPTION : user, password");
 		}
 	}
@@ -181,64 +181,87 @@ public class QueryHTTPVirtuoso extends Query {
 	public void computeName() throws Exception {
 		_queriesResults = new Stack<TupleQueryResult>();
 
-		String query = "PREFIX sindice: <http://vocab.sindice.net/>\n";
-		for (DomainVocab p : DomainVocab.values())
-			query += p.uri(p.toString());
-		query += "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
-		        + "WHERE {\n{\n"
-		        + "SELECT ?s (sql:GROUP_CONCAT(IF(isURI(?type),\n";
-		int count = 0;
-		for (DomainVocab p : DomainVocab.values()) {
-			if (count == DomainVocab.values().length - 1)
-				query += "            "
-				        + "#else http://dbpedia.org/ontology/type\n"
-				        + "                "
-				        + "bif:concat('{<', str(?type), '>," + count + "}')\n"
-				        + "            " + ")))))),\n";
+		String query = "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
+		    + "WHERE {\n{\n" + "SELECT ?s (sql:GROUP_CONCAT(IF(isURI(?type),\n";
 
-			else
-				query += "            " + "IF(?p = <" + p.type() + ">,\n"
-				        + "                "
-				        + "bif:concat('{<', str(?type), '>," + count++
-				        + "}'),\n";
-		}
-		query += "        " + "#else\n";
-		count = 0;
-		// If it is a litteral, get the type of the "type".
-		for (DomainVocab p : DomainVocab.values()) {
-			if (count == DomainVocab.values().length - 1)
-				query += "            "
-				        + "#else http://dbpedia.org/ontology/type\n"
-				        + "                "
-				        + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\","
-				        + count + "}')\n" + "            " + "))))))\n";
-			else
-				query += "            " + "IF(?p = <" + p.type() + ">,\n"
-				        + "                "
-				        + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\","
-				        + count++ + "}'),\n";
-		}
-
-		query += "), \" \") AS ?label)\n" + "        WHERE {\n"
-		        + "        {\n" + "            SELECT ?s ?type ?p WHERE\n"
-		        + "            {\n";
-		for (DomainVocab p : DomainVocab.values())
-			if (p.equals(DomainVocab.rdf)) {
-				query += "{ ?s " + p.toString() + ":type ?type .\n"
-				        + "?s ?p ?type .\n" + "FILTER(?p = " + p.toString()
-				        + ":type) }\n";
-			} else {
-				query += "UNION{ ?s " + p.toString() + ":type ?type .\n"
-				        + "?s ?p ?type .\n" + "FILTER(?p = " + p.toString()
-				        + ":type) }\n";
+		if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
+			for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1; ++i) {
+				query += "            " + "IF(?p = <"
+				    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">,\n"
+				    + "                " + "bif:concat('{<', str(?type), '>," + i
+				    + "}'),\n";
 			}
 
+			query += "            "
+			    + "# "
+			    + AnalyticsClassAttributes.CLASS_ATTRIBUTES
+			        .get(AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1)
+			    + "\n" + "                " + "bif:concat('{<', str(?type), '>,"
+			    + (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1) + "}'\n"
+			    + "            ";
+			// close parenthesis
+			for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+				query += ")";
+			}
+			query += ",\n";
+		}
+
+		query += "        " + "#else\n";
+
+		// If it is a litteral, get the type of the "type".
+		if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
+			for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1; ++i) {
+				query += "            " + "IF(?p = <"
+				    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">,\n"
+				    + "                "
+				    + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\"," + i + "}'),\n";
+			}
+
+			query += "            "
+			    + "# "
+			    + AnalyticsClassAttributes.CLASS_ATTRIBUTES
+			        .get(AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1)
+			    + "\n" + "                "
+			    + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\","
+			    + (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1) + "}'\n"
+			    + "            ";
+			// close parenthesis
+			for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+				query += ")";
+			}
+			query += "\n";
+
+			if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 1) {
+				query += "), \" \") AS ?label)\n" + "        WHERE {\n"
+				    + "        {\n" + "            SELECT ?s ?type ?p WHERE\n"
+				    + "            {\n";
+
+				if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
+					query += "{ ?s <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+					    + "> ?type .\n" + "?s ?p ?type .\n" + "FILTER(?p = <"
+					    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0) + ">) }\n";
+
+					for (int i = 1; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+						query += "UNION { ?s <"
+						    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i)
+						    + "> ?type .\n" + "?s ?p ?type .\n" + "FILTER(?p = <"
+						    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">) }\n";
+					}
+				}
+
+			} else { // Only 1 type => optimize query (remove FILTER and ?p variable)
+				query += "), \" \") AS ?label)\n" + "        WHERE {\n"
+				    + "        {\n" + "            SELECT ?s ?type WHERE\n"
+				    + "            {\n" + "                { ?s <"
+				    + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+				    + "> ?type . }\n";
+			}
+		}
 		query += "            }\n" + "            ORDER BY ?type\n"
-		        + "        }\n" + "        }\n" + "        GROUP BY ?s\n"
-		        + "    }\n" + "}\n" + "GROUP BY ?label\n";
+		    + "        }\n" + "        }\n" + "        GROUP BY ?s\n" + "    }\n"
+		    + "}\n" + "GROUP BY ?label\n";
 
 		_logger.debug(query);
-
 		launchQueryNode(query);
 	}
 }
