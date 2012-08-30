@@ -90,7 +90,7 @@ public class Pipeline {
 				accepts("user", "The user for a MYSQL connection.").withRequiredArg();
 				accepts(
 				    CLASS_ATTRIBUTE,
-				    "Define personnal class-attribute. The default class-attribute is: "
+				    "for the user defined class-attribute. The default class-attribute is: "
 				        + AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE)
 				    .withRequiredArg().ofType(String.class);
 				acceptsAll(asList("pass", "password"),

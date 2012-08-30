@@ -131,6 +131,10 @@ OPTIONS:
 			  	    ext=brf)
 		         NQuads (mimeTypes=text/x-nquads; ext=nq)
 		(default: N-Triples)
+	--class-attribute
+		To specify user defined class attribute.
+		You can use this function multiples times
+		(default: http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
 	--pagination
 		Set the limit of the pagination. A little pagination is slower
 		but prevent the timeout. (0 for infinite)
@@ -166,17 +170,22 @@ graphsummary --type=MEMORY --repository=example/memorystore/			\
 --add=src/test/resources/unit_test_multidomain.nt --outputfile=output3.nt.gz	\
 --addformat=N3
 
+graphsummary --type=MEMORY --repository=example/memorystore/			\
+--add=src/test/resources/unit_test_multidomain.nt --outputfile=output4.nt.gz	\
+--class-attribute http://opengraphprotocol.org/schema/type			\
+--class-attribute http://opengraph.org/schema/type
+
 graphsummary --type=HTTP  --url=http://sparql.sindice.com/sparql		\
---domain=http://www.rottentomatoes.com --outputfile=output4.nt.gz
+--domain=http://www.rottentomatoes.com --outputfile=output5.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---outputfile=output5.nt.gz
+--outputfile=output6.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---user=testuser --pass=pass42 --outputfile=output6.nt.gz
+--user=testuser --pass=pass42 --outputfile=output7.nt.gz
 
 graphsummary --type=RDBMS --url=localhost --db=test --user=testuser		\
---pass=pass42 --outputfile=output7.nt.gz
+--pass=pass42 --outputfile=output8.nt.gz
 
 graphsummary --feed --type=MEMORY --repository=example/memorystore/		\
 --add=src/test/resources/test.nt						\
