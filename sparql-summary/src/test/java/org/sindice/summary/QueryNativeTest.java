@@ -150,7 +150,6 @@ public class QueryNativeTest {
 			q.computeName();
 		} catch (Exception e) {
 			_logger.error(e.getMessage());
-			System.err.println(e.getMessage());
 			fail("Cannot compute the query.");
 		}
 

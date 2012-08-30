@@ -191,7 +191,6 @@ public class Pipeline {
 				classAttributes[i++] = elt.toString();
 			}
 
-			System.out.println(classAttributes);
 			AnalyticsClassAttributes.initClassAttributes(classAttributes);
 		} else {
 			String[] defaultClassAttribute = { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE };

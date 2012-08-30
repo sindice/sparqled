@@ -180,17 +180,6 @@ public class Dump {
 		// make the node
 		// Warning, _labelsBag variable modified by this function
 
-		System.out.println("========");
-		System.out.println("========");
-		System.out.println("========");
-		System.out.println("========");
-		System.out.println(bindingSet.getBindingNames());
-		System.out.println(bindingSet.hasBinding("cardinality"));
-		System.out.println(bindingSet.getValue("cardinality").toString());
-		System.out.println("========");
-		System.out.println("========");
-		System.out.println("========");
-		System.out.println("========");
 		if (bindingSet.hasBinding("label")) {
 			// label
 			long hash = dumpRDFNodeCollection(bindingSet.getValue("label")
