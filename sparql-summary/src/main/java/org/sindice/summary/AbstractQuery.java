@@ -9,12 +9,10 @@ package org.sindice.summary;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Stack;
 
 import org.apache.log4j.Logger;
 import org.openrdf.model.Resource;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -46,7 +44,7 @@ import org.sindice.core.sesame.backend.SesameBackendException;
  */
 abstract public class AbstractQuery {
   // protected static RepositoryConnection _con;
-  protected Stack<TupleQueryResult> _queriesResults;
+  //  protected Stack<TupleQueryResult> _queriesResults;
   protected String _graphFrom;
   protected static SesameBackend<BindingSet, Context> _repository;
   protected Logger _logger;

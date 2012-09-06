@@ -1,11 +1,8 @@
 package org.sindice.summary.multilabelled;
 
-import java.util.Stack;
-
-import org.openrdf.query.TupleQueryResult;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.summary.Dump;
 import org.sindice.summary.AbstractQuery;
+import org.sindice.summary.Dump;
 
 public class AbstractMultiLabelledQuery extends AbstractQuery {
   /**
@@ -49,7 +46,6 @@ public class AbstractMultiLabelledQuery extends AbstractQuery {
    */
   @Override
   public void computeName() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
     String query = "SELECT ?label ?pType ?pDescription (COUNT (?s) AS ?cardinality)\n"
         + _graphFrom
         + "WHERE {\n{\n"
@@ -87,8 +83,6 @@ public class AbstractMultiLabelledQuery extends AbstractQuery {
    */
   @Override
   public void computePredicate() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
     String query = "SELECT  ?label  (COUNT (?label) AS ?cardinality) "
         + "?source ?target\n" + _graphFrom + "WHERE {\n" + "       {\n";
     query += "        SELECT ?s " + makeGroupConcat("?type", "?source");

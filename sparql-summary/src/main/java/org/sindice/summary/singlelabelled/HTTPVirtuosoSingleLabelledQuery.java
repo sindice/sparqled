@@ -2,10 +2,8 @@ package org.sindice.summary.singlelabelled;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Stack;
 
 import org.openrdf.model.Resource;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -113,7 +111,6 @@ public class HTTPVirtuosoSingleLabelledQuery extends
         websiteURL);
     _repository.initConnection();
     _identified = false;
-
   }
 
   /**
@@ -162,8 +159,6 @@ public class HTTPVirtuosoSingleLabelledQuery extends
    */
   @Override
   public void computeName() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
     String query = "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
         + "WHERE {\n{\n" + "SELECT ?s (IF(isURI(?type),\n";
 
@@ -237,8 +232,7 @@ public class HTTPVirtuosoSingleLabelledQuery extends
             + "> ?type . }\n";
       }
     }
-    query += "        }\n" + "        GROUP BY ?s\n" + "    }\n" + "}\n"
-        + "GROUP BY ?label\n";
+    query += "        }\n" + "    }\n" + "}\n" + "GROUP BY ?label\n";
 
     _logger.debug(query);
     launchQueryNode(query);
@@ -252,8 +246,6 @@ public class HTTPVirtuosoSingleLabelledQuery extends
    */
   @Override
   public void computePredicate() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
     String query = "SELECT  ?label  (COUNT (?label) AS ?cardinality) "
         + "?source ?target\n" + _graphFrom + "WHERE {\n" + "       {\n";
     query += "        SELECT ?s (IF(isURI(?type),\n"
@@ -271,9 +263,8 @@ public class HTTPVirtuosoSingleLabelledQuery extends
       }
     }
 
-    query += "           }\n" + "           GROUP BY ?s ?type\n"
-        + "       }\n" + "        FILTER(?source != \"\")\n"
-        + "        ?s ?label ?sSon .\n";
+    query += "           }\n" + "       }\n"
+        + "        FILTER(?source != \"\")\n" + "        ?s ?label ?sSon .\n";
 
     // OPTIONAL
     query += "        OPTIONAL {\n" + "        {\n";
@@ -291,8 +282,7 @@ public class HTTPVirtuosoSingleLabelledQuery extends
             + "> ?typeSon . }\n";
       }
     }
-    query += "           }\n" + "           GROUP BY ?sSon ?typeSon\n"
-        + "        }\n" + "        }\n";
+    query += "           }\n" + "        }\n" + "        }\n";
 
     query += "}\n" + "GROUP BY ?label ?source ?target \n";
 

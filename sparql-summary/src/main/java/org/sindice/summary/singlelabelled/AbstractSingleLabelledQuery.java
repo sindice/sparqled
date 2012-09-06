@@ -1,8 +1,5 @@
 package org.sindice.summary.singlelabelled;
 
-import java.util.Stack;
-
-import org.openrdf.query.TupleQueryResult;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.summary.AbstractQuery;
 import org.sindice.summary.Dump;
@@ -32,14 +29,13 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
    */
   @Override
   public void computeName() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
     String query = "SELECT ?label ?pType ?pDescription (COUNT (?s) AS ?cardinality)\n"
         + _graphFrom
         + "WHERE {\n{\n"
         + "SELECT ?s (IF(isURI(?type),\n"
         + "           concat('{<', str(?type), '>,',?p,'}'),\n"
         + "           concat('{\"', ENCODE_FOR_URI(?type), '\",',?p,'}')) AS ?label)\n"
-        + "        WHERE {\n" + "        {\n";
+        + "        WHERE {\n";
 
     if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
       query += "{ ?s <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
@@ -50,8 +46,8 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
             + "> ?type .\n BIND ('" + i + "' AS ?p) }\n";
       }
     }
-    query += "        }\n" + "        }\n" + "        GROUP BY ?s ?type ?p\n"
-        + "    }\n" + "FILTER(?label != \"\")\n" + "}\n"
+
+    query += "        }\n" + "    }\n" + "FILTER(?label != \"\")\n" + "}\n"
         + "GROUP BY ?label ?pType ?pDescription\n";
 
     _logger.debug(query);
@@ -66,9 +62,7 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
    * @throws Exception
    */
   @Override
-  public void computePredicate() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
+  public void computePredicate() throws Exception {//
     String query = "SELECT  ?label  (COUNT (?label) AS ?cardinality) "
         + "?source ?target\n" + _graphFrom + "WHERE {\n" + "       {\n";
     query += "        SELECT ?s (IF(isURI(?type),\n"
@@ -86,13 +80,12 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
       }
     }
 
-    query += "           }\n" + "           GROUP BY ?s ?type\n"
-        + "       }\n" + "        FILTER(?source != \"\")\n"
-        + "        ?s ?label ?sSon .\n";
+    query += "           }\n" + "       }\n"
+        + "        FILTER(?source != \"\")\n" + "        ?s ?label ?sSon .\n";
 
     // OPTIONAL
-    query += "        OPTIONAL {\n" + "        {\n";
-    query += "        SELECT ?sSon (IF(isURI(?typeSon),\n"
+    query += "        OPTIONAL {\n" + "        {\n"
+        + "        SELECT ?sSon (IF(isURI(?typeSon),\n"
         + "                       concat('<', str(?typeSon), '>'),\n"
         + "                       concat('\"', ENCODE_FOR_URI(?typeSon),"
         + "'\"')) as ?target)\n" + "           WHERE {\n";
@@ -106,10 +99,8 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
             + "> ?typeSon . }\n";
       }
     }
-    query += "           }\n" + "           GROUP BY ?sSon ?typeSon\n"
-        + "        }\n" + "        }\n";
-
-    query += "}\n" + "GROUP BY ?label ?source ?target \n";
+    query += "           }\n" + "        }\n" + "        }\n" + "}\n"
+        + "GROUP BY ?label ?source ?target \n";
 
     _logger.debug(query);
     launchQueryPred(query);

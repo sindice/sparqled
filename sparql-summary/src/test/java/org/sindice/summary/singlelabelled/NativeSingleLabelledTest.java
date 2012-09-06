@@ -830,13 +830,13 @@ public class NativeSingleLabelledTest {
     }
 
     try {
-      String ref = "http://ogp.me/ns#type\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\tNothing\n"
-          + "http://www.w3.org/1999/02/22-rdf-syntax-ns#type\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\tNothing\n"
-          + "http://purl.org/dc/elements/1.1/like\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Human\"\"\n"
-          + "http://purl.org/dc/elements/1.1/like\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Thing\"\"\n"
+      String ref = "http://ogp.me/ns#type\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\tNothing\n"
+          + "http://www.w3.org/1999/02/22-rdf-syntax-ns#type\t\"3\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\tNothing\n"
+          + "http://purl.org/dc/elements/1.1/like\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Human\"\"\n"
+          + "http://purl.org/dc/elements/1.1/like\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Thing\"\"\n"
           + "http://www.w3.org/1999/02/22-rdf-syntax-ns#type\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Human\"\"\tNothing\n"
-          + "http://ogp.me/ns#like\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Human\"\"\t\"\"Thing\"\"\n"
-          + "http://ogp.me/ns#like\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Thing\"\"\n"
+          + "http://ogp.me/ns#like\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Human\"\"\t\"\"Thing\"\"\n"
+          + "http://ogp.me/ns#like\t\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\t\"\"Thing\"\"\n"
           + "http://opengraphprotocol.org/schema/type\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Human\"\"\tNothing\n"
           + "http://opengraphprotocol.org/schema/type\t\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>\t\"\"Thing\"\"\tNothing\n";
 

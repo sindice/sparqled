@@ -2,10 +2,8 @@ package org.sindice.summary.multilabelled;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Stack;
 
 import org.openrdf.model.Resource;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -181,8 +179,6 @@ public class HTTPVirtuosoMultiLabelledQuery extends AbstractMultiLabelledQuery {
    */
   @Override
   public void computeName() throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
     String query = "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
         + "WHERE {\n{\n" + "SELECT ?s (sql:GROUP_CONCAT(IF(isURI(?type),\n";
 
