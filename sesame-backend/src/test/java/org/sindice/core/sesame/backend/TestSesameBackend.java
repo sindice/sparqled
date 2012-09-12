@@ -57,32 +57,31 @@ import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 @RunWith(value = Parameterized.class)
 public class TestSesameBackend {
 
-  private static File                      nativeDataDir;
-  private static File                      memoryDataDir;
-  private SesameBackend                    backend;
+  private static File nativeDataDir;
+  private static File memoryDataDir;
+  private SesameBackend backend;
 
-  private static final String              ASK_BINDING = "ask";
-  private static final String              CD_BINDING  = "triples";
+  private static final String ASK_BINDING = "ask";
+  private static final String CD_BINDING = "triples";
 
-  final HashMap<String, ArrayList<String>> expected    = new HashMap<String, ArrayList<String>>();
+  final HashMap<String, ArrayList<String>> expected = new HashMap<String, ArrayList<String>>();
 
   public TestSesameBackend(SesameBackend backend)
-  throws SesameBackendException {
+      throws SesameBackendException {
     this.backend = backend;
     this.backend.initConnection();
   }
 
   @After
-  public void tearDown()
-  throws IOException, RepositoryException, SesameBackendException {
+  public void tearDown() throws IOException, RepositoryException,
+      SesameBackendException {
     expected.clear();
     backend.getConnection().clear();
     backend.closeConnection();
   }
 
   @AfterClass
-  public static void destroy()
-  throws IOException {
+  public static void destroy() throws IOException {
     FileUtil.deleteDir(nativeDataDir);
     FileUtil.deleteDir(memoryDataDir);
   }
@@ -100,102 +99,109 @@ public class TestSesameBackend {
     Object[][] data = new Object[5][];
 
     // In Memory Backend
-    data[0] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY) };
+    data[0] = new Object[] { SesameBackendFactory
+        .getDgsBackend(BackendType.MEMORY) };
     // In Memory Backend with data-dir
-    data[1] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY, memoryDataDir.getAbsolutePath()) };
+    data[1] = new Object[] { SesameBackendFactory.getDgsBackend(
+        BackendType.MEMORY, memoryDataDir.getAbsolutePath()) };
     // In Memory Backend with custom result processing
-    data[2] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new QueryResultProcessor<String, Context>() {
+    data[2] = new Object[] { SesameBackendFactory.getDgsBackend(
+        BackendType.MEMORY, new QueryResultProcessor<String, Context>() {
 
-      private final StringBuilder sb = new StringBuilder();
+          private final StringBuilder sb = new StringBuilder();
 
-      @Override
-      public String process(Object bs, Context context) {
-        sb.setLength(0);
-        if (bs instanceof BindingSet) {
-          final Iterator<Binding> it = ((BindingSet) bs).iterator();
-          while (it.hasNext()) {
-            final Binding b = it.next();
-            sb.append(b.getName()).append(" = ").append(b.getValue()).append('\n');
+          @Override
+          public String process(Object bs, Context context) {
+            sb.setLength(0);
+            if (bs instanceof BindingSet) {
+              final Iterator<Binding> it = ((BindingSet) bs).iterator();
+              while (it.hasNext()) {
+                final Binding b = it.next();
+                sb.append(b.getName()).append(" = ").append(b.getValue())
+                    .append('\n');
+              }
+            } else if (bs instanceof Boolean) {
+              sb.append(ASK_BINDING + " = " + Boolean.toString((Boolean) bs));
+            } else if (bs instanceof Statement) {
+              sb.append(CD_BINDING + " = " + ((Statement) bs).toString());
+            } else {
+              fail("Unknown Value class: " + bs);
+            }
+            return sb.toString();
           }
-        } else if (bs instanceof Boolean) {
-          sb.append(ASK_BINDING + " = " + Boolean.toString((Boolean) bs));
-        } else if (bs instanceof Statement) {
-          sb.append(CD_BINDING + " = " + ((Statement) bs).toString());
-        } else {
-          fail("Unknown Value class: " + bs);
-        }
-        return sb.toString();
-      }
 
-      @Override
-      public Context getContext() {
-        return null;
-      }
+          @Override
+          public Context getContext() {
+            return null;
+          }
 
-    }) };
+        }) };
     // In Memory Backend with custom result processing and a Context object
-    data[3] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new QueryResultProcessor<String[], MyContext>() {
+    data[3] = new Object[] { SesameBackendFactory.getDgsBackend(
+        BackendType.MEMORY, new QueryResultProcessor<String[], MyContext>() {
 
-      private final ArrayList<String> sb = new ArrayList<String>();
+          private final ArrayList<String> sb = new ArrayList<String>();
 
-      @Override
-      public String[] process(Object bs, MyContext c) {
-        sb.clear();
-        if (bs instanceof BindingSet) {
-          final Iterator<Binding> it = ((BindingSet) bs).iterator();
+          @Override
+          public String[] process(Object bs, MyContext c) {
+            sb.clear();
+            if (bs instanceof BindingSet) {
+              final Iterator<Binding> it = ((BindingSet) bs).iterator();
 
-          while (it.hasNext()) {
-            final Binding b = it.next();
-            sb.add(c.data + b.getName() + " = " + b.getValue());
+              while (it.hasNext()) {
+                final Binding b = it.next();
+                sb.add(c.data + b.getName() + " = " + b.getValue());
+              }
+            } else if (bs instanceof Boolean) {
+              sb.add(c.data + ASK_BINDING + " = "
+                  + Boolean.toString((Boolean) bs));
+            } else if (bs instanceof Statement) {
+              sb.add(c.data + CD_BINDING + " = " + ((Statement) bs).toString());
+            } else {
+              fail("Unknown Value class: " + bs);
+            }
+            return sb.toArray(new String[0]);
           }
-        } else if (bs instanceof Boolean) {
-          sb.add(c.data + ASK_BINDING + " = " + Boolean.toString((Boolean) bs));
-        } else if (bs instanceof Statement) {
-          sb.add(c.data + CD_BINDING + " = " + ((Statement) bs).toString());
-        } else {
-          fail("Unknown Value class: " + bs);
-        }
-        return sb.toArray(new String[0]);
-      }
 
-      @Override
-      public MyContext getContext() {
-        return new MyContext();
-      }
+          @Override
+          public MyContext getContext() {
+            return new MyContext();
+          }
 
-    }) };
+        }) };
     // Native Backend
-    data[4] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.NATIVE, nativeDataDir.getAbsolutePath()) };
+    data[4] = new Object[] { SesameBackendFactory.getDgsBackend(
+        BackendType.NATIVE, nativeDataDir.getAbsolutePath()) };
     return Arrays.asList(data);
   }
 
-  @Test(expected=SesameBackendException.class)
-  public void testAddWrongFormat()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.RDFXML);
+  @Test(expected = SesameBackendException.class)
+  public void testAddWrongFormat() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.RDFXML);
   }
 
-  @Test(expected=SesameBackendException.class)
-  public void testEmptyQuery()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  @Test(expected = SesameBackendException.class)
+  public void testEmptyQuery() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     final String query1 = "";
     QueryIterator<?, ?> qit = backend.submit(query1);
   }
 
   @Test
-  public void testAddTriplesToRepository()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testAddTriplesToRepository() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
     assertFalse(backend.getConnection().isEmpty());
     assertEquals(5, backend.getConnection().size());
   }
 
   @Test
-  public void testSparqlQuery()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testSparqlQuery() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     final String query1 = "SELECT ?o { ?s <http://www.semanlink.net/2001/00/semanlink-schema#tag> ?o }";
     expected.put("o", new ArrayList<String>() {
@@ -206,8 +212,9 @@ public class TestSesameBackend {
     });
     QueryIterator<?, ?> qit = backend.submit(query1);
     assertFalse(qit.getBindingNames().isEmpty());
-    assertArrayEquals(new String[] { "o" }, qit.getBindingNames().toArray(new String[0]));
-    evaluateQuery(qit, expected, 2); // an additional iteration to check there are no more results
+    assertArrayEquals(new String[] { "o" },
+        qit.getBindingNames().toArray(new String[0]));
+    evaluateQuery(qit, expected, 1); // an additional iteration to check there are no more results
 
     final String query2 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
     expected.put("p", new ArrayList<String>() {
@@ -220,14 +227,15 @@ public class TestSesameBackend {
     });
     qit = backend.submit(query2);
     assertFalse(qit.getBindingNames().isEmpty());
-    assertArrayEquals(new String[] { "p" }, qit.getBindingNames().toArray(new String[0]));
-    evaluateQuery(qit, expected, 2); // an additional iteration to check there are no more results
+    assertArrayEquals(new String[] { "p" },
+        qit.getBindingNames().toArray(new String[0]));
+    evaluateQuery(qit, expected, 1); // an additional iteration to check there are no more results
   }
 
   @Test
-  public void testBindingNames()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testBindingNames() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     final String query1 = "SELECT distinct ?p ?a { ?a ?p ?o }";
     expected.put("p", new ArrayList<String>() {
@@ -248,8 +256,9 @@ public class TestSesameBackend {
     });
     QueryIterator<?, ?> qit = backend.submit(query1);
     assertFalse(qit.getBindingNames().isEmpty());
-    assertArrayEquals(new String[] { "p", "a" }, qit.getBindingNames().toArray(new String[0]));
-    evaluateQuery(qit, expected, 2);
+    assertArrayEquals(new String[] { "p", "a" }, qit.getBindingNames()
+        .toArray(new String[0]));
+    evaluateQuery(qit, expected, 1);
 
     // wildcard query
     final String query2 = "SELECT distinct * { ?a <http://www.semanlink.net/2001/00/semanlink-schema#tag> ?o }";
@@ -267,14 +276,15 @@ public class TestSesameBackend {
     });
     qit = backend.submit(query2);
     assertFalse(qit.getBindingNames().isEmpty());
-    assertArrayEquals(new String[] { "a", "o" }, qit.getBindingNames().toArray(new String[0]));
-    evaluateQuery(qit, expected, 2);
+    assertArrayEquals(new String[] { "a", "o" }, qit.getBindingNames()
+        .toArray(new String[0]));
+    evaluateQuery(qit, expected, 1);
   }
 
   @Test
-  public void testNoPagination()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testNoPagination() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     // No LIMIT / OFFSET defined
     final String query1 = "SELECT ?o { ?s <http://www.semanlink.net/2001/00/semanlink-schema#tag> ?o }";
@@ -321,10 +331,11 @@ public class TestSesameBackend {
   }
 
   @Test
-  public void testWithDefaultPagination()
-  throws Exception {
-    final Resource context = NTriplesUtil.parseResource("<http://acme.org/>", new MemValueFactory());
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES, context);
+  public void testWithDefaultPagination() throws Exception {
+    final Resource context = NTriplesUtil.parseResource("<http://acme.org/>",
+        new MemValueFactory());
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES, context);
 
     // with FROM
     final String query1 = "SELECT distinct ?p FROM <http://acme.org/> { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
@@ -337,7 +348,7 @@ public class TestSesameBackend {
       }
     });
     QueryIterator<?, ?> qit = backend.submit(query1);
-    evaluateQuery(qit, expected, 2);
+    evaluateQuery(qit, expected, 1);
 
     // limit inferior to the default pagination
     final String query2 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o } limit 3";
@@ -383,9 +394,9 @@ public class TestSesameBackend {
   }
 
   @Test
-  public void testWithPaginationAndInQueryLimitOffset()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testWithPaginationAndInQueryLimitOffset() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     // Offset only
     final String query1 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o } OFFSET 1";
@@ -425,9 +436,9 @@ public class TestSesameBackend {
   }
 
   @Test
-  public void testASKQuery()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testASKQuery() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     // has pattern
     final String query1 = "ASK { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
@@ -452,10 +463,10 @@ public class TestSesameBackend {
     evaluateQuery(qit, expected, 0);
   }
 
-  @Test(expected=SesameBackendException.class)
-  public void testASKQueryWithOffset()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  @Test(expected = SesameBackendException.class)
+  public void testASKQueryWithOffset() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     // has pattern
     final String query1 = "ASK { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o } Offset 10";
@@ -464,17 +475,17 @@ public class TestSesameBackend {
   }
 
   @Test
-  public void testDescribeQuery()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testDescribeQuery() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
     // has pattern
     final String query1 = "DESCRIBE * { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o } Limit 1";
     expected.put(CD_BINDING, new ArrayList<String>() {
       {
-        add("(http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html, " +
-            "http://www.semanlink.net/2001/00/semanlink-schema#tag, " +
-            "http://www.semanlink.net/tag/tim_berners_lee)");
+        add("(http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html, "
+            + "http://www.semanlink.net/2001/00/semanlink-schema#tag, "
+            + "http://www.semanlink.net/tag/tim_berners_lee)");
       }
     });
     QueryIterator<?, ?> qit = backend.submit(query1);
@@ -483,13 +494,12 @@ public class TestSesameBackend {
   }
 
   @Test
-  public void testConstructQuery()
-  throws Exception {
-    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES);
+  public void testConstructQuery() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
 
-    final String query1 =
-        "Construct { <http://acme.org/tbl> <http://acme.org/tbl/pred> ?p .} " +
-        "{ <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    final String query1 = "Construct { <http://acme.org/tbl> <http://acme.org/tbl/pred> ?p .} "
+        + "{ <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
     expected.put(CD_BINDING, new ArrayList<String>() {
       {
         add("(http://acme.org/tbl, http://acme.org/tbl/pred, http://www.semanlink.net/2001/00/semanlink-schema#tag)");
@@ -504,10 +514,9 @@ public class TestSesameBackend {
   }
 
   private void evaluateQuery(QueryIterator<?, ?> qit,
-                             HashMap<String, ArrayList<String>> expected,
-                             int expectedNPagination)
-  throws SecurityException, NoSuchFieldException, IllegalArgumentException,
-  IllegalAccessException {
+      HashMap<String, ArrayList<String>> expected, int expectedNPagination)
+      throws SecurityException, NoSuchFieldException,
+      IllegalArgumentException, IllegalAccessException {
     final HashMap<String, ArrayList<String>> results = new HashMap<String, ArrayList<String>>();
     final Set<String> bindings = expected.keySet();
 
@@ -524,7 +533,8 @@ public class TestSesameBackend {
             if (!results.containsKey(bindingName)) {
               results.put(bindingName, new ArrayList<String>());
             }
-            results.get(bindingName).add(bs.getValue(bindingName).stringValue());
+            results.get(bindingName).add(
+                bs.getValue(bindingName).stringValue());
           }
         }
       } else if (result instanceof Boolean) {
@@ -532,9 +542,11 @@ public class TestSesameBackend {
          * Ask query without a custom value to iterate on
          */
         final boolean bs = (Boolean) result;
-        results.put(ASK_BINDING, new ArrayList<String>() {{
-          add(Boolean.toString(bs));
-        }});
+        results.put(ASK_BINDING, new ArrayList<String>() {
+          {
+            add(Boolean.toString(bs));
+          }
+        });
       } else if (result instanceof Statement) {
         /*
          * Describe / Construct query without a custom value to iterate on
@@ -555,7 +567,8 @@ public class TestSesameBackend {
               if (!results.containsKey(bindingName)) {
                 results.put(bindingName, new ArrayList<String>());
               }
-              results.get(bindingName).add(res.substring(7 + bindingName.length()));
+              results.get(bindingName).add(
+                  res.substring(7 + bindingName.length()));
             }
           }
         }
@@ -570,7 +583,8 @@ public class TestSesameBackend {
               if (!results.containsKey(bindingName)) {
                 results.put(bindingName, new ArrayList<String>());
               }
-              results.get(bindingName).add(res.substring(3 + bindingName.length()));
+              results.get(bindingName).add(
+                  res.substring(3 + bindingName.length()));
             }
           }
         }
@@ -592,6 +606,97 @@ public class TestSesameBackend {
     }
     expected.clear();
     results.clear();
+  }
+
+  @Test
+  public void testPagination() throws Exception {
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"),
+        RDFFormat.NTRIPLES);
+
+    // pagination default
+    final String query1 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+
+    QueryIterator<?, ?> qit = backend.submit(query1);
+    evaluateQuery(qit, expected, 1); // 1 iteration, stop because we don't have enough results
+
+    // pagination = 1
+    final String query2 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    QueryIterator<?, ?> qit2 = backend.submit(query2);
+    qit2.setPagination(1);
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+    evaluateQuery(qit2, expected, 5); // 5 iterations to get an empty result during the 5th one.
+
+    // pagination = 2
+    final String query3 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    QueryIterator<?, ?> qit3 = backend.submit(query3);
+    qit3.setPagination(2);
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+    evaluateQuery(qit3, expected, 3); // 3 iterations to get an empty result during the 3rd one.
+
+    // pagination = 3
+    final String query4 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    QueryIterator<?, ?> qit4 = backend.submit(query4);
+    qit4.setPagination(3);
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+    evaluateQuery(qit4, expected, 2); // 2 iterations, stop because we don't have enough results
+
+    // pagination = 4
+    final String query5 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    QueryIterator<?, ?> qit5 = backend.submit(query5);
+    qit5.setPagination(4);
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+    evaluateQuery(qit5, expected, 2);// 2 iterations to get an empty result during the 2nd one.
+
+    // pagination = 5
+    final String query6 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
+    QueryIterator<?, ?> qit6 = backend.submit(query6);
+    qit4.setPagination(5);
+    expected.put("p", new ArrayList<String>() {
+      {
+        add("http://www.semanlink.net/2001/00/semanlink-schema#tag");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#comment");
+        add("http://www.semanlink.net/2001/00/semanlink-schema#creationDate");
+        add("http://purl.org/dc/elements/1.1/title");
+      }
+    });
+    evaluateQuery(qit6, expected, 1);// 1 iteration, stop because we don't have enough results
+
   }
 
 }
