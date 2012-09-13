@@ -55,7 +55,7 @@ import org.openrdf.rio.RDFParserFactory;
 import org.openrdf.rio.RDFParserRegistry;
 import org.sindice.analytics.servlet.ResponseWriterFactory.ResponseType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.sindice.core.sesame.backend.testHelper.SesameNxParser;
@@ -151,11 +151,11 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND_ARGS, new String[] { dgsRepoServletUrl });
     aseTester.addServlet(AssistedSparqlEditorServlet.class, "/SparqlEditorServlet");
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.RANKING_CONFIGURATION, "src/main/resources/default-ranking.yaml");
-    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX, AnalyticsVocab.DOMAIN_URI_PREFIX);
+    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION, 1000);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
-    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH.toString());
+    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.LIMIT, limit);
     /*
      * Comment it to prevent it from creating the sindice.home_IS_UNDEFINED folder, or from writing into sindice.home/ROOT
@@ -629,8 +629,8 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
       final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
       final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
-        add(new Results(2, AnalyticsVocab.DOMAIN_URI_PREFIX + "countries.eu"));
-        add(new Results(4, AnalyticsVocab.DOMAIN_URI_PREFIX + "unipi.it"));
+        add(new Results(2, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu"));
+        add(new Results(4, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it"));
       }};
       checkResponse(jsonMap, expectedResults, false, false);
     } else {

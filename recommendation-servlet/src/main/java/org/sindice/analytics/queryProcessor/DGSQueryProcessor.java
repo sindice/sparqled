@@ -32,7 +32,7 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.util.URIUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,10 +132,10 @@ implements QueryProcessor {
       throw new DGSException("Unable to get second-level domain name from " + domain);
     }
     domain = d;
-    sb.append("SELECT DISTINCT ?property FROM <").append(AnalyticsVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
-      .append("  ?edge <").append(AnalyticsVocab.EDGE_PUBLISHED_IN).append("> ")
-      .append(domain.isEmpty() ? "?domain .\n" : "<" + AnalyticsVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
-      .append("  ?edge <").append(AnalyticsVocab.LABEL).append("> ?property .\n}\nORDER BY (?property)\n");
+    sb.append("SELECT DISTINCT ?property FROM <").append(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
+      .append("  ?edge <").append(DataGraphSummaryVocab.EDGE_PUBLISHED_IN).append("> ")
+      .append(domain.isEmpty() ? "?domain .\n" : "<" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
+      .append("  ?edge <").append(DataGraphSummaryVocab.LABEL).append("> ?property .\n}\nORDER BY (?property)\n");
     if (limit != 0) {
       sb.append("LIMIT ").append(limit);
     }
@@ -154,11 +154,11 @@ implements QueryProcessor {
       throw new DGSException("Unable to get second-level domain name from " + domain);
     }
     domain = d;
-    sb.append("SELECT DISTINCT ?class FROM <").append(AnalyticsVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
-      .append("  ?node <").append(AnalyticsVocab.DOMAIN_URI).append("> ")
-      .append(domain.isEmpty() ? "?domain .\n" : "<" + AnalyticsVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
-      .append("  ?node <").append(AnalyticsVocab.LABEL).append("> ?l .\n")
-      .append("  ?l <").append(AnalyticsVocab.LABEL).append("> ?class .\n}\nORDER BY (?class)\n");
+    sb.append("SELECT DISTINCT ?class FROM <").append(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
+      .append("  ?node <").append(DataGraphSummaryVocab.DOMAIN_URI).append("> ")
+      .append(domain.isEmpty() ? "?domain .\n" : "<" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
+      .append("  ?node <").append(DataGraphSummaryVocab.LABEL).append("> ?l .\n")
+      .append("  ?l <").append(DataGraphSummaryVocab.LABEL).append("> ?class .\n}\nORDER BY (?class)\n");
     if (limit != 0) {
       sb.append("LIMIT ").append(limit);
     }

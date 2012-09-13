@@ -50,7 +50,7 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.analytics.commons.util.Hash;
 import org.sindice.core.analytics.commons.util.URIUtil;
@@ -207,13 +207,13 @@ public final class SparqlTranslationProcessor {
           final ASTBasicGraphPattern bgp = new ASTBasicGraphPattern(SyntaxTreeBuilderTreeConstants.JJTBASICGRAPHPATTERN);
 
           final ASTIRI label = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-          label.setValue(AnalyticsVocab.LABEL.toString());
+          label.setValue(DataGraphSummaryVocab.LABEL.toString());
           final ASTIRI source = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-          source.setValue(AnalyticsVocab.EDGE_SOURCE.toString());
+          source.setValue(DataGraphSummaryVocab.EDGE_SOURCE.toString());
           final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-          origin.setValue(AnalyticsVocab.EDGE_PUBLISHED_IN.toString());
+          origin.setValue(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString());
           final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-          cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
+          cardinality.setValue(DataGraphSummaryVocab.CARDINALITY.toString());
           final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
           pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
 
@@ -272,17 +272,17 @@ public final class SparqlTranslationProcessor {
     private Node setDatasetLabel(Node label)
     throws DGSException {
       if (label instanceof ASTIRI) {
-        switch (AnalyticsVocab.DATASET_LABEL_DEF) {
+        switch (DataGraphSummaryVocab.DATASET_LABEL_DEF) {
           case SECOND_LEVEL_DOMAIN:
             final ASTIRI astIri = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
             final String iri = ((ASTIRI) label).getValue();
             final String snd = URIUtil.getSndDomainFromUrl(iri);
-            astIri.setValue(AnalyticsVocab.DOMAIN_URI_PREFIX + (snd == null ? iri : snd));
+            astIri.setValue(DataGraphSummaryVocab.DOMAIN_URI_PREFIX + (snd == null ? iri : snd));
             return astIri;
           case PLAIN:
             return label;
           default:
-            EnumConstantNotPresentException dl = new EnumConstantNotPresentException(DatasetLabel.class, AnalyticsVocab.DATASET_LABEL_DEF.toString());
+            EnumConstantNotPresentException dl = new EnumConstantNotPresentException(DatasetLabel.class, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
             throw new DGSException(dl);
         }
       }
@@ -294,13 +294,13 @@ public final class SparqlTranslationProcessor {
       final List<String> pofMetadata = (List<String>) data;
       final ASTVar s = ASTVarGenerator.getASTVar("dgs");
       final ASTIRI label = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      label.setValue(AnalyticsVocab.LABEL.toString());
+      label.setValue(DataGraphSummaryVocab.LABEL.toString());
       final ASTIRI source = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      source.setValue(AnalyticsVocab.EDGE_SOURCE.toString());
+      source.setValue(DataGraphSummaryVocab.EDGE_SOURCE.toString());
       final ASTIRI target = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      target.setValue(AnalyticsVocab.EDGE_TARGET.toString());
+      target.setValue(DataGraphSummaryVocab.EDGE_TARGET.toString());
       final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      origin.setValue(AnalyticsVocab.EDGE_PUBLISHED_IN.toString());
+      origin.setValue(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString());
 
       // Check if the object variable is a leaf or not
       isLeaf.setVar((ASTVar) node.jjtGetChild(1).jjtGetChild(1).jjtGetChild(0));
@@ -339,7 +339,7 @@ public final class SparqlTranslationProcessor {
         pofResourceName = s.getName();
 
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
+        cardinality.setValue(DataGraphSummaryVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
         pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
 
@@ -362,9 +362,9 @@ public final class SparqlTranslationProcessor {
     private Object classTriplePatternToDGSedge(Object data, Node dataset, ASTBasicGraphPattern bgp, ASTTriplesSameSubjectPath node) {
       final List<String> pofMetadata = (List<String>) data;
       final ASTIRI label = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      label.setValue(AnalyticsVocab.LABEL.toString());
+      label.setValue(DataGraphSummaryVocab.LABEL.toString());
       final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      origin.setValue(AnalyticsVocab.DOMAIN_URI.toString());
+      origin.setValue(DataGraphSummaryVocab.DOMAIN_URI.toString());
 
       // Class origin
       if (dataset != null) { // the dataset is the POF
@@ -393,7 +393,7 @@ public final class SparqlTranslationProcessor {
         bgp.jjtAppendChild(t2);
 
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
+        cardinality.setValue(DataGraphSummaryVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
         pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
 
@@ -403,7 +403,7 @@ public final class SparqlTranslationProcessor {
         // Get the class attributes defining this class
         final ASTVar varType = ASTVarGenerator.getASTVar("dgs");
         final ASTIRI type = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        type.setValue(AnalyticsVocab.TYPE.toString());
+        type.setValue(DataGraphSummaryVocab.TYPE.toString());
 
         final ASTVar varTypeLabel = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
         varTypeLabel.setName(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR);
@@ -437,11 +437,11 @@ public final class SparqlTranslationProcessor {
         graphNamePOF = false; // only output it one time
 
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
+        cardinality.setValue(DataGraphSummaryVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
         pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
         final ASTIRI originClass = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        originClass.setValue(AnalyticsVocab.DOMAIN_URI.toString());
+        originClass.setValue(DataGraphSummaryVocab.DOMAIN_URI.toString());
 
         final ASTTriplesSameSubjectPath t1 = ASTProcessorUtil.createTriple(subject, originClass, dataset);
         bgp.jjtAppendChild(t1);
@@ -462,7 +462,7 @@ public final class SparqlTranslationProcessor {
         graphNamePOF = false; // only output it one time
 
         final ASTIRI cardinality = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-        cardinality.setValue(AnalyticsVocab.CARDINALITY.toString());
+        cardinality.setValue(DataGraphSummaryVocab.CARDINALITY.toString());
         final ASTVar pofCardinality = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
         pofCardinality.setName(QueryProcessor.CARDINALITY_VAR);
 

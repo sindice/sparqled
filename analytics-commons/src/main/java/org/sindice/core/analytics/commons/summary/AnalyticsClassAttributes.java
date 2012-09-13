@@ -52,7 +52,6 @@ public class AnalyticsClassAttributes {
   public static final void initClassAttributes(List<String> attributes) {
     Collections.sort(attributes);
     CLASS_ATTRIBUTES = Collections.unmodifiableList(attributes);
-    logger.info("Loaded the Class Attributes: {}", CLASS_ATTRIBUTES);
   }
 
   public static String normalizeLiteralType(String input) {

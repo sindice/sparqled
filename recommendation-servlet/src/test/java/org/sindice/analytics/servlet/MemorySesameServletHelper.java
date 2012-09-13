@@ -41,7 +41,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ extends HttpServlet {
 
       memBackend.initialize();
       memBackend.getConnection().setAutoCommit(true);
-      memBackend.getConnection().add(dgsInputStream, "", format, memBackend.getValueFactory().createURI(AnalyticsVocab.GRAPH_SUMMARY_GRAPH));
+      memBackend.getConnection().add(dgsInputStream, "", format, memBackend.getValueFactory().createURI(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH));
     } catch (RDFParseException e) {
       e.printStackTrace();
     } catch (RepositoryException e) {

@@ -20,7 +20,7 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
 import org.semanticweb.yars.nx.Resource;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.util.Hash;
 import org.sindice.core.analytics.commons.util.URIUtil;
 
@@ -95,10 +95,10 @@ public class Dump {
 
       // an:ecID an:label value .
       s = new Resource(
-          (AnalyticsVocab.ANALYTICS_PREFIX + "ec" + Hash.getLong(domain
+          (DataGraphSummaryVocab.ANALYTICS_PREFIX + "ec" + Hash.getLong(domain
               + nodeType + element)).replace('-', 'n'), false);
       if (!nodeList.contains(element)) {
-        p = new Resource(AnalyticsVocab.LABEL.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
 
         try {
           o = new Resource((URLDecoder.decode(element, "UTF-8")), true);
@@ -118,22 +118,22 @@ public class Dump {
 
       // an:ecID an:type an:typeID .
       // still the same s
-      p = new Resource(AnalyticsVocab.TYPE.toString(), false);
-      o = new Resource((AnalyticsVocab.TYPE.toString() + Hash.getLong(domain
+      p = new Resource(DataGraphSummaryVocab.TYPE.toString(), false);
+      o = new Resource((DataGraphSummaryVocab.TYPE.toString() + Hash.getLong(domain
           + nodeType + type + element)).replace('-', 'n'), false);
 
       dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
       // an:typeID an:label uri .
       // last o become the new s
-      p = new Resource(AnalyticsVocab.LABEL.toString(), false);
+      p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
       int vocabValue = Integer.parseInt(type);
 
       dumpTriple(o.toN3(), p.toN3(), "<"
           + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(vocabValue) + ">");
       // an:typeID an:cardinality Cardinality .
       // always the same o as the s
-      p = new Resource(AnalyticsVocab.CARDINALITY.toString(), false);
+      p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
       dumpTriple(o.toN3(), p.toN3(), cardinality);
     }
 
@@ -148,11 +148,11 @@ public class Dump {
         // Create the nodes "nc" and get the ID of this node
         // an:nodeID an:label an:ecID .
         s = new Resource(
-            (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
+            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
                 '-', 'n'), false);
-        p = new Resource(AnalyticsVocab.LABEL.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
         o = new Resource(
-            (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "ec" + Hash.getLong(domain
+            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "ec" + Hash.getLong(domain
                 + nodeType + element)).replace('-', 'n'), false);
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
         nodeList.add(element);
@@ -187,11 +187,11 @@ public class Dump {
           _sndDomain);
       // create the id of the node
       s = new Resource(
-          (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
+          (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
               '-', 'n'), false);
 
       // domain: AnalyticsVocab.DOMAIN_NAME.toString()
-      p = new Resource(AnalyticsVocab.DOMAIN_NAME.toString(), false);
+      p = new Resource(DataGraphSummaryVocab.DOMAIN_NAME.toString(), false);
       if (_domain.startsWith("\"") && _domain.endsWith("\"")) {
         o = new Resource(_domain, true);
       } else {
@@ -201,17 +201,17 @@ public class Dump {
       dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
       // domain URI
-      p = new Resource(AnalyticsVocab.DOMAIN_URI.toString(), false);
+      p = new Resource(DataGraphSummaryVocab.DOMAIN_URI.toString(), false);
       if (_domain.equals("sindice.com")) {
         o = new Resource(
-            AnalyticsVocab.DOMAIN_URI_PREFIX.toString() + _domain, false);
+            DataGraphSummaryVocab.DOMAIN_URI_PREFIX.toString() + _domain, false);
       } else {
         o = new Resource(_domain, false);
       }
       dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
       // cardinality
-      p = new Resource(AnalyticsVocab.CARDINALITY.toString(), false);
+      p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
       o = new Resource(bindingSet.getValue("cardinality").toString(), true);
 
       dumpTriple(s.toN3(), p.toN3(), o.toN3());
@@ -242,21 +242,21 @@ public class Dump {
         // label => new line => new hash
 
         s = new Resource(
-            (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "edge" + Hash.getLong(_domain
+            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "edge" + Hash.getLong(_domain
                 + _nodeCounter + bindingSet.getValue("label").toString())).replace(
                 '-', 'n'), false);
         ++_nodeCounter;
-        p = new Resource(AnalyticsVocab.LABEL.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
         o = new Resource(bindingSet.getValue("label").toString(), false);
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
-        p = new Resource(AnalyticsVocab.CARDINALITY.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
         o = new Resource(bindingSet.getValue("cardinality").toString(), true);
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
-        p = new Resource(AnalyticsVocab.EDGE_SOURCE.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.EDGE_SOURCE.toString(), false);
         o = new Resource(
-            (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "node" + Hash
+            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + Hash
                 .getLong(_sndDomain + bindingSet.getValue("source").toString()))
                 .replace('-', 'n'),
             false);
@@ -266,13 +266,13 @@ public class Dump {
         if ((bindingSet.getValue("target") == null)
             || (bindingSet.getValue("target").toString().equals("\"\""))) {
           // blank collection
-          p = new Resource(AnalyticsVocab.EDGE_TARGET.toString(), false);
+          p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
           o = new Resource(
-              (AnalyticsVocab.ANALYTICS_PREFIX.toString() + "bc" + randomGenerator
+              (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "bc" + randomGenerator
                   .nextInt()).replace('-', 'n'), false);
         } else {
-          p = new Resource(AnalyticsVocab.EDGE_TARGET.toString(), false);
-          o = new Resource((AnalyticsVocab.ANALYTICS_PREFIX.toString()
+          p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
+          o = new Resource((DataGraphSummaryVocab.ANALYTICS_PREFIX.toString()
               + "node" + Hash.getLong(_sndDomain
               + bindingSet.getValue("target").toString())).replace('-', 'n'),
               false);
@@ -281,13 +281,13 @@ public class Dump {
 
         // Dummy node
         o = new Resource("\""
-            + AnalyticsVocab.BLANK_NODE_COLLECTION.toString() + "\"", true);
+            + DataGraphSummaryVocab.BLANK_NODE_COLLECTION.toString() + "\"", true);
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
 
         // published In
-        p = new Resource(AnalyticsVocab.EDGE_PUBLISHED_IN.toString(), false);
+        p = new Resource(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString(), false);
         if (_domain.equals("sindice.com")) {
-          o = new Resource(AnalyticsVocab.DOMAIN_URI_PREFIX.toString()
+          o = new Resource(DataGraphSummaryVocab.DOMAIN_URI_PREFIX.toString()
               + _domain, false);
         } else {
           o = new Resource(_domain, false);

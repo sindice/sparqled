@@ -1,0 +1,10 @@
+======================= Release 1.0 *** =======================
+
+Improvements
+
+* [GH-10] Make the class attributes definitions configurable
+* [GH-13] Split the AnalyticsVocab class into one class per vocabulary
+
+New Features
+
+* [GH-11] Implement the Single-Class Label Model
