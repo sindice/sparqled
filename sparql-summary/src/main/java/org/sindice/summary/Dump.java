@@ -95,7 +95,7 @@ public class Dump {
 
       // an:ecID an:label value .
       s = new Resource(
-          (DataGraphSummaryVocab.ANALYTICS_PREFIX + "ec" + Hash.getLong(domain
+          (DataGraphSummaryVocab.DGS_PREFIX + "ec" + Hash.getLong(domain
               + nodeType + element)).replace('-', 'n'), false);
       if (!nodeList.contains(element)) {
         p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
@@ -148,11 +148,11 @@ public class Dump {
         // Create the nodes "nc" and get the ID of this node
         // an:nodeID an:label an:ecID .
         s = new Resource(
-            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
+            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + hash).replace(
                 '-', 'n'), false);
         p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
         o = new Resource(
-            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "ec" + Hash.getLong(domain
+            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "ec" + Hash.getLong(domain
                 + nodeType + element)).replace('-', 'n'), false);
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
         nodeList.add(element);
@@ -187,7 +187,7 @@ public class Dump {
           _sndDomain);
       // create the id of the node
       s = new Resource(
-          (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + hash).replace(
+          (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + hash).replace(
               '-', 'n'), false);
 
       // domain: AnalyticsVocab.DOMAIN_NAME.toString()
@@ -242,7 +242,7 @@ public class Dump {
         // label => new line => new hash
 
         s = new Resource(
-            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "edge" + Hash.getLong(_domain
+            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "edge" + Hash.getLong(_domain
                 + _nodeCounter + bindingSet.getValue("label").toString())).replace(
                 '-', 'n'), false);
         ++_nodeCounter;
@@ -256,7 +256,7 @@ public class Dump {
 
         p = new Resource(DataGraphSummaryVocab.EDGE_SOURCE.toString(), false);
         o = new Resource(
-            (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "node" + Hash
+            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + Hash
                 .getLong(_sndDomain + bindingSet.getValue("source").toString()))
                 .replace('-', 'n'),
             false);
@@ -268,11 +268,11 @@ public class Dump {
           // blank collection
           p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
           o = new Resource(
-              (DataGraphSummaryVocab.ANALYTICS_PREFIX.toString() + "bc" + randomGenerator
+              (DataGraphSummaryVocab.DGS_PREFIX.toString() + "bc" + randomGenerator
                   .nextInt()).replace('-', 'n'), false);
         } else {
           p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
-          o = new Resource((DataGraphSummaryVocab.ANALYTICS_PREFIX.toString()
+          o = new Resource((DataGraphSummaryVocab.DGS_PREFIX.toString()
               + "node" + Hash.getLong(_sndDomain
               + bindingSet.getValue("target").toString())).replace('-', 'n'),
               false);

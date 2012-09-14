@@ -22,7 +22,7 @@ import org.sindice.core.analytics.commons.util.Hash;
 public class DataGraphSummaryVocab {
 
   public static final String  ANY23_PREFIX          = "http://vocab.sindice.net/";
-  public static final String  ANALYTICS_PREFIX      = "http://vocab.sindice.net/analytics#";
+  public static final String  DGS_PREFIX            = "http://vocab.sindice.net/analytics#";
   private static final String DEFAULT_DUP           = "http://sindice.com/dataspace/default/domain/";
   public static String        DOMAIN_URI_PREFIX     = DEFAULT_DUP;
 
@@ -51,15 +51,15 @@ public class DataGraphSummaryVocab {
    */
   public static final String  DOMAIN_URI            = ANY23_PREFIX + "domain_uri";
   public static final String  DOMAIN_NAME           = ANY23_PREFIX + "domain";
-  public static final String  LABEL                 = ANALYTICS_PREFIX + "label";
-  public static final String  CARDINALITY           = ANALYTICS_PREFIX + "cardinality";
-  public static final String  CLASS_RANK1           = ANALYTICS_PREFIX + "rank1";
-  public static final String  CLASS_RANK2           = ANALYTICS_PREFIX + "rank2";
-  public static final String  GLOBAL_ID             = ANALYTICS_PREFIX + "global_id";
-  public static final String  TYPE                  = ANALYTICS_PREFIX + "type";
-  public static final String  EDGE_SOURCE           = ANALYTICS_PREFIX + "source";
-  public static final String  EDGE_TARGET           = ANALYTICS_PREFIX + "target";
-  public static final String  EDGE_PUBLISHED_IN     = ANALYTICS_PREFIX + "publishedIn";
+  public static final String  LABEL                 = DGS_PREFIX + "label";
+  public static final String  CARDINALITY           = DGS_PREFIX + "cardinality";
+  public static final String  CLASS_RANK1           = DGS_PREFIX + "rank1";
+  public static final String  CLASS_RANK2           = DGS_PREFIX + "rank2";
+  public static final String  GLOBAL_ID             = DGS_PREFIX + "global_id";
+  public static final String  TYPE                  = DGS_PREFIX + "type";
+  public static final String  EDGE_SOURCE           = DGS_PREFIX + "source";
+  public static final String  EDGE_TARGET           = DGS_PREFIX + "target";
+  public static final String  EDGE_PUBLISHED_IN     = DGS_PREFIX + "publishedIn";
 
   public static void setDatasetLabelDefinition(DatasetLabel dlDef) {
     DATASET_LABEL_DEF = dlDef;

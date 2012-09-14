@@ -30,7 +30,7 @@ public class DatasetsAnalyticsVocab {
   public static final String DOMAIN_ANALYTICS_GRAPH          = "http://sindice.com/analytics/domain";
 
   /*
-   * Data Graph Summary Check mechanism
+   * Check mechanism
    */
   public static final String XSD_DATE                        = "http://www.w3.org/2001/XMLSchema#date";
   public static final String DATE_PREDICATE                  = "http://purl.org/dc/elements/1.1/date";
