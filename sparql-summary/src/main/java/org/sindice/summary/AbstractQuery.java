@@ -9,12 +9,10 @@ package org.sindice.summary;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.Stack;
 
 import org.apache.log4j.Logger;
 import org.openrdf.model.Resource;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -44,17 +42,21 @@ import org.sindice.core.sesame.backend.SesameBackendException;
 /**
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
-abstract public class Query {
-
-  protected Stack<TupleQueryResult>                   _queriesResults;
-  protected String                                    _graphFrom;
+abstract public class AbstractQuery {
+  // protected static RepositoryConnection _con;
+  //  protected Stack<TupleQueryResult> _queriesResults;
+  protected String _graphFrom;
   protected static SesameBackend<BindingSet, Context> _repository;
-  protected Logger                                    _logger;
-  private Dump                                        _dump;
-  private String                                      _domain;
-  private boolean                                     _setGraph;
-  private boolean                                     _initDump;
-  private int                                         _pagination;
+  protected Logger _logger;
+  private Dump _dump;
+  private String _domain;
+  private boolean _setGraph;
+  private boolean _initDump;
+  private int _pagination;
+
+  public static enum SummaryAlgorithm {
+    SINGLE_LABELLED, MULTI_LABELLED
+  }
 
   /**
    * Initialize the queries launcher.
@@ -62,7 +64,7 @@ abstract public class Query {
    * @param d
    *          The Dump object, allows the use to modify the output easily.
    */
-  public Query(Dump d) {
+  public AbstractQuery(Dump d) {
     _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = d;
@@ -75,7 +77,7 @@ abstract public class Query {
   /**
    * Initialize the queries launcher.
    */
-  public Query() {
+  public AbstractQuery() {
     _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = new Dump();
@@ -93,14 +95,13 @@ abstract public class Query {
    *          A string with a SPARQL query
    * @throws Exception
    */
-  protected void launchQueryNode(String query)
-  throws Exception {
+  protected void launchQueryNode(String query) throws Exception {
     if (!_initDump) {
       Random rand = new Random();
       int r = rand.nextInt();
       initDump("/tmp/Graph-Summary-out/out" + r);
-      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" +
-                   r);
+      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out"
+          + r);
     }
     _logger.info("LAUNCH QUERY");
     QueryIterator<BindingSet, Context> queryIt = _repository.submit(query);
@@ -120,14 +121,13 @@ abstract public class Query {
    *          A string with a SPARQL query
    * @throws Exception
    */
-  protected void launchQueryPred(String query)
-  throws Exception {
+  protected void launchQueryPred(String query) throws Exception {
     if (!_initDump) {
       Random rand = new Random();
       int r = rand.nextInt();
       initDump("/tmp/Graph-Summary-out/out" + r);
-      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" +
-                   r);
+      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out"
+          + r);
     }
 
     _logger.info("LAUNCH QUERY");
@@ -138,23 +138,6 @@ abstract public class Query {
       _dump.dumpRDFPred(queryIt.next());
     }
     _logger.info("END QUERY");
-  }
-
-  /**
-   * Create a valid SPARQL command for a GROUP_CONCAT.
-   * 
-   * @param unchangedVar
-   *          All the variable which will be keep after the GROUP_CONCAT
-   * @param initialVar
-   *          The variable to group.
-   * @param newVar
-   *          The new name of this variable.
-   */
-  protected String makeGroupConcat(String initialVar, String newVar) {
-    return " (GROUP_CONCAT(IF(isURI(" + initialVar + "),\n" +
-           "                concat('<', str(" + initialVar + "), '>'),\n" +
-           "                concat('\"', ENCODE_FOR_URI(" + initialVar +
-           "), '\"'))) AS " + newVar + ")\n";
   }
 
   /**
@@ -178,11 +161,9 @@ abstract public class Query {
    * @throws IOException
    * @throws SesameBackendException
    */
-  public void addFileToRepository(String RDFFile,
-                                  RDFFormat format,
-                                  Resource... contexts)
-  throws RDFParseException, RepositoryException, IOException,
-  SesameBackendException {
+  public void addFileToRepository(String RDFFile, RDFFormat format,
+      Resource... contexts) throws RDFParseException, RepositoryException,
+      IOException, SesameBackendException {
     _repository.addToRepository(new File(RDFFile), format, contexts);
   }
 
@@ -224,11 +205,10 @@ abstract public class Query {
    *          Location of the output file.
    * @throws Exception
    */
-  public void initDump(String output)
-  throws Exception {
+  public void initDump(String output) throws Exception {
     if (!_setGraph || _domain.equals("")) {
       _logger.error("Dump initialization without a graph initialised.\n"
-                    + "Second domain = sindice.com");
+          + "Second domain = sindice.com");
       _domain = "sindice.com";
     }
     _initDump = true;
@@ -240,40 +220,7 @@ abstract public class Query {
    * 
    * @throws Exception
    */
-  public void computeName()
-  throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-    String query = "PREFIX sindice: <http://vocab.sindice.net/>\n";
-    for (DomainVocab p : DomainVocab.values())
-      query += p.uri(p.toString());
-    query += "SELECT ?label ?pType ?pDescription (COUNT (?s) AS ?cardinality)\n" +
-             _graphFrom +
-             "WHERE {\n{\n" +
-             "SELECT ?s (GROUP_CONCAT(IF(isURI(?type),\n" +
-             "           concat('{<', str(?type), '>,',?p,'}'),\n" +
-             "           concat('{\"', ENCODE_FOR_URI(?type), '\",',?p,'}'))) AS ?label)\n" +
-             "        WHERE {\n" +
-             "        {\n" +
-             "            SELECT ?s ?type ?p WHERE\n" + "            {\n";
-    int count = 0;
-    for (DomainVocab p : DomainVocab.values()) {
-      if (p.equals(DomainVocab.rdf)) {
-        query += "{ ?s " + p.toString() + ":type ?type .\n  BIND ('" + count +
-                 "' AS ?p) }\n";
-      } else {
-        query += "UNION{ ?s " + p.toString() + ":type ?type .\n BIND ('" +
-                 count + "' AS ?p) }\n";
-      }
-      count++;
-    }
-    query += "            }\n" + "            ORDER BY ?type\n" + "        }\n"
-             + "        }\n" + "        GROUP BY ?s\n" + "    }\n"
-             + "FILTER(?label != \"\")\n" + "}\n"
-             + "GROUP BY ?label ?pType ?pDescription\n";
-
-    _logger.debug("Get the class node collection: [" + query + "]");
-    launchQueryNode(query);
-  }
+  public abstract void computeName() throws Exception;
 
   /**
    * Get the name and the cardinality of the predicate/the edge for each node
@@ -281,49 +228,7 @@ abstract public class Query {
    * 
    * @throws Exception
    */
-  public void computePredicate()
-  throws Exception {
-    _queriesResults = new Stack<TupleQueryResult>();
-
-    String query = "PREFIX sindice: <http://vocab.sindice.net/>\n";
-    for (DomainVocab p : DomainVocab.values())
-      query += p.uri(p.toString());
-    query += "SELECT  ?label  (COUNT (?label) AS ?cardinality) " +
-             "?source ?target\n" + _graphFrom + "WHERE {\n" + "       {\n";
-    query += "        SELECT ?s " + makeGroupConcat("?type", "?source");
-    query += "           WHERE {\n" + "           {\n"
-             + "               SELECT ?s ?type WHERE {\n";
-    for (DomainVocab p : DomainVocab.values())
-      if (p.equals(DomainVocab.rdf)) {
-        query += "{ ?s " + p.toString() + ":type ?type . }\n";
-      } else {
-        query += "UNION{ ?s " + p.toString() + ":type ?type . }\n";
-      }
-    query += "               }\n" + "               ORDER BY ?type\n"
-             + "           }\n" + "           }\n" + "           GROUP BY ?s\n"
-             + "       }\n" + "        FILTER(?source != \"\")\n"
-             + "        ?s ?label ?sSon .\n";
-
-    // OPTIONAL
-    query += "        OPTIONAL {\n" + "        {\n";
-    query += "        SELECT ?sSon " + makeGroupConcat("?typeSon", "?target");
-    query += "           WHERE {\n" + "           {\n"
-             + "               SELECT ?sSon ?typeSon WHERE " + "{\n";
-    for (DomainVocab p : DomainVocab.values())
-      if (p.equals(DomainVocab.rdf)) {
-        query += "{ ?sSon " + p.toString() + ":type ?typeSon . }\n";
-      } else {
-        query += "UNION{ ?sSon " + p.toString() + ":type ?typeSon . }\n";
-      }
-    query += "              }\n" + "               ORDER BY ?typeSon\n"
-             + "           }\n" + "           }\n"
-             + "           GROUP BY ?sSon\n" + "        }\n" + "        }\n";
-
-    query += "}\n" + "GROUP BY ?label ?source ?target \n";
-
-    _logger.debug("Get the class node collections relationships: [" + query + "]");
-    launchQueryPred(query);
-  }
+  public abstract void computePredicate() throws Exception;
 
   /**
    * Stop the connection with the web repository or the local repository.
@@ -331,8 +236,7 @@ abstract public class Query {
    * @throws RepositoryException
    * @throws SailException
    */
-  public void stopConnexion()
-  throws RepositoryException, SailException {
+  public void stopConnexion() throws RepositoryException, SailException {
     try {
       _repository.closeConnection();
     } catch (SesameBackendException e) {

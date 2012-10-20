@@ -42,7 +42,7 @@ import org.sindice.analytics.ranking.LabelsRanking;
 import org.sindice.analytics.ranking.LabelsRankingYAMLoader;
 import org.sindice.analytics.servlet.ResponseWriterFactory.ResponseType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendException;
@@ -91,11 +91,11 @@ extends HttpServlet {
     // The ClassAttributes
     final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
-    AnalyticsVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
+    DataGraphSummaryVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
     // Set the graph summary graph
-    AnalyticsVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
+    DataGraphSummaryVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
     // Set the dataset label definition
-    AnalyticsVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
+    DataGraphSummaryVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
 
     AnalyticsClassAttributes.initClassAttributes(classAttributes);
     try {
@@ -111,7 +111,7 @@ extends HttpServlet {
 
       logger.info("RankingConfiguration={} Backend={} BackendArgs={} ClassAttributes={} Pagination={} DomainUriPrefix={} DatasetLabelDef={} GraphSummaryGraph={} LIMIT={}",
         new Object[] { rankingConfigPath, backend, Arrays.toString(backendArgs), Arrays.toString(classAttributes),
-      pagination, AnalyticsVocab.DOMAIN_URI_PREFIX, AnalyticsVocab.DATASET_LABEL_DEF, AnalyticsVocab.GRAPH_SUMMARY_GRAPH, limit});
+      pagination, DataGraphSummaryVocab.DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DATASET_LABEL_DEF, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH, limit});
     } catch (Exception e) {
       logger.error("Failed to start the DGS backend", e);
     }

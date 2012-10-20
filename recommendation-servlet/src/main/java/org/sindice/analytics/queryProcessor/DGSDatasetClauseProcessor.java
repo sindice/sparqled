@@ -34,7 +34,7 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTSelectQuery;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 
 /**
  * Set the analytics graph name in the DGS query
@@ -65,7 +65,7 @@ public final class DGSDatasetClauseProcessor {
       final ASTDatasetClause dDGS = new ASTDatasetClause(SyntaxTreeBuilderTreeConstants.JJTDATASETCLAUSE);
       final ASTIRI dgsGraph = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
       dDGS.jjtAppendChild(dgsGraph);
-      dgsGraph.setValue(AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
+      dgsGraph.setValue(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
       if (datasets.isEmpty()) {
         node.jjtInsertChild(dDGS, 1);
       } else {

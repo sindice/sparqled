@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 
 
 /**
@@ -68,14 +68,14 @@ public class TestSparqlToDGSQuery {
     vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
     final String expected =
-    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
     "WHERE {\n" +
-    "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-    "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> \"test\" .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+    "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+    "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> \"test\" .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
     "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -93,14 +93,14 @@ public class TestSparqlToDGSQuery {
     vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
     final String expected =
-    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
     "WHERE {\n" +
-    "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-    "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> \"test\" .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-    "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+    "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+    "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> \"test\" .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+    "  ?" + vars[1] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
     "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -116,15 +116,15 @@ public class TestSparqlToDGSQuery {
     final String[] vars = filter(ASTVarGenerator.getCurrentVarNames(), "s", "p", "o", "s2");
     assertEquals(2, vars.length);
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "FILTER (!isLITERAL(?o ))  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?o .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> ?p .\n" +
-                            "FILTER (!isLITERAL(?o ))  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s2 .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.EDGE_TARGET + "> ?o .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "FILTER (!isLITERAL(?o ))  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?o .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> ?p .\n" +
+                            "FILTER (!isLITERAL(?o ))  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s2 .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?o .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -140,10 +140,10 @@ public class TestSparqlToDGSQuery {
     final String[] vars = filter(ASTVarGenerator.getCurrentVarNames(), "s");
     assertEquals(0, vars.length);
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n{\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> ?POF .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> ?POF .\n" +
                             "}\n}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -160,15 +160,15 @@ public class TestSparqlToDGSQuery {
     assertEquals(3, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "FILTER (!isLITERAL(?" + vars[0] + " ))  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <knows> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "FILTER (!isLITERAL(?" + vars[0] + " ))  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <knows> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -185,15 +185,15 @@ public class TestSparqlToDGSQuery {
     assertEquals(3, vars.length);
     vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "FILTER (!isLITERAL(?" + vars[0] + " ))  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> <knows> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "FILTER (!isLITERAL(?" + vars[0] + " ))  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> <knows> .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -210,17 +210,17 @@ public class TestSparqlToDGSQuery {
     assertEquals(3, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -237,20 +237,20 @@ public class TestSparqlToDGSQuery {
     assertEquals(4, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.LABEL + "> <age> .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.LABEL + "> <age> .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -267,17 +267,17 @@ public class TestSparqlToDGSQuery {
     assertEquals(3, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "FILTER (!isLITERAL(?n ))  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?n .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "FILTER (!isLITERAL(?n ))  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?n .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "FILTER (!isLITERAL(?n ))  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?n .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "FILTER (!isLITERAL(?n ))  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?n .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -294,15 +294,15 @@ public class TestSparqlToDGSQuery {
     assertEquals(2, vars.length);
     vars[1] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[1] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> ?p .\n" +
-                            "FILTER (!isLITERAL(?p ))  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?o .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?p .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> ?p .\n" +
+                            "FILTER (!isLITERAL(?p ))  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?o .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?p .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -319,20 +319,20 @@ public class TestSparqlToDGSQuery {
     assertEquals(4, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "FILTER (!isLITERAL(?o ))  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?o .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?o .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.LABEL + "> <is_a> .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "FILTER (!isLITERAL(?o ))  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?o .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?o .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.LABEL + "> <is_a> .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -348,20 +348,20 @@ public class TestSparqlToDGSQuery {
     final String[] vars = filter(ASTVarGenerator.getCurrentVarNames(), "s", "n", "o");
     assertEquals(4, vars.length);
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + " ?" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + " ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + " ?" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + " ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.TYPE + "> ?" + vars[1] + " .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + " .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> ?" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + " .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?" + QueryProcessor.POF_RESOURCE + " .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?" + QueryProcessor.POF_RESOURCE + " .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.LABEL + "> <age> .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.TYPE + "> ?" + vars[1] + " .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + " .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> ?" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + " .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?" + QueryProcessor.POF_RESOURCE + " .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?" + QueryProcessor.POF_RESOURCE + " .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.LABEL + "> <age> .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -378,17 +378,17 @@ public class TestSparqlToDGSQuery {
     assertEquals(3, vars.length);
     vars[2] = QueryProcessor.POF_RESOURCE; // This is changed by the class SparqlTranslationProcessor.ChangeToPofRessource
     final String dgsQuery = AST2TextTranslator.translate(ast);
-    final String expected = "SELECT DISTINCT ?n ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
+    final String expected = "SELECT DISTINCT ?n ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> \n" +
                             "WHERE {\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
   }
@@ -407,18 +407,18 @@ public class TestSparqlToDGSQuery {
     final String dgsQuery = AST2TextTranslator.translate(ast);
     final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + vars[2] + " FROM <http://sindice.com/analytics> \n" +
                             "WHERE {\n" +
-                            "{\n  ?s <" + AnalyticsVocab.DOMAIN_URI + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "{\n  ?s <" + DataGraphSummaryVocab.DOMAIN_URI + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> \"" + SparqlTranslationProcessor.BLANK_NODE_COLLECTION + "\" .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
                             "}\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
@@ -437,10 +437,10 @@ public class TestSparqlToDGSQuery {
     final String dgsQuery = AST2TextTranslator.translate(ast);
     final String expected = "SELECT DISTINCT ?POF ?" + QueryProcessor.CARDINALITY_VAR + " ?" + QueryProcessor.POF_RESOURCE + " FROM <http://sindice.com/analytics> \n" +
                             "WHERE {\n" +
-                            "{\n  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.DOMAIN_URI + "> ?" + SyntaxTreeBuilder.PointOfFocus + " .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
-                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + AnalyticsVocab.LABEL + "> ?" + vars[0] + " .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
+                            "{\n  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.DOMAIN_URI + "> ?" + SyntaxTreeBuilder.PointOfFocus + " .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.CARDINALITY + "> ?" + QueryProcessor.CARDINALITY_VAR + " .\n" +
+                            "  ?" + QueryProcessor.POF_RESOURCE + " <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[0] + " .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
                             "}\n" +
                             "}\n";
     assertEquals(expected, dgsQuery);
@@ -463,35 +463,35 @@ public class TestSparqlToDGSQuery {
     final String dgsQuery = AST2TextTranslator.translate(ast);
     final String expected = "SELECT ?POF FROM <http://sindice.com/analytics> \n" +
                             "WHERE {\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com" + "> .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?a .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?c .\n" +
-                            "  ?" + vars[0] + " <" + AnalyticsVocab.LABEL + "> ?b .\n" +
-                            "GRAPH <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> {\n" +
-                            "  ?s <" + AnalyticsVocab.DOMAIN_URI + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
-                            "  ?s <" + AnalyticsVocab.LABEL + "> ?" + vars[1] + " .\n" +
-                            "  ?" + vars[1] + " <" + AnalyticsVocab.LABEL + "> <Person> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?n .\n" +
-                            "  ?" + vars[2] + " <" + AnalyticsVocab.LABEL + "> <name> .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?s .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?o .\n" +
-                            "  ?" + vars[3] + " <" + AnalyticsVocab.LABEL + "> ?POF .\n" +
-                            "GRAPH <" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + "> {\n" +
-                            "  ?" + vars[4] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "renaud.net" + "> .\n" +
-                            "  ?" + vars[4] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?a2 .\n" +
-                            "  ?" + vars[4] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?c .\n" +
-                            "  ?" + vars[4] + " <" + AnalyticsVocab.LABEL + "> ?b .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "sindice.com" + "> .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?a .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?c .\n" +
+                            "  ?" + vars[0] + " <" + DataGraphSummaryVocab.LABEL + "> ?b .\n" +
+                            "GRAPH <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> {\n" +
+                            "  ?s <" + DataGraphSummaryVocab.DOMAIN_URI + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "  ?s <" + DataGraphSummaryVocab.LABEL + "> ?" + vars[1] + " .\n" +
+                            "  ?" + vars[1] + " <" + DataGraphSummaryVocab.LABEL + "> <Person> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?n .\n" +
+                            "  ?" + vars[2] + " <" + DataGraphSummaryVocab.LABEL + "> <name> .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "stecam.net" + "> .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?s .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?o .\n" +
+                            "  ?" + vars[3] + " <" + DataGraphSummaryVocab.LABEL + "> ?POF .\n" +
+                            "GRAPH <" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + "> {\n" +
+                            "  ?" + vars[4] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "renaud.net" + "> .\n" +
+                            "  ?" + vars[4] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?a2 .\n" +
+                            "  ?" + vars[4] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?c .\n" +
+                            "  ?" + vars[4] + " <" + DataGraphSummaryVocab.LABEL + "> ?b .\n" +
                             "}\n" +
                             "{\n" +
                             "SELECT ?e FROM <http://sindice.com/analytics> \n" +
                             "WHERE {\n" +
-                            "  ?" + vars[5] + " <" + AnalyticsVocab.EDGE_PUBLISHED_IN + "> <" + AnalyticsVocab.DOMAIN_URI_PREFIX + "example.org" + "> .\n" +
-                            "  ?" + vars[5] + " <" + AnalyticsVocab.EDGE_SOURCE + "> ?e .\n" +
-                            "  ?" + vars[5] + " <" + AnalyticsVocab.EDGE_TARGET + "> ?e .\n" +
-                            "  ?" + vars[5] + " <" + AnalyticsVocab.LABEL + "> ?p .\n" +
+                            "  ?" + vars[5] + " <" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + "> <" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "example.org" + "> .\n" +
+                            "  ?" + vars[5] + " <" + DataGraphSummaryVocab.EDGE_SOURCE + "> ?e .\n" +
+                            "  ?" + vars[5] + " <" + DataGraphSummaryVocab.EDGE_TARGET + "> ?e .\n" +
+                            "  ?" + vars[5] + " <" + DataGraphSummaryVocab.LABEL + "> ?p .\n" +
                             "}\n" +
                             "}\n" +
                             "}\n" +

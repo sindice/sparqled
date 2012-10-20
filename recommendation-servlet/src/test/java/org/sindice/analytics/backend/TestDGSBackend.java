@@ -55,7 +55,7 @@ import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
@@ -88,7 +88,7 @@ public class TestDGSBackend {
     backend.initConnection();
 
     AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
-    AnalyticsVocab.resetToDefaults();
+    DataGraphSummaryVocab.resetToDefaults();
 
     RDFParserRegistry.getInstance().add(new RDFParserFactory() {
 

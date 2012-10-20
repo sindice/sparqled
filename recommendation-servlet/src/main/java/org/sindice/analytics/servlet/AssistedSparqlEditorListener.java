@@ -32,7 +32,7 @@ import net.spy.memcached.MemcachedClient;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
@@ -75,13 +75,13 @@ extends ServletConfigurationContextListener {
 
     context.setAttribute(RECOMMENDER_WRAPPER + RANKING_CONFIGURATION, createRankingConfigFile());
 
-    final String datasetLabelDef = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DATASET_LABEL_DEF, AnalyticsVocab.DATASET_LABEL_DEF.toString());
+    final String datasetLabelDef = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DATASET_LABEL_DEF, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
     context.setAttribute(RECOMMENDER_WRAPPER + DATASET_LABEL_DEF, datasetLabelDef);
 
-    final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, AnalyticsVocab.DOMAIN_URI_PREFIX);
+    final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
     context.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, domainUriPrefix);
 
-    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
+    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
     context.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, gsg);
 
     final String backend = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND, BackendType.HTTP.toString());
