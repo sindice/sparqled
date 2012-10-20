@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 
 
 /**
@@ -65,7 +65,7 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( * )\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -75,7 +75,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -84,17 +84,17 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        RDFLiteral\n" +
-                            "         String (" + AnalyticsVocab.BLANK_NODE_COLLECTION + ")\n" +
+                            "         String (" + DataGraphSummaryVocab.BLANK_NODE_COLLECTION + ")\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (" + vars[0] + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        IRI (name)";
 
@@ -114,7 +114,7 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( * )\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -124,7 +124,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + vars[0] + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -133,7 +133,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        IRI (Person)";
 
@@ -154,7 +154,7 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( * )\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    GraphPatternGroup\n" +
@@ -165,16 +165,16 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.DOMAIN_URI + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.DOMAIN_URI + ")\n" +
                             "        ObjectList\n" +
-                            "         IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
+                            "         IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
                             "      TriplesSameSubjectPath\n" +
                             "       Var (s)\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         Var (" + vars[0] + ")\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -183,7 +183,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         IRI (Person)\n" +
                             "      Constraint\n" +
@@ -196,7 +196,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "        ObjectList\n" +
                             "         Var (s)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -205,7 +205,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "        ObjectList\n" +
                             "         Var (o)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -214,7 +214,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         Var (p)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -223,9 +223,9 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_PUBLISHED_IN + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + ")\n" +
                             "        ObjectList\n" +
-                            "         IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
+                            "         IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
                             "    BasicGraphPattern\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (s)\n" +
@@ -233,16 +233,16 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.DOMAIN_URI + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.DOMAIN_URI + ")\n" +
                             "       ObjectList\n" +
-                            "        IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "live.com)\n" +
+                            "        IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "live.com)\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (s)\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + vars[2] + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -251,7 +251,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        IRI (Person)\n" +
                             "     Constraint\n" +
@@ -264,7 +264,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -273,7 +273,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        Var (o)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -282,7 +282,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -291,9 +291,9 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_PUBLISHED_IN + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + ")\n" +
                             "       ObjectList\n" +
-                            "        IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "live.com)";
+                            "        IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "live.com)";
 
     assertEquals(expected, ast.dump(""));
   }
@@ -311,7 +311,7 @@ public class TestSparqlTranslationProcessor {
                             " SelectQuery\n" +
                             "  Select ( * )\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    GraphPatternGroup\n" +
@@ -322,16 +322,16 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.DOMAIN_URI + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.DOMAIN_URI + ")\n" +
                             "        ObjectList\n" +
-                            "         IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
+                            "         IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "sindice.com)\n" +
                             "      TriplesSameSubjectPath\n" +
                             "       Var (s)\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         Var (" + vars[0] + ")\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -340,7 +340,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         IRI (Person)\n" +
                             "     OptionalGraphPattern\n" +
@@ -351,7 +351,7 @@ public class TestSparqlTranslationProcessor {
                             "         PathAlternative\n" +
                             "          PathSequence\n" +
                             "           PathElt\n" +
-                            "            IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "            IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "         ObjectList\n" +
                             "          Var (s)\n" +
                             "       TriplesSameSubjectPath\n" +
@@ -360,17 +360,17 @@ public class TestSparqlTranslationProcessor {
                             "         PathAlternative\n" +
                             "          PathSequence\n" +
                             "           PathElt\n" +
-                            "            IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "            IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "         ObjectList\n" +
                             "          RDFLiteral\n" +
-                            "           String (" + AnalyticsVocab.BLANK_NODE_COLLECTION + ")\n" +
+                            "           String (" + DataGraphSummaryVocab.BLANK_NODE_COLLECTION + ")\n" +
                             "       TriplesSameSubjectPath\n" +
                             "        Var (" + vars[1] + ")\n" +
                             "        PropertyListPath\n" +
                             "         PathAlternative\n" +
                             "          PathSequence\n" +
                             "           PathElt\n" +
-                            "            IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "            IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "         ObjectList\n" +
                             "          Var (p)\n" +
                             "       TriplesSameSubjectPath\n" +
@@ -379,9 +379,9 @@ public class TestSparqlTranslationProcessor {
                             "         PathAlternative\n" +
                             "          PathSequence\n" +
                             "           PathElt\n" +
-                            "            IRI (" + AnalyticsVocab.EDGE_PUBLISHED_IN + ")\n" +
+                            "            IRI (" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + ")\n" +
                             "         ObjectList\n" +
-                            "          IRI (" + AnalyticsVocab.DOMAIN_URI_PREFIX + "sindice.com)";
+                            "          IRI (" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "sindice.com)";
 
     assertEquals(expected, ast.dump(""));
   }
@@ -403,7 +403,7 @@ public class TestSparqlTranslationProcessor {
                             "   ProjectionElem\n" +
                             "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    GraphPatternGroup\n" +
@@ -414,7 +414,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.DOMAIN_URI + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.DOMAIN_URI + ")\n" +
                             "        ObjectList\n" +
                             "         Var (POF)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -423,7 +423,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "        ObjectList\n" +
                             "         Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -432,7 +432,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         Var (" + vars[0] + ")\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -441,7 +441,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         IRI (Person)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -450,7 +450,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "        ObjectList\n" +
                             "         Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -459,17 +459,17 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "        ObjectList\n" +
                             "         RDFLiteral\n" +
-                            "          String (" + AnalyticsVocab.BLANK_NODE_COLLECTION + ")\n" +
+                            "          String (" + DataGraphSummaryVocab.BLANK_NODE_COLLECTION + ")\n" +
                             "      TriplesSameSubjectPath\n" +
                             "       Var (" + vars[1] + ")\n" +
                             "       PropertyListPath\n" +
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "        ObjectList\n" +
                             "         IRI (age)\n" +
                             "      TriplesSameSubjectPath\n" +
@@ -478,7 +478,7 @@ public class TestSparqlTranslationProcessor {
                             "        PathAlternative\n" +
                             "         PathSequence\n" +
                             "          PathElt\n" +
-                            "           IRI (" + AnalyticsVocab.EDGE_PUBLISHED_IN + ")\n" +
+                            "           IRI (" + DataGraphSummaryVocab.EDGE_PUBLISHED_IN + ")\n" +
                             "        ObjectList\n" +
                             "         Var (POF)";
 
@@ -505,7 +505,7 @@ public class TestSparqlTranslationProcessor {
                             "   ProjectionElem\n" +
                             "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -515,7 +515,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + vars[0] + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -524,7 +524,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -533,7 +533,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + QueryProcessor.CARDINALITY_VAR + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -542,7 +542,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.TYPE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.TYPE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + vars[1] + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -551,7 +551,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR + ")\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -560,7 +560,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (" + QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR + ")";
 
@@ -583,7 +583,7 @@ public class TestSparqlTranslationProcessor {
                             "   ProjectionElem\n" +
                             "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -593,7 +593,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -602,17 +602,17 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        RDFLiteral\n" +
-                            "         String (" + AnalyticsVocab.BLANK_NODE_COLLECTION + ")\n" +
+                            "         String (" + DataGraphSummaryVocab.BLANK_NODE_COLLECTION + ")\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (" + vars[0] + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     Constraint\n" +
@@ -625,7 +625,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -634,7 +634,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -643,7 +643,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -652,7 +652,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 
@@ -675,7 +675,7 @@ public class TestSparqlTranslationProcessor {
                             "   ProjectionElem\n" +
                             "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -689,7 +689,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -698,7 +698,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        Var (o)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -707,7 +707,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     Constraint\n" +
@@ -720,7 +720,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -729,7 +729,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        Var (o)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -738,7 +738,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -747,7 +747,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 
@@ -770,7 +770,7 @@ public class TestSparqlTranslationProcessor {
                             "   ProjectionElem\n" +
                             "    Var (" + QueryProcessor.POF_RESOURCE + ")\n" +
                             "  DatasetClause (named=false)\n" +
-                            "   IRI (" + AnalyticsVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
+                            "   IRI (" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ")\n" +
                             "  WhereClause\n" +
                             "   GraphPatternGroup\n" +
                             "    BasicGraphPattern\n" +
@@ -780,7 +780,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (s)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -789,17 +789,17 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        RDFLiteral\n" +
-                            "         String (" + AnalyticsVocab.BLANK_NODE_COLLECTION + ")\n" +
+                            "         String (" + DataGraphSummaryVocab.BLANK_NODE_COLLECTION + ")\n" +
                             "     TriplesSameSubjectPath\n" +
                             "      Var (" + vars[0] + ")\n" +
                             "      PropertyListPath\n" +
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     Constraint\n" +
@@ -812,7 +812,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_SOURCE + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_SOURCE + ")\n" +
                             "       ObjectList\n" +
                             "        Var (a)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -821,7 +821,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.EDGE_TARGET + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.EDGE_TARGET + ")\n" +
                             "       ObjectList\n" +
                             "        Var (p)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -830,7 +830,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.LABEL + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.LABEL + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POF)\n" +
                             "     TriplesSameSubjectPath\n" +
@@ -839,7 +839,7 @@ public class TestSparqlTranslationProcessor {
                             "       PathAlternative\n" +
                             "        PathSequence\n" +
                             "         PathElt\n" +
-                            "          IRI (" + AnalyticsVocab.CARDINALITY + ")\n" +
+                            "          IRI (" + DataGraphSummaryVocab.CARDINALITY + ")\n" +
                             "       ObjectList\n" +
                             "        Var (POFcardinality)";
 

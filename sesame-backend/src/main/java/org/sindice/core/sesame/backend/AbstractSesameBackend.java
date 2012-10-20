@@ -78,16 +78,16 @@ import org.slf4j.LoggerFactory;
  * @param <VALUE>
  * @param <CONTEXT>
  */
-public abstract class AbstractSesameBackend<VALUE, CONTEXT>
-implements SesameBackend<VALUE, CONTEXT> {
+public abstract class AbstractSesameBackend<VALUE, CONTEXT> implements
+    SesameBackend<VALUE, CONTEXT> {
 
-  protected static final Logger                      logger = LoggerFactory
-                                                            .getLogger(AbstractSesameBackend.class);
+  protected static final Logger logger = LoggerFactory
+      .getLogger(AbstractSesameBackend.class);
 
   private final QueryResultProcessor<VALUE, CONTEXT> qrp;
 
-  private RepositoryConnection                       con;
-  private Repository                                 repository;
+  private RepositoryConnection con;
+  private Repository repository;
 
   public AbstractSesameBackend() {
     this(null);
@@ -174,8 +174,7 @@ implements SesameBackend<VALUE, CONTEXT> {
   }
 
   @Override
-  public void initConnection()
-  throws SesameBackendException {
+  public void initConnection() throws SesameBackendException {
     try {
       repository = getRepository();
       repository.initialize();
@@ -195,14 +194,14 @@ implements SesameBackend<VALUE, CONTEXT> {
 
   @Override
   public QueryIterator<VALUE, CONTEXT> submit(String query)
-  throws SesameBackendException {
+      throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
 
   @Override
-  public QueryIterator<VALUE, CONTEXT> submit(QueryResultProcessor<VALUE, CONTEXT> qrp,
-                                              String query)
-  throws SesameBackendException {
+  public QueryIterator<VALUE, CONTEXT> submit(
+      QueryResultProcessor<VALUE, CONTEXT> qrp, String query)
+      throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
 
@@ -213,8 +212,7 @@ implements SesameBackend<VALUE, CONTEXT> {
     return con;
   }
 
-  public void closeConnection()
-  throws SesameBackendException {
+  public void closeConnection() throws SesameBackendException {
     try {
       if (con != null) {
         con.close();
@@ -222,8 +220,7 @@ implements SesameBackend<VALUE, CONTEXT> {
     } catch (RepositoryException e) {
       logger.error("{}", e);
       throw new SesameBackendException(e);
-    }
-    finally {
+    } finally {
       try {
         if (con != null) {
           con.getRepository().shutDown();
@@ -235,17 +232,14 @@ implements SesameBackend<VALUE, CONTEXT> {
     }
   }
 
-  private void addDirectoryToRepository(File path,
-                                        String baseURI,
-                                        RDFFormat format,
-                                        Resource... contexts)
-  throws SesameBackendException {
+  private void addDirectoryToRepository(File path, String baseURI,
+      RDFFormat format, Resource... contexts) throws SesameBackendException {
     if (path.exists()) {
       File[] files = path.listFiles();
       for (int i = 0; i < files.length; i++) {
         if (!files[i].exists()) {
-          throw new IllegalArgumentException("The file " + files[i] +
-                                             " doesn't exist");
+          throw new IllegalArgumentException("The file " + files[i]
+              + " doesn't exist");
         }
         if (files[i].isDirectory()) {
           addDirectoryToRepository(files[i], baseURI, format, contexts);
@@ -253,13 +247,14 @@ implements SesameBackend<VALUE, CONTEXT> {
           logger.info("ADD FILE: " + files[i] + " (" + format + ")");
           try {
             if (files[i].getAbsolutePath().endsWith(".gz")) {
-              final InputStream compressedFile = new GZIPInputStream(new BufferedInputStream(new FileInputStream(files[i])));
+              final InputStream compressedFile = new GZIPInputStream(
+                  new BufferedInputStream(new FileInputStream(files[i])));
               getConnection().add(compressedFile, baseURI, format, contexts);
             } else {
               getConnection().add(files[i], baseURI, format, contexts);
             }
-            logger.info("FILE ADDED: " + getConnection().size(contexts) +
-                        " statements");
+            logger.info("FILE ADDED: " + getConnection().size(contexts)
+                + " statements");
           } catch (RDFParseException e) {
             logger.error("", e);
             throw new SesameBackendException(e);
@@ -276,8 +271,8 @@ implements SesameBackend<VALUE, CONTEXT> {
   }
 
   @Override
-  public void addToRepository(File path, RDFFormat format, Resource... contexts)
-  throws SesameBackendException {
+  public void addToRepository(File path, RDFFormat format,
+      Resource... contexts) throws SesameBackendException {
     final String baseURI = "";
 
     if (!path.exists()) {
@@ -285,19 +280,21 @@ implements SesameBackend<VALUE, CONTEXT> {
     }
     try {
       if (path.getAbsolutePath().endsWith(".gz")) {
-        final InputStream compressedFile = new GZIPInputStream(new BufferedInputStream(new FileInputStream(path)));
+        final InputStream compressedFile = new GZIPInputStream(
+            new BufferedInputStream(new FileInputStream(path)));
 
         logger.info("ADD FILE: " + path + " (" + format + ")");
         getConnection().add(compressedFile, baseURI, format, contexts);
-        logger.info("FILE ADDED: " + getConnection().size(contexts) +
-                    " statements");
+        logger.info("FILE ADDED: " + getConnection().size(contexts)
+            + " statements");
       } else {
         if (path.isFile()) {
-          logger.info("Number of stamement :" + getConnection().size(contexts));
+          logger
+              .info("Number of stamement :" + getConnection().size(contexts));
           logger.info("ADD FILE: " + path + " (" + format + ")");
           getConnection().add(path, baseURI, format, contexts);
-          logger.info("FILE ADDED: " + getConnection().size(contexts) +
-                      " statements");
+          logger.info("FILE ADDED: " + getConnection().size(contexts)
+              + " statements");
         } else if (path.isDirectory()) { /* Directory */
           addDirectoryToRepository(path, baseURI, format, contexts);
         }
@@ -317,35 +314,33 @@ implements SesameBackend<VALUE, CONTEXT> {
     }
   }
 
-  private class SesameQueryIterator
-  extends QueryIterator<VALUE, CONTEXT> {
+  private class SesameQueryIterator extends QueryIterator<VALUE, CONTEXT> {
 
-    private int                                        pagination      = LIMIT;
-    private long                                       limit           = 0;                          // user defined limit: by default get everything
-    private long                                       offset          = 0;                          // user defined offset
-    private long                                       paginatedOffset = 0;                          // offset used for the paginated
-                                                                                                      // queries
-    private String                                     query;
-    private SesameQRHandler<?>                         results         = null;
-    private final CONTEXT                              context;
+    private int pagination = LIMIT;
+    private long limit = 0; // user defined limit: by default get everything
+    private long offset = 0; // user defined offset
+    private long paginatedOffset = 0; // offset used for the paginated
+                                      // queries
+    private int resultCounter; // count the number of returned result
+    private String query;
+    private SesameQRHandler<?> results = null;
+    private final CONTEXT context;
 
-    private final Set<String>                          bindingNames    = new LinkedHashSet<String>();
+    private final Set<String> bindingNames = new LinkedHashSet<String>();
 
     // initialize the iterator to the passed query
-    private boolean                                    init            = false;
-    private final ASTQueryContainer                    ast;
+    private boolean init = false;
+    private final ASTQueryContainer ast;
 
-    private final Matcher                              rmLimit         = Pattern
-                                                                       .compile("limit\\s?\\d+", Pattern.CASE_INSENSITIVE)
-                                                                       .matcher("");
-    private final Matcher                              rmOffset        = Pattern
-                                                                       .compile("offset\\s?\\d+", Pattern.CASE_INSENSITIVE)
-                                                                       .matcher("");
+    private final Matcher rmLimit = Pattern.compile("limit\\s?\\d+",
+        Pattern.CASE_INSENSITIVE).matcher("");
+    private final Matcher rmOffset = Pattern.compile("offset\\s?\\d+",
+        Pattern.CASE_INSENSITIVE).matcher("");
 
     private final QueryResultProcessor<VALUE, CONTEXT> qrp;
 
     public SesameQueryIterator(QueryResultProcessor<VALUE, CONTEXT> qrp,
-                               String query) throws SesameBackendException {
+        String query) throws SesameBackendException {
       this.qrp = qrp;
       this.query = query;
       try {
@@ -365,6 +360,7 @@ implements SesameBackend<VALUE, CONTEXT> {
       } else {
         context = this.qrp.getContext();
       }
+      this.resultCounter = 0;
     }
 
     @Override
@@ -372,8 +368,7 @@ implements SesameBackend<VALUE, CONTEXT> {
       return ast;
     }
 
-    private void doGetBindingNames()
-    throws SesameBackendException {
+    private void doGetBindingNames() throws SesameBackendException {
       final ASTSelectQuery selectQuery = (ASTSelectQuery) ast.getQuery();
 
       if (selectQuery.getSelect().isWildcard()) { // get all the variables
@@ -385,7 +380,7 @@ implements SesameBackend<VALUE, CONTEXT> {
         }
       } else {
         for (ASTProjectionElem pe : selectQuery.getSelect()
-        .getProjectionElemList()) {
+            .getProjectionElemList()) {
           if (pe.hasAlias()) {
             bindingNames.add(pe.getAlias());
           } else {
@@ -415,8 +410,8 @@ implements SesameBackend<VALUE, CONTEXT> {
           if (limit > newOffset + pagination) {
             return query + "\nLIMIT " + pagination + "\nOFFSET " + newOffset;
           } else { // last page
-            return query + "\nLIMIT " + (limit - newOffset) + "\nOFFSET " +
-                   newOffset;
+            return query + "\nLIMIT " + (limit - newOffset) + "\nOFFSET "
+                + newOffset;
           }
         }
       }
@@ -427,6 +422,8 @@ implements SesameBackend<VALUE, CONTEXT> {
      */
     private boolean init() {
       try {
+        resultCounter = 0;
+
         if (pagination != 0) {
           // if the user specified a range, we will paginate the
           // results within that range
@@ -439,20 +436,18 @@ implements SesameBackend<VALUE, CONTEXT> {
             if (ast.getQuery().getOffset() != null) {
               offset = ast.getQuery().getOffset().getValue();
               rmOffset.reset(this.query);
-              this.query = rmOffset
-              .region(this.query.lastIndexOf('}'), this.query.length())
-              .replaceFirst("");
+              this.query = rmOffset.region(this.query.lastIndexOf('}'),
+                  this.query.length()).replaceFirst("");
             }
             if (ast.getQuery().getLimit() != null) {
               /*
-               * Add the offset, so that the pagination is correct
-               * within that range
+               * Add the offset, so that the pagination is correct within that
+               * range
                */
               limit = ast.getQuery().getLimit().getValue() + offset;
               rmLimit.reset(this.query);
-              this.query = rmLimit
-              .region(this.query.lastIndexOf('}'), this.query.length())
-              .replaceFirst("");
+              this.query = rmLimit.region(this.query.lastIndexOf('}'),
+                  this.query.length()).replaceFirst("");
             }
           }
         }
@@ -465,7 +460,7 @@ implements SesameBackend<VALUE, CONTEXT> {
 
     @Override
     public boolean hasNext() {
-      // first call to hasNext, initialise the query
+      // first call to hasNext, initialize the query
       if (!init) {
         init = true;
         if (!init()) {
@@ -478,9 +473,11 @@ implements SesameBackend<VALUE, CONTEXT> {
 
       try {
         if (!results.hasNext()) {
-          if (pagination == 0 || // all results were received with the
-                                 // previous query
-              (limit != 0 && pagination * paginatedOffset + offset >= limit)) { // the limit has been
+          if (pagination == 0
+              || // all results were received with the
+                 // previous query
+              (limit != 0 && pagination * paginatedOffset + offset >= limit)
+              || (resultCounter < pagination * paginatedOffset + offset - 1)) { // the limit has been
             // reached
             close();
             return false;
@@ -506,24 +503,24 @@ implements SesameBackend<VALUE, CONTEXT> {
 
         if (ast.getQuery() instanceof ASTSelectQuery) {
           res = new BindingSetSesameQRHandler();
-          final TupleQuery tupleQuery = getConnection()
-          .prepareTupleQuery(QueryLanguage.SPARQL, pagQuery);
+          final TupleQuery tupleQuery = getConnection().prepareTupleQuery(
+              QueryLanguage.SPARQL, pagQuery);
           res.set(tupleQuery.evaluate());
         } else if (ast.getQuery() instanceof ASTAskQuery) {
           res = new BooleanSesameQRHandler();
           final BooleanQuery booleanQuery = getConnection()
-          .prepareBooleanQuery(QueryLanguage.SPARQL, pagQuery);
+              .prepareBooleanQuery(QueryLanguage.SPARQL, pagQuery);
           res.set(booleanQuery.evaluate());
-        } else if (ast.getQuery() instanceof ASTConstructQuery ||
-                   ast.getQuery() instanceof ASTDescribeQuery) {
+        } else if (ast.getQuery() instanceof ASTConstructQuery
+            || ast.getQuery() instanceof ASTDescribeQuery) {
           res = new StatementSesameQRHandler();
-          final GraphQuery graphQuery = getConnection()
-          .prepareGraphQuery(QueryLanguage.SPARQL, pagQuery);
+          final GraphQuery graphQuery = getConnection().prepareGraphQuery(
+              QueryLanguage.SPARQL, pagQuery);
           res.set(graphQuery.evaluate());
         } else {
           logger.error("Unsupported query: {}\n{}", ast.getQuery(), query);
-          throw new RuntimeException("Unsupported query: " +
-                                     ast.getQuery().getClass().getSimpleName());
+          throw new RuntimeException("Unsupported query: "
+              + ast.getQuery().getClass().getSimpleName());
         }
         return res;
       } catch (RepositoryException e) {
@@ -557,10 +554,14 @@ implements SesameBackend<VALUE, CONTEXT> {
     @Override
     public VALUE next() {
       try {
+        VALUE value;
         if (qrp == null) {
-          return (VALUE) results.next();
+          value = (VALUE) results.next();
+        } else {
+          value = qrp.process(results.next(), getContext());
         }
-        return qrp.process(results.next(), getContext());
+        resultCounter += 1;
+        return value;
       } catch (QueryEvaluationException e) {
         logger.error("", e);
         throw new RuntimeException(e);

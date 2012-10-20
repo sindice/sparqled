@@ -29,7 +29,7 @@ public class ConfigurationKey<T> {
   private T              value;
   private final Reset<T> reset;
 
-  interface Reset<T> {
+  public interface Reset<T> {
     public T reset();
   }
 

@@ -12,7 +12,7 @@ To get the .jar you need to follow this procedure:
 go to the main repository, then do:
 > mvn assembly:assembly
 The good jar will be:
-./target/sparql-summary-0.9-assembly.jar
+./target/sparql-summary-0.9.jar
 
 I suggest you to do an alias:
 alias graphsummary="java -cp PWD/sparql-summary-0.9-assembly.jar \
@@ -80,12 +80,15 @@ COMMAND LINE:
 ===============
 	graphsummary --type=[NATIVE|MEMORY|HTTP] --input=[path]			\
 		--outputfile=[path] (--add=[file]) (--addformat=[NT|RDFXML]) 	\
-		(--pagination=5) (--domain=url)
+		(--pagination=5) (--domain=url) (--class-attribute=url)		\
+		(--summary-algorithm=[SIGNLEM_LABELLED|MULTI_LABELLED])
 
 	to get the connexion to a virtuoso server
 	graphsummary --type=VIRTUOSO --input=[path] --outputfile=[path]		\
 		(--user=[user]) (--pass=[pass]) (--add=[file]) 			\
-		(--addformat=[NT|RDFXML]) (--pagination=5) (--DOMAIN=url)
+		(--addformat=[NT|RDFXML]) (--pagination=5) (--DOMAIN=url)	\
+		(--class-attribute=url)						\
+		(--summary-algorithm=[SIGNLEM_LABELLED|MULTI_LABELLED])
 
 	for a MYSQL connexion:
 	graphsummary --type=RDBMS --input=[path] --outputfile=[path]		\
@@ -118,7 +121,7 @@ OPTIONS:
 		"--add ~/test.nt" will work but not "--add=~/test.nt".
 	--addformat
 		The format of the file added to the repository.
-		Possible option :
+		Possible option:
                		 RDF/XML (mimeTypes=application/rdf+xml,
 			 	  application/xml; ext=rdf, rdfs, owl, xml)
 		  	 N-Triples (mimeTypes=text/plain; ext=nt)
@@ -150,6 +153,23 @@ OPTIONS:
 		The password for a MYSQL connection.
 		[MANDATORY FOR RDBMS]
 		[OPTIONNAL FOR VIRTUOSO]
+	--class-attribute
+		To specify user defined class attribute.
+		You can use this function multiples times
+		(default: http://www.w3.org/1999/02/22-rdf-syntax-ns#type)
+	--summary-algorithm, --algorithm
+		Allow the user to specify the clustering algorithm. This will
+		create a different data graph summary.
+		Possible option:
+			 SINGLE_LABELLED: a fast computation algorithm.
+			     It will create a node in the data graph summary
+			     for every label associated to an input node.
+			 MULTI_LABELLED: a more precise algorithm.
+			     It handle nodes with multiples labels, in order to
+			     minimize errors (false-positives suggestions) in
+			     the auto-completion.
+		(Default: SINGLE_LABELLED)
+
 	--help
 		show help
 
@@ -166,17 +186,22 @@ graphsummary --type=MEMORY --repository=example/memorystore/			\
 --add=src/test/resources/unit_test_multidomain.nt --outputfile=output3.nt.gz	\
 --addformat=N3
 
+graphsummary --type=MEMORY --repository=example/memorystore/			\
+--add=src/test/resources/unit_test_multidomain.nt --outputfile=output4.nt.gz	\
+--class-attribute http://opengraphprotocol.org/schema/type			\
+--class-attribute http://opengraph.org/schema/type
+
 graphsummary --type=HTTP  --url=http://sparql.sindice.com/sparql		\
---domain=http://www.rottentomatoes.com --outputfile=output4.nt.gz
+--domain=http://www.rottentomatoes.com --outputfile=output5.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---outputfile=output5.nt.gz
+--outputfile=output6.nt.gz
 
 graphsummary --type=VIRTUOSO --url=http://sparql.sindice.com/sparql		\
---user=testuser --pass=pass42 --outputfile=output6.nt.gz
+--user=testuser --pass=pass42 --outputfile=output7.nt.gz
 
 graphsummary --type=RDBMS --url=localhost --db=test --user=testuser		\
---pass=pass42 --outputfile=output7.nt.gz
+--pass=pass42 --outputfile=output8.nt.gz
 
 graphsummary --feed --type=MEMORY --repository=example/memorystore/		\
 --add=src/test/resources/test.nt						\
