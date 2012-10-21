@@ -94,7 +94,7 @@ extends HttpServlet {
     try {
       memBackend.getConnection().close();
     } catch (RepositoryException e) {
-      e.printStackTrace();
+      logger.error("", e);
     }
     super.destroy();
   }
