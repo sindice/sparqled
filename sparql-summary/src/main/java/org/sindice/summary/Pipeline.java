@@ -56,100 +56,96 @@ import org.sindice.summary.singlelabelled.RDBMSSingleLabelledQuery;
  */
 public class Pipeline {
 
-  private static final String HELP = "help";
-  private static final String CLASS_ATTRIBUTE = "class-attribute";
-  private static final String TYPE = "type";
-  private static final String FEED = "feed";
-  private static final String ADD = "add";
-  private static final String ADDFORMAT = "addformat";
-  private static final String PAGINATION = "pagination";
-  private static final String SUMMARY_ALGORITHM = "summary-algorithm";
+	private static final String HELP = "help";
+	private static final String TYPE = "type";
+	private static final String FEED = "feed";
+	private static final String ADD = "add";
+	private static final String ADDFORMAT = "addformat";
+	private static final String PAGINATION = "pagination";
 
-  /**
-   * @param
-   * @throws SesameBackendException
-   */
-  public static void main(String[] args) throws SesameBackendException {
-    OptionParser parser = new OptionParser() {
-      {
-        accepts(
-            TYPE,
-            "Type of the input file "
-                + Arrays.toString(SesameBackendFactory.BackendType.values()))
-            .withRequiredArg().ofType(SesameBackendFactory.BackendType.class)
-            .required();
-        acceptsAll(
-            asList(FEED, "feedmode"),
-            "The feed mode allow you to create a repository without launching the SPARQL queries");
-        acceptsAll(
-            asList("repository", "input", "url"),
-            "Directory where the local repository is."
-                + " Create the repository if "
-                + "notthing is found. Or the url of the webserver.")
-            .withRequiredArg().required();
-        accepts(ADD, "Add a file to the local repository.").withRequiredArg();
-        accepts(ADDFORMAT, "The type of the input file: " + RDFFormat.values())
-            .withRequiredArg().ofType(RDFFormat.class)
-            .defaultsTo(RDFFormat.NTRIPLES);
-        accepts(PAGINATION, "Limit of the pagination (0 for infinite).")
-            .withRequiredArg().ofType(Integer.class).defaultsTo(0);
-        acceptsAll(asList("domain", "graph"),
-            "Limit the search to one domain.").withRequiredArg();
-        accepts("outputfile", "The output file.").withRequiredArg().required();
-        acceptsAll(asList("database", "db"), "The database in the MYSQL.")
-            .withRequiredArg();
-        accepts("user", "The user for a MYSQL connection.").withRequiredArg();
-        acceptsAll(asList("pass", "password"),
-            "The password for a MYSQL connection.").withRequiredArg();
-        accepts(
-            CLASS_ATTRIBUTE,
-            "for the user defined class-attribute. The default class-attribute is: "
-                + AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE)
-            .withRequiredArg().ofType(String.class);
-        acceptsAll(asList(SUMMARY_ALGORITHM, "algorithm"),
-            "Allow the user to change the clustering algorithm to create the summary.")
-            .withRequiredArg().ofType(AbstractQuery.SummaryAlgorithm.class);
-        accepts(HELP, "show help");
-      }
-    };
+	/**
+	 * @param
+	 * @throws SesameBackendException
+	 */
+	public static void main(String[] args) throws SesameBackendException {
+		OptionParser parser = new OptionParser() {
+			{
+				accepts(
+				        TYPE,
+				        "Type of the input file "
+				                + Arrays.toString(SesameBackendFactory.BackendType
+				                        .values())).withRequiredArg()
+				        .ofType(SesameBackendFactory.BackendType.class)
+				        .required();
+				acceptsAll(
+				        asList(FEED, "feedmode"),
+				        "The feed mode allow you to create a repository without launching the SPARQL queries");
+				acceptsAll(
+				        asList("repository", "input", "url"),
+				        "Directory where the local repository is."
+				                + " Create the repository if "
+				                + "notthing is found. Or the url of the webserver.")
+				        .withRequiredArg().required();
+				accepts(ADD, "Add a file to the local repository.")
+				        .withRequiredArg();
+				accepts(ADDFORMAT,
+				        "The type of the input file: " + RDFFormat.values())
+				        .withRequiredArg().ofType(RDFFormat.class)
+				        .defaultsTo(RDFFormat.NTRIPLES);
+				accepts(PAGINATION,
+				        "Limit of the pagination (0 for infinite).")
+				        .withRequiredArg().ofType(Integer.class).defaultsTo(0);
+				acceptsAll(asList("domain", "graph"),
+				        "Limit the search to one domain.").withRequiredArg();
+				accepts("outputfile", "The output file.").withRequiredArg()
+				        .required();
+				acceptsAll(asList("database", "db"),
+				        "The database in the MYSQL.").withRequiredArg();
+				accepts("user", "The user for a MYSQL connection.")
+				        .withRequiredArg();
+				acceptsAll(asList("pass", "password"),
+				        "The password for a MYSQL connection.")
+				        .withRequiredArg();
+				accepts(HELP, "show help");
+			}
+		};
 
-    // Show the help
-    OptionParser helpParser = new OptionParser() {
-      {
-        accepts(HELP);
-        acceptsAll(asList(FEED, "feedmode"));
-        accepts(TYPE);
-        acceptsAll(asList("repository", "input", "url"));
-        accepts(ADD);
-        accepts(ADDFORMAT);
-        accepts(PAGINATION);
-        acceptsAll(asList("domain", "graph"));
-        accepts("outputfile");
-        acceptsAll(asList("database", "db"));
-        accepts("user");
-        acceptsAll(asList("pass", "password"));
-        accepts(CLASS_ATTRIBUTE);
-        acceptsAll(asList(SUMMARY_ALGORITHM, "algorithm"));
-      }
-    };
+		// Show the help
+		OptionParser helpParser = new OptionParser() {
+			{
+				accepts(HELP);
+				acceptsAll(asList(FEED, "feedmode"));
+				accepts(TYPE);
+				acceptsAll(asList("repository", "input", "url"));
+				accepts(ADD);
+				accepts(ADDFORMAT);
+				accepts(PAGINATION);
+				acceptsAll(asList("domain", "graph"));
+				accepts("outputfile");
+				acceptsAll(asList("database", "db"));
+				accepts("user");
+				acceptsAll(asList("pass", "password"));
+			}
+		};
 
-    // feed mode
-    OptionParser feedParser = new OptionParser() {
-      {
-        acceptsAll(asList(FEED, "feedmode")).isRequired();
-        accepts(TYPE).withRequiredArg()
-            .ofType(SesameBackendFactory.BackendType.class).required();
-        acceptsAll(asList("repository", "input", "url")).withRequiredArg()
-            .required();
-        acceptsAll(asList("domain", "graph")).withRequiredArg();
-        accepts(ADD).withRequiredArg().required();
-        accepts(ADDFORMAT).withRequiredArg().ofType(RDFFormat.class)
-            .defaultsTo(RDFFormat.NTRIPLES);
-        acceptsAll(asList("database", "db")).withRequiredArg();
-        accepts("user").withRequiredArg();
-        acceptsAll(asList("pass", "password")).withRequiredArg();
-      }
-    };
+		// feed mode
+		OptionParser feedParser = new OptionParser() {
+			{
+				acceptsAll(asList(FEED, "feedmode")).isRequired();
+				accepts(TYPE).withRequiredArg()
+				        .ofType(SesameBackendFactory.BackendType.class)
+				        .required();
+				acceptsAll(asList("repository", "input", "url"))
+				        .withRequiredArg().required();
+				acceptsAll(asList("domain", "graph")).withRequiredArg();
+				accepts(ADD).withRequiredArg().required();
+				accepts(ADDFORMAT).withRequiredArg().ofType(RDFFormat.class)
+				        .defaultsTo(RDFFormat.NTRIPLES);
+				acceptsAll(asList("database", "db")).withRequiredArg();
+				accepts("user").withRequiredArg();
+				acceptsAll(asList("pass", "password")).withRequiredArg();
+			}
+		};
 
     OptionSet options = helpParser.parse(args);
     if (options.has(HELP)) {
@@ -174,358 +170,312 @@ public class Pipeline {
     }
   }
 
-  /**
-   * Get the object MultiLabelledQuery asked by the user.
-   * 
-   * @param options
-   *          The valid options from STDIN
-   */
-  private static AbstractQuery getMultiLabelledQueryInstance(OptionSet options)
-      throws RepositoryException, RDFParseException, IOException,
-      SesameBackendException {
-    // First at all, get the location of the local repository
-    String repository = "";
-    repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
+	/**
+	 * Parse the STDIN input, then launch the query ans the dump.
+	 * 
+	 * @param options
+	 *            The valid options from STDIN
+	 * @throws SesameBackendException
+	 */
+	private static void normalInput(OptionSet options)
+	        throws SesameBackendException {
+		// First at all, get the location of the local repository
+		String repository = "";
+		repository = options.valueOf("repository").toString();
+		Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
 
-    AbstractQuery q = null;
-    if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.RDBMS)) {
-      if (options.has("db") && options.hasArgument("db")) {
-        if (options.has("user") && options.hasArgument("user")) {
-          if (options.has("pass") && options.hasArgument("pass")) {
-            q = new RDBMSMultiLabelledQuery(repository, options.valueOf("db")
-                .toString(), options.valueOf("user").toString(), options
-                .valueOf("pass").toString());
-          } else {
-            logger.error("You need to define a password "
-                + "to connect to a MYSQL database");
-            System.exit(10);
-          }
-        } else {
-          logger.error("You need to define a user to "
-              + "connect to a MYSQL database");
-          System.exit(10);
-        }
-      } else {
-        logger.error("You need to select a database");
-        System.exit(10);
-      }
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.NATIVE)) {
-      q = new NativeMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.MEMORY)) {
-      q = new MemoryMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.HTTP)) {
-      q = new HTTPMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.VIRTUOSO)) {
-      if (options.has("user") && options.hasArgument("user")) {
-        if (options.has("pass") && options.hasArgument("pass")) {
-          q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository,
-              options.valueOf("user").toString(), options.valueOf("pass")
-                  .toString());
-        } else {
-          logger.error("You need to define a password "
-              + "to connect to a virtuoso repository.");
-          System.exit(10);
-        }
-      } else {
-        q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository);
-      }
-    }
-    return q;
-  }
+		// Then create the Query. The local repository is created and open in
+		// the query.
+		Query q = null;
+		try {
+			if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.RDBMS)) {
+				System.out.println("a");
 
-  /**
-   * Get the object SignleLabelledQuery asked by the user.
-   * 
-   * @param options
-   *          The valid options from STDIN
-   */
-  private static AbstractQuery getSingleLabelledQueryInstance(OptionSet options)
-      throws RepositoryException, RDFParseException, IOException,
-      SesameBackendException {
-    // First at all, get the location of the local repository
-    String repository = "";
-    repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
+				if (options.has("db") && options.hasArgument("db")) {
+					if (options.has("user") && options.hasArgument("user")) {
+						if (options.has("pass") && options.hasArgument("pass")) {
+							q = new QueryRDBMS(repository, options.valueOf(
+							        "db").toString(), options.valueOf("user")
+							        .toString(), options.valueOf("pass")
+							        .toString());
+						} else {
+							logger.error("You need to define a password "
+							        + "to connect to a MYSQL database");
+							System.exit(10);
+						}
+					} else {
+						logger.error("You need to define a user to "
+						        + "connect to a MYSQL database");
+						System.exit(10);
+					}
+				} else {
+					logger.error("You need to select a database");
+					System.exit(10);
+				}
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.NATIVE)) {
+				q = new QueryNative(repository);
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.MEMORY)) {
+				q = new QueryMemory(repository);
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.HTTP)) {
+				q = new QueryHTTP(repository);
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.VIRTUOSO)) {
+				if (options.has("user") && options.hasArgument("user")) {
+					if (options.has("pass") && options.hasArgument("pass")) {
+						q = new QueryHTTPVirtuoso(new Dump(), repository,
+						        options.valueOf("user").toString(), options
+						                .valueOf("pass").toString());
+					} else {
+						logger.error("You need to define a password "
+						        + "to connect to a virtuoso repository.");
+						System.exit(10);
+					}
+				} else {
+					q = new QueryHTTPVirtuoso(new Dump(), repository);
+				}
+			}
+		} catch (Exception e) {
+			// Fail at the connection, need to print the stack
 
-    AbstractQuery q = null;
-    if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.RDBMS)) {
-      if (options.has("db") && options.hasArgument("db")) {
-        if (options.has("user") && options.hasArgument("user")) {
-          if (options.has("pass") && options.hasArgument("pass")) {
-            q = new RDBMSSingleLabelledQuery(repository, options.valueOf("db")
-                .toString(), options.valueOf("user").toString(), options
-                .valueOf("pass").toString());
-          } else {
-            logger.error("You need to define a password "
-                + "to connect to a MYSQL database");
-            System.exit(10);
-          }
-        } else {
-          logger.error("You need to define a user to "
-              + "connect to a MYSQL database");
-          System.exit(10);
-        }
-      } else {
-        logger.error("You need to select a database");
-        System.exit(10);
-      }
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.NATIVE)) {
-      q = new NativeSingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.MEMORY)) {
-      q = new MemorySingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.HTTP)) {
-      q = new HTTPSingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.VIRTUOSO)) {
-      if (options.has("user") && options.hasArgument("user")) {
-        if (options.has("pass") && options.hasArgument("pass")) {
-          q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository,
-              options.valueOf("user").toString(), options.valueOf("pass")
-                  .toString());
-        } else {
-          logger.error("You need to define a password "
-              + "to connect to a virtuoso repository.");
-          System.exit(10);
-        }
-      } else {
-        q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository);
-      }
-    }
-    return q;
-  }
+			logger.error(e.getMessage());
+			try {
+				q.stopConnexion();
+			} catch (Exception e1) {
+				logger.error(e1.getMessage());
+			}
+			System.exit(10);
+		}
 
-  /**
-   * Parse the STDIN input, then launch the query and the dump.
-   * 
-   * @param options
-   *          The valid options from STDIN
-   * @throws SesameBackendException
-   */
-  private static void normalInput(OptionSet options)
-      throws SesameBackendException {
+		// Set the domain
+		String domain = "";
+		if (options.has("domain") && options.hasArgument("domain")) {
+			domain = options.valueOf("domain").toString();
+			q.setGraph(domain);
+		}
 
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
+		// Add file to the repository
+		if (options.has(ADD) && options.hasArgument(ADD)) {
+			for (Object newFile : options.valuesOf(ADD)) {
+				try {
+					if (options.has(ADDFORMAT)
+					        && options.hasArgument(ADDFORMAT)) {
+						if (domain.equals("")) {
+							q.addFileToRepository(newFile.toString(),
+							        (RDFFormat) options.valueOf(ADDFORMAT));
+						} else {
+							q.addFileToRepository(
+							        newFile.toString(),
+							        (RDFFormat) options.valueOf(ADDFORMAT),
+							        NTriplesUtil.parseResource("<" + domain
+							                + ">", new MemValueFactory()));
+						}
+					} else {
+						// Ntriples format
+						if (domain.equals("")) {
+							q.addFileToRepository(newFile.toString(),
+							        RDFFormat.NTRIPLES);
+						} else {
+							q.addFileToRepository(
+							        newFile.toString(),
+							        RDFFormat.NTRIPLES,
+							        NTriplesUtil.parseResource("<" + domain
+							                + ">", new MemValueFactory()));
+						}
+					}
+				} catch (RDFParseException e) {
+					// Invalid output RDF => print the stack
+					logger.error(e.getMessage());
+					System.exit(12);
+				} catch (RepositoryException e) {
+					logger.warn("Repository not found\n");
+					logger.error(e.getMessage());
+					System.exit(12);
+				} catch (IOException e) {
+					logger.warn("File not found or not readable\n");
+					logger.error(e.getMessage());
+					System.exit(12);
+				}
+			}
+		}
 
-    if (options.has(CLASS_ATTRIBUTE)) {
-      // Suggestion :
-      // "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-      // "http://opengraphprotocol.org/schema/type",
-      // "http://ogp.me/ns#type",
-      // "http://opengraph.org/schema/type",
-      // "http://purl.org/dc/elements/1.1/type",
-      // "http://dbpedia.org/property/type"
+		// Change the pagination
+		if (options.has(PAGINATION)) {
+			q.setPagination((Integer) options.valueOf(PAGINATION));
+		} else {
+			q.setPagination(0);
+		}
 
-      String[] classAttributes = new String[options.valuesOf(CLASS_ATTRIBUTE)
-          .size()];
+		// launch the query
+		try {
+			// get the outputfile no need more check
+			String outputfile = options.valueOf("outputfile").toString();
 
-      int i = 0;
-      for (Object elt : options.valuesOf(CLASS_ATTRIBUTE)) {
-        classAttributes[i++] = elt.toString();
-      }
+			// Initialize DUMP
+			q.initDump(outputfile);
 
-      AnalyticsClassAttributes.initClassAttributes(classAttributes);
-    } else {
-      String[] defaultClassAttribute = { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE };
-      AnalyticsClassAttributes.initClassAttributes(defaultClassAttribute);
-    }
-    // Then create the Query. The local repository is created and open in
-    // the query.
-    AbstractQuery q = null;
-    try {
-      if (options.has(SUMMARY_ALGORITHM)
-          && (options.valueOf(SUMMARY_ALGORITHM)
-              .equals(AbstractQuery.SummaryAlgorithm.MULTI_LABELLED))) {
-        q = getMultiLabelledQueryInstance(options);
-      } else {
-        q = getSingleLabelledQueryInstance(options);
-      }
-    } catch (Exception e) {
-      // Fail at the connection, need to print the stack
+			// Launch query for getting node type and node cardinality
+			q.computeName();
 
-      logger.error(e.getMessage());
-      try {
-        q.stopConnexion();
-      } catch (Exception e1) {
-        logger.error(e1.getMessage());
-      }
-      System.exit(10);
-    }
+			// Launch query for getting predicates
+			q.computePredicate();
+		} catch (Exception e) {
+			// print the stack, with big debug
+			logger.error(e.getMessage());
+			logger.error("Wrong query");
+			try {
+				q.stopConnexion();
+			} catch (Exception e1) {
+				logger.error(e1.getMessage());
+			}
+			System.exit(13);
+		} finally {
+			try {
+				q.stopConnexion();
+			} catch (Exception e1) {
+				logger.error(e1.getMessage());
+			}
+		}
+	}
 
-    // Set the domain
-    String domain = "";
-    if (options.has("domain") && options.hasArgument("domain")) {
-      domain = options.valueOf("domain").toString();
-      q.setGraph(domain);
-    }
+	/**
+	 * Parse the STDIN input, then launch the query ans the dump.
+	 * 
+	 * @param options
+	 *            The valid options from STDIN
+	 * @throws SesameBackendException
+	 * @throws IllegalArgumentException
+	 */
+	private static void feedInput(OptionSet options)
+	        throws IllegalArgumentException, SesameBackendException {
+		// First at all, get the location of the local repository
+		String repository = "";
+		repository = options.valueOf("repository").toString();
+		Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
 
-    // Add file to the repository
-    if (options.has(ADD) && options.hasArgument(ADD)) {
-      for (Object newFile : options.valuesOf(ADD)) {
-        try {
-          if (options.has(ADDFORMAT) && options.hasArgument(ADDFORMAT)) {
-            if (domain.equals("")) {
-              q.addFileToRepository(newFile.toString(),
-                  (RDFFormat) options.valueOf(ADDFORMAT));
-            } else {
-              q.addFileToRepository(newFile.toString(), (RDFFormat) options
-                  .valueOf(ADDFORMAT), NTriplesUtil.parseResource("<" + domain
-                  + ">", new MemValueFactory()));
-            }
-          } else {
-            // Ntriples format
-            if (domain.equals("")) {
-              q.addFileToRepository(newFile.toString(), RDFFormat.NTRIPLES);
-            } else {
-              q.addFileToRepository(newFile.toString(), RDFFormat.NTRIPLES,
-                  NTriplesUtil.parseResource("<" + domain + ">",
-                      new MemValueFactory()));
-            }
-          }
-        } catch (RDFParseException e) {
-          // Invalid output RDF => print the stack
-          logger.error(e.getMessage());
-          System.exit(12);
-        } catch (RepositoryException e) {
-          logger.warn("Repository not found\n");
-          logger.error(e.getMessage());
-          System.exit(12);
-        } catch (IOException e) {
-          logger.warn("File not found or not readable\n");
-          logger.error(e.getMessage());
-          System.exit(12);
-        }
-      }
-    }
+		// Then create the Query. The local repository is created and open in
+		// the query.
+		Query q = null;
 
-    // Change the pagination
-    if (options.has(PAGINATION)) {
-      q.setPagination((Integer) options.valueOf(PAGINATION));
-    } else {
-      q.setPagination(0);
-    }
+		try {
+			if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.RDBMS)) {
+				if (options.has("db") && options.hasArgument("db")) {
+					if (options.has("user") && options.hasArgument("user")) {
+						if (options.has("pass") && options.hasArgument("pass")) {
+							q = new QueryRDBMS(new Dump(), repository, options
+							        .valueOf("db").toString(), options
+							        .valueOf("user").toString(), options
+							        .valueOf("pass").toString());
+						} else {
+							logger.error("You need to define a password "
+							        + "to connect to a MYSQL database");
+							System.exit(10);
+						}
+					} else {
+						logger.error("You need to define a user to "
+						        + "connect to a MYSQL database");
+						System.exit(10);
+					}
+				} else {
+					logger.error("You need to select a database");
+					System.exit(10);
+				}
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.NATIVE)) {
+				q = new QueryNative(new Dump(), repository);
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.MEMORY)) {
+				q = new QueryMemory(new Dump(), repository);
+			} else if (options.valueOf(TYPE).equals(
+			        SesameBackendFactory.BackendType.HTTP)) {
+				q = new QueryHTTP(repository);
+			} else if (options.valueOf("type").equals(
+			        SesameBackendFactory.BackendType.VIRTUOSO)) {
+				if (options.has("user") && options.hasArgument("user")) {
+					if (options.has("pass") && options.hasArgument("pass")) {
+						q = new QueryHTTPVirtuoso(new Dump(), repository,
+						        options.valueOf("user").toString(), options
+						                .valueOf("pass").toString());
+					} else {
+						logger.error("You need to define a password "
+						        + "to connect to a virtuoso repository.");
+						System.exit(10);
+					}
+				} else {
+					q = new QueryHTTPVirtuoso(new Dump(), repository);
+				}
+			}
+		} catch (Exception e) {
+			// Fail at the connection, need to print the stack
+			logger.error(e.getMessage());
+			try {
+				q.stopConnexion();
+			} catch (Exception e1) {
+				logger.error(e1.getMessage());
+			}
+			System.exit(10);
+		}
 
-    // launch the query
-    try {
-      // get the outputfile no need more check
-      String outputfile = options.valueOf("outputfile").toString();
+		// Set the domain
+		String domain = "";
+		if (options.has("domain") && options.hasArgument("domain")) {
+			domain = options.valueOf("domain").toString();
+			q.setGraph(domain);
+		}
 
-      // Initialize DUMP
-      q.initDump(outputfile);
+		// Add file to the repository
+		if (options.has(ADD) && options.hasArgument(ADD)) {
+			for (Object newFile : options.valuesOf(ADD)) {
+				try {
+					if (options.has(ADDFORMAT)
+					        && options.hasArgument(ADDFORMAT)) {
+						if (domain.equals("")) {
+							q.addFileToRepository(newFile.toString(),
+							        (RDFFormat) options.valueOf(ADDFORMAT));
+						} else {
+							q.addFileToRepository(
+							        newFile.toString(),
+							        (RDFFormat) options.valueOf(ADDFORMAT),
+							        NTriplesUtil.parseResource("<" + domain
+							                + ">", new MemValueFactory()));
+						}
+					} else {
+						// Ntriples format
+						if (domain.equals("")) {
+							q.addFileToRepository(newFile.toString(),
+							        RDFFormat.NTRIPLES);
+						} else {
+							q.addFileToRepository(
+							        newFile.toString(),
+							        RDFFormat.NTRIPLES,
+							        NTriplesUtil.parseResource("<" + domain
+							                + ">", new MemValueFactory()));
+						}
+					}
+				} catch (RDFParseException e) {
+					// Invalid output RDF => print the stack
+					logger.error(e.getMessage());
+					System.exit(12);
+				} catch (RepositoryException e) {
+					logger.warn("Repository not found\n");
+					logger.error(e.getMessage());
+					System.exit(12);
+				} catch (IOException e) {
+					logger.warn("File not found or not readable\n");
+					logger.error(e.getMessage());
+					System.exit(12);
+				}
+			}
+		}
 
-      // Launch query for getting node type and node cardinality
-      q.computeName();
-
-      // Launch query for getting predicates
-      q.computePredicate();
-    } catch (Exception e) {
-      // print the stack, with big debug
-      logger.error(e.getMessage());
-      logger.error("Wrong query");
-      try {
-        q.stopConnexion();
-      } catch (Exception e1) {
-        logger.error(e1.getMessage());
-      }
-      System.exit(13);
-    } finally {
-      try {
-        q.stopConnexion();
-      } catch (Exception e1) {
-        logger.error(e1.getMessage());
-      }
-    }
-  }
-
-  /**
-   * Parse the STDIN input, then launch the query ans the dump.
-   * 
-   * @param options
-   *          The valid options from STDIN
-   * @throws SesameBackendException
-   * @throws IllegalArgumentException
-   */
-  private static void feedInput(OptionSet options)
-      throws IllegalArgumentException, SesameBackendException {
-    // First at all, get the location of the local repository
-    String repository = "";
-    repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
-
-    // Then create the Query. The local repository is created and open in
-    // the query.
-    AbstractQuery q = null;
-
-    try {
-      q = getSingleLabelledQueryInstance(options);
-    } catch (Exception e) {
-      // Fail at the connection, need to print the stack
-      logger.error(e.getMessage());
-      try {
-        q.stopConnexion();
-      } catch (Exception e1) {
-        logger.error(e1.getMessage());
-      }
-      System.exit(10);
-    }
-
-    // Set the domain
-    String domain = "";
-    if (options.has("domain") && options.hasArgument("domain")) {
-      domain = options.valueOf("domain").toString();
-      q.setGraph(domain);
-    }
-
-    // Add file to the repository
-    if (options.has(ADD) && options.hasArgument(ADD)) {
-      for (Object newFile : options.valuesOf(ADD)) {
-        try {
-          if (options.has(ADDFORMAT) && options.hasArgument(ADDFORMAT)) {
-            if (domain.equals("")) {
-              q.addFileToRepository(newFile.toString(),
-                  (RDFFormat) options.valueOf(ADDFORMAT));
-            } else {
-              q.addFileToRepository(newFile.toString(), (RDFFormat) options
-                  .valueOf(ADDFORMAT), NTriplesUtil.parseResource("<" + domain
-                  + ">", new MemValueFactory()));
-            }
-          } else {
-            // Ntriples format
-            if (domain.equals("")) {
-              q.addFileToRepository(newFile.toString(), RDFFormat.NTRIPLES);
-            } else {
-              q.addFileToRepository(newFile.toString(), RDFFormat.NTRIPLES,
-                  NTriplesUtil.parseResource("<" + domain + ">",
-                      new MemValueFactory()));
-            }
-          }
-        } catch (RDFParseException e) {
-          // Invalid output RDF => print the stack
-          logger.error(e.getMessage());
-          System.exit(12);
-        } catch (RepositoryException e) {
-          logger.warn("Repository not found\n");
-          logger.error(e.getMessage());
-          System.exit(12);
-        } catch (IOException e) {
-          logger.warn("File not found or not readable\n");
-          logger.error(e.getMessage());
-          System.exit(12);
-        }
-      }
-    }
-
-    try {
-      q.stopConnexion();
-    } catch (Exception e1) {
-      logger.error(e1.getMessage());
-    }
-  }
+		try {
+			q.stopConnexion();
+		} catch (Exception e1) {
+			logger.error(e1.getMessage());
+		}
+	}
 }
