@@ -7,6 +7,7 @@
 package org.sindice.summary;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -50,7 +51,7 @@ public class Dump {
   private int _nodeCounter = 0;
   private String _domain = "";
   private String _sndDomain = "";
-  protected static final Logger _logger = Logger.getLogger(Dump.class);;
+  protected static final Logger _logger = Logger.getLogger(Dump.class);
 
   private void dumpTriple(String s, String p, String o) throws IOException {
     _output.write(s);
@@ -306,6 +307,9 @@ public class Dump {
    */
   public void openRDF(String outputFile, String domain) {
     try {
+      // Create ancestor directory tree
+      final File parent = new File(outputFile).getParentFile();
+      parent.mkdirs();
       // Create file
       _output = new BufferedWriter(new OutputStreamWriter(
           new GZIPOutputStream(new FileOutputStream(outputFile))));

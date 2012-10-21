@@ -58,16 +58,17 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorServlet
 extends HttpServlet {
 
-  private static final long             serialVersionUID = 4137296200305461786L;
+  private static final long             serialVersionUID     = 4137296200305461786L;
 
-  private static final Logger           logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
+  private static final Logger           logger               = LoggerFactory
+                                                             .getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String            DGS_GRAPH        = "dg";
-  public static final String            DATA_REQUEST     = "data";
-  public static final String            DEFAULT          = "DEFAULT";
+  public static final String            DGS_GRAPH            = "dg";
+  public static final String            DATA_REQUEST         = "data";
+  private static final String           DEFAULT_DATA_REQUEST = "DEFAULT";
 
-  private final List<LabelsRanking>     labelsRankings   = new ArrayList<LabelsRanking>();
-  private SesameBackend<Label, Context> dgsBackend       = null;
+  private final List<LabelsRanking>     labelsRankings       = new ArrayList<LabelsRanking>();
+  private SesameBackend<Label, Context> dgsBackend           = null;
   private int                           pagination;
   private int                           limit;
 
