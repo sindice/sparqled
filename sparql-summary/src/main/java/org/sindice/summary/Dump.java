@@ -45,15 +45,12 @@ import org.sindice.core.analytics.commons.util.URIUtil;
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
 public class Dump {
+
   private BufferedWriter _output;
   private int _nodeCounter = 0;
   private String _domain = "";
   private String _sndDomain = "";
-  protected Logger _logger;
-
-  public Dump() {
-    _logger = Logger.getLogger(Dump.class);
-  }
+  protected static final Logger _logger = Logger.getLogger(Dump.class);;
 
   private void dumpTriple(String s, String p, String o) throws IOException {
     _output.write(s);
@@ -86,7 +83,6 @@ public class Dump {
     String element;
     nodeType = nodeType.substring(1, nodeType.length() - 1);
     HashSet<String> nodeList = new HashSet<String>();
-    Logger logger = Logger.getLogger("org.sindice.summary.dump");
 
     // parse
     for (String pair : nodeType.split(" ")) {
@@ -103,8 +99,8 @@ public class Dump {
         try {
           o = new Resource((URLDecoder.decode(element, "UTF-8")), true);
         } catch (Exception e) {
-          logger.info("UTF-8 error");
-          logger.info(e.toString());
+          _logger.info("UTF-8 error");
+          _logger.info(e.toString());
         }
         dumpTriple(s.toN3(), p.toN3(), o.toN3());
         nodeList.add(element);
@@ -301,7 +297,7 @@ public class Dump {
   }
 
   /**
-   * Open a file in order to create a RDF ouput.
+   * Open a file in order to create a RDF output.
    * 
    * @param outputFile
    *          The file output.
@@ -309,8 +305,6 @@ public class Dump {
    *          The domain of the query.
    */
   public void openRDF(String outputFile, String domain) {
-    Logger logger = Logger.getLogger("org.sindice.summary.dump");
-
     try {
       // Create file
       _output = new BufferedWriter(new OutputStreamWriter(
@@ -324,24 +318,7 @@ public class Dump {
       _nodeCounter = 0;
 
     } catch (Exception e) {// Catch exception if any
-      logger.debug("Error: " + e.getMessage());
-    }
-  }
-
-		try {
-			// Create file
-			_output = new BufferedWriter(new OutputStreamWriter(
-			        new GZIPOutputStream(new FileOutputStream(outputFile))));
-			_domain = domain;
-			if (domain.equals("sindice.com")) {
-				_sndDomain = domain;
-			} else {
-				_sndDomain = URIUtil.getSndDomainFromUrl(domain);
-			}
-			_nodeCounter = 0;
-
-    } catch (Exception e) {// Catch exception if any
-      logger.debug("Error: " + e.getMessage());
+      _logger.debug("Error: " + e.getMessage());
     }
   }
 
@@ -352,8 +329,8 @@ public class Dump {
     try {
       _output.close();
     } catch (Exception e) {// Catch exception if any
-      Logger logger = Logger.getLogger("org.sindice.summary.dump");
-      logger.debug("Error: " + e.getMessage());
+      _logger.debug("Error: " + e.getMessage());
     }
   }
+
 }

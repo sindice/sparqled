@@ -147,7 +147,7 @@ extends HttpServlet {
     if (request.getParameter(DGS_GRAPH) != null) {
       DataGraphSummaryVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
     } else {
-      DataGraphSummaryVocab.setGraphSummaryGraph(AnalyticsVocab.DEFAULT_GSG);
+      DataGraphSummaryVocab.setGraphSummaryGraph(DataGraphSummaryVocab.DEFAULT_GSG);
     }
   }
 

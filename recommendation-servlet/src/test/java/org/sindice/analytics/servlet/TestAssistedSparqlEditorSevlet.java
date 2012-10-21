@@ -122,6 +122,8 @@ public class TestAssistedSparqlEditorSevlet {
   @Before
   public void setUp()
   throws Exception {
+    // reset the vocab parameters
+    DataGraphSummaryVocab.resetToDefaults();
     // Add the nquads parser
     RDFParserRegistry.getInstance().add(new RDFParserFactory() {
   
@@ -170,10 +172,6 @@ public class TestAssistedSparqlEditorSevlet {
     System.out.println("aseURL: [" + aseBaseUrl + "]");
 
     aseTester.start();
-
-    // reinit the graph summary graph
-    PutMethod put = new PutMethod(aseBaseUrl);
-    client.executeMethod(put);
   }
 
   @After
@@ -229,7 +227,6 @@ public class TestAssistedSparqlEditorSevlet {
     final String json = post.getResponseBodyAsString();
     final ObjectMapper mapper = new ObjectMapper();
 
-    System.out.println(json);
     final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
     assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
     assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
@@ -641,8 +638,8 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
       final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
       final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
-        add(new Results(2, AnalyticsVocab.DOMAIN_URI_PREFIX + "countries.eu"));
-        add(new Results(4, AnalyticsVocab.DOMAIN_URI_PREFIX + "unipi.it"));
+        add(new Results(2, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu"));
+        add(new Results(4, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it"));
       }};
       checkResponse(jsonMap, expectedResults, false, false);
     } else {

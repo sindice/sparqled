@@ -12,7 +12,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.query.BindingSet;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
@@ -60,7 +60,7 @@ extends JerseyTest {
     WebResource webResource = resource();
     webResource.path("summaries/create").post(String.class);
 
-    checkSummary(SesameBackendFactory.getDgsBackend(BackendType.NATIVE, recommenderRepo), AnalyticsVocab.GRAPH_SUMMARY_GRAPH);
+    checkSummary(SesameBackendFactory.getDgsBackend(BackendType.NATIVE, recommenderRepo), DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
   }
 
   @Test
@@ -105,7 +105,7 @@ extends JerseyTest {
     backend.initConnection();
 
     QueryIterator<?, ?> it = backend.submit(
-      "PREFIX an: <" + AnalyticsVocab.ANALYTICS_PREFIX + ">\n" +
+      "PREFIX an: <" + DataGraphSummaryVocab.DGS_PREFIX + ">\n" +
       "SELECT DISTINCT ?Label ?pLabel\n" +
       "FROM <" + graphName + "> {\n" +
       "  ?node an:label [ an:label ?Label ] .\n" +

@@ -42,7 +42,7 @@ import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.ntriples.NTriplesUtil;
-import org.sindice.core.analytics.commons.summary.AnalyticsVocab;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
@@ -105,7 +105,7 @@ public class SummaryRest {
       backend.initConnection();
       final QueryIterator<?, ?> it = backend.submit(
         "SELECT ?summary FROM <" + SUMMARIES_GRAPH + "> {" +
-        "  <" + AnalyticsVocab.DEFAULT_GSG + "> " +
+        "  <" + DataGraphSummaryVocab.DEFAULT_GSG + "> " +
         HAS_PART_URI + " ?summary " +
         "}"
       );
@@ -156,7 +156,7 @@ public class SummaryRest {
       backend.getConnection().clear(NTriplesUtil.parseURI("<" + graph  + ">", factory));
       // Unregister the graph
       final URI context = NTriplesUtil.parseURI("<" + SUMMARIES_GRAPH  + ">", factory);
-      final URI s = NTriplesUtil.parseURI("<" + AnalyticsVocab.DEFAULT_GSG  + ">", factory);
+      final URI s = NTriplesUtil.parseURI("<" + DataGraphSummaryVocab.DEFAULT_GSG  + ">", factory);
       final URI p = NTriplesUtil.parseURI(HAS_PART_URI, factory);
       final URI o = NTriplesUtil.parseURI("<" + graph  + ">", factory);
       backend.getConnection().remove(s, p, o, context);
@@ -190,7 +190,7 @@ public class SummaryRest {
   @Produces(MediaType.APPLICATION_JSON)
   public String computeSummary(@FormParam("input-graph") String inputGraph,
                                @FormParam("output-graph")
-                               @DefaultValue(AnalyticsVocab.DEFAULT_GSG)
+                               @DefaultValue(DataGraphSummaryVocab.DEFAULT_GSG)
                                String outputGraph) {
     final File summaryPath = new File(tmpPath, SUMMARY_NAME);
     String response = getJson(Status.ERROR, "");
@@ -225,7 +225,7 @@ public class SummaryRest {
       /*
        * Register this summary
        */
-      final String triple = "<" + AnalyticsVocab.DEFAULT_GSG + "> " +
+      final String triple = "<" + DataGraphSummaryVocab.DEFAULT_GSG + "> " +
       HAS_PART_URI + " <" + outputGraph + "> .\n";
       final File regPath = new File(tmpPath, "reg-path");
       try {
