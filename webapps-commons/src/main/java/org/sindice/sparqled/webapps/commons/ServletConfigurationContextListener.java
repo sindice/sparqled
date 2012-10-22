@@ -90,7 +90,7 @@ implements ServletContextListener {
 
     String servletContextName = context.getServletContextName();
     addEnvToContext(context);
-
+    
     String sindiceHome = null;
     // FOR DEBIAN PACKAGE LOD2 PROJECT INTEGRATION
     // check that following directory exists
