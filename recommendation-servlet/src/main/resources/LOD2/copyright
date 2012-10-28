@@ -1,0 +1,46 @@
+This work was packaged for LOD2 by:
+
+    stephane campinas <stephane.campinas@deri.org>  Fri, 17 Aug 2012 09:13:40 +0100
+
+It was downloaded from:
+
+    https://github.com/sindicetech/sparqled
+
+Upstream Author(s):
+
+    Giovanni Tummarello <giovanni.tummarello@deri.org>
+    Renaud Delbru <renaud.delbru@deri.org>
+    Pierre Bailly-Ferry <pierre.bailly@deri.org>
+    Stephane Campinas <stephane.campinas@deri.org>
+    Diego Ceccarelli <diego.ceccarelli@isti.cnr.it>
+    Szymon Danielczyk <szymon.danielczyk@deri.org>
+    Bibhas Das <bibhas.das@deri.org>
+    Dana Klassen <dana.klassen@deri.org>
+    Thomas E. Perry <thomas.perry@deri.org>
+
+Copyright:
+
+    Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
+
+License:
+
+    This project is a free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    This project is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public
+    License along with this project. If not, see <http://www.gnu.org/licenses/>.
+
+The Debian packaging is:
+
+    Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
+
+and is licensed under the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at your 
+option) any later version.
