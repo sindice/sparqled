@@ -9,3 +9,4 @@ Improvements
 New Features
 
 * [GH-11] Implement the Single-Class Label Model
+* [GH-9] Provide a REST API to SparQLed
