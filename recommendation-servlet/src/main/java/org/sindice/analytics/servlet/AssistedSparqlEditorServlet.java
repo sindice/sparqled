@@ -148,6 +148,7 @@ extends HttpServlet {
     } else {
       DataGraphSummaryVocab.setGraphSummaryGraph(DataGraphSummaryVocab.DEFAULT_GSG);
     }
+    logger.info("Using the summary: {}", DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
   }
 
   /**

@@ -88,10 +88,9 @@ public class SummaryRest {
     return (String[]) context.getAttribute(SummaryRestContextListener.PROXY_BACKEND_ARGS);
   }
 
-  /*
+  /**
    * List the current Data Graph Summaries
    */
-
   @GET
   @Path("/list")
   @Produces(MediaType.APPLICATION_JSON)
@@ -130,11 +129,10 @@ public class SummaryRest {
     return response;
   }
 
-  /*
+  /**
    * Delete the given graph from the endpoint, and unregister it from the list
    * of available summaries.
    */
-
   @DELETE
   @Path("/delete")
   @Produces(MediaType.APPLICATION_JSON)
@@ -143,7 +141,7 @@ public class SummaryRest {
     String response = getJson(Status.ERROR, "");
     SesameBackend<?, ?> backend = null;
 
-    if (graph == null) {
+    if (graph == null || graph.isEmpty()) {
       response = getJson(Status.ERROR, "You need to specify the graph summary to delete");
       return response;
     }
@@ -181,10 +179,9 @@ public class SummaryRest {
     return response;
   }
 
-  /*
+  /**
    * Create a new Data Graph Summary
    */
-
   @POST
   @Path("/create")
   @Produces(MediaType.APPLICATION_JSON)
@@ -199,7 +196,7 @@ public class SummaryRest {
        * Compute the summary
        */
       final String[] create;
-      if (inputGraph == null) {
+      if (inputGraph == null || inputGraph.isEmpty()) {
         create = (
           "--type " + getProxyType() + " --repository " + getProxyArgs()[0] +
           " --outputfile " + summaryPath.getAbsolutePath() +
@@ -268,15 +265,15 @@ public class SummaryRest {
     return "{\"status\":\"" + status + "\",\"message\":\"" + message + "\"}";
   }
 
-  /*
+  /**
    * Retrieve triples from the given input-graph. The endpoint used is the one
    * configured in the recommender tag.
    */
-
   @GET
   @Path("/peek")
   @Produces(MediaType.APPLICATION_JSON)
   public String getDataPeek(@QueryParam("input-graph") String inputGraph,
+                            @DefaultValue("10")
                             @QueryParam("limit") String limit) {
     final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
@@ -286,19 +283,19 @@ public class SummaryRest {
       backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
       backend.initConnection();
       final QueryIterator<?, ?> it;
-      if (inputGraph == null) {
+      if (inputGraph == null || inputGraph.isEmpty()) {
         it = backend.submit(
           "SELECT * {" +
           "  ?s ?p ?o " +
           "}" +
-          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
+          " LIMIT " + Integer.valueOf(limit)
         );
       } else {
         it = backend.submit(
           "SELECT * FROM <" + inputGraph + "> {" +
           "  ?s ?p ?o " +
           "}" +
-          (limit == null ? "" : " LIMIT " + Integer.valueOf(limit))
+          " LIMIT " + Integer.valueOf(limit)
         );
       }
       final ArrayList<String> triples = new ArrayList<String>();

@@ -53,9 +53,22 @@
       </div>
       <div class="spacer"></div>
     </td>
+    <td>
+      <div id="stylized" class="component">
+        <form id="form2" name="select-dgs" method="post" action="index.html">
+          <h1>Select a Summary.</h1>
+          <p>This graph will be used to compute recommendations.</p>
+
+          <label>Graph</label> <input type="text" name="dg" id="dg"/>
+          <button id="select" type="submit">Select</button>
+          <div class="spacer"></div>
+        </form>
+        <div id="select-result"></div>
+      </div>
+    </td>
   </tr>
   <tr>
-    <td colspan="2">
+    <td colspan="3">
       <div>
         <iframe style="width: 100%; height: 1000px; border: none;"
           src="http://localhost:8080/sparqled/sindice-editor/"
