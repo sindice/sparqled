@@ -18,6 +18,8 @@ import net.spy.memcached.MemcachedClient;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
+import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
