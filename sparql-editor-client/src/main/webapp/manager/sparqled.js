@@ -5,7 +5,7 @@ $(function() {
     var ograph = $("input#output-graph").val();
     $.ajax({
       type : "POST",
-      url : "http://localhost:8080/sparqled/rest/summaries/create",
+      url : "/sparqled/rest/summaries/create",
       data : "input-graph=" + igraph + "&output-graph=" + ograph,
       success : function(data) {
         $('#create-result').html("<h2>" + data.message + "</h2>");
@@ -23,7 +23,7 @@ $(function() {
   $("#list").click(function() {
     $.ajax({
       type : "GET",
-      url : "http://localhost:8080/sparqled/rest/summaries/list",
+      url : "/sparqled/rest/summaries/list",
       success : function(data) {
         $('#list-result').html("<h2>" + data.message + "</h2>" + data.data);
       },
@@ -42,7 +42,7 @@ $(function() {
         var graph = $("input#dg").val();
         $.ajax({
           type : "PUT",
-          url : "http://localhost:8080/sparqled/AssistedSparqlEditorServlet?dg=" + graph,
+          url : "/sparqled/AssistedSparqlEditorServlet?dg=" + graph,
           success: function(data) {
             $('#select-result').html("<h2>The graph " + graph + " is currently selected.<h2>");
           },
