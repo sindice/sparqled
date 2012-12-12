@@ -205,8 +205,7 @@ abstract public class AbstractQuery {
    */
   public void initDump(String output) throws Exception {
     if (!_setGraph || _domain.equals("")) {
-      _logger.error("Dump initialization without a graph initialised.\n"
-          + "Second domain = sindice.com");
+      _logger.error("Dump initialization without a graph initialised.");
       _domain = "sindice.com";
     }
     _initDump = true;

@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.sindice.core</groupId>
         <artifactId>analytics-parent</artifactId>
-        <version>wip-1.0</version>
+        <version>0.9-4</version>
     </parent>
 
     <artifactId>recommendation-servlet</artifactId>
@@ -52,89 +52,6 @@
                     </webAppConfig>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>jdeb</artifactId>
-                <groupId>org.vafer</groupId>
-                <version>0.11</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jdeb</goal>
-                        </goals>
-                        <configuration>
-                            <dataSet>
-                                <!-- WAR file -->
-                                <data>
-                                    <src>${project.build.directory}/${project.build.finalName}.war</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/share/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- SparQLed config file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/default-config.xml</src>
-                                    <dst>config.xml</dst>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/etc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- log config file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/default-logback.xml</src>
-                                    <dst>logback.xml</dst>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/etc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- ranking config file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/default-ranking.yaml</src>
-                                    <dst>ranking.yaml</dst>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/etc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- README file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/README.Debian</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/share/doc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- Copyright file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/copyright</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/share/doc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                                <!-- Changelog.Debian file -->
-                                <data>
-                                    <src>${basedir}/src/main/resources/LOD2/changelog.Debian.gz</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/share/doc/sparqled</prefix>
-                                    </mapper>
-                                </data>
-                            </dataSet>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -262,13 +179,38 @@
             <version>1.9</version>
         </dependency>
 
-        <!-- For computing statistics operations like SD and Mean -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math</artifactId>
-            <version>2.2</version>
-        </dependency>
-
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>deb-pkg</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <configuration>
+                            <tasks>
+                                <echo message="Creating deb package" />
+                                <exec dir="${basedir}/../lod2-deb-package"
+                                    executable="${basedir}/../lod2-deb-package/build_debpkg.sh"
+                                    failonerror="true">
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deb-pkg</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

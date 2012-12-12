@@ -1,0 +1,23 @@
+#!/bin/sh -e
+# postinst script for sparqled
+#
+# see: dh_installdeb(1)
+
+. /usr/share/debconf/confmodule
+
+# Create the sparqled user on the virtuoso machine
+VIRTUOSOVERSION=virtuoso-opensource-6.1
+sparqlpwd=`date  +"%H.S.%M.P.%S.QL"`
+sparqlsubst="s/PWDSPARQL/$sparqlpwd/"
+sed -e $sparqlsubst -i /etc/sparqled/create_user_sparql.sql
+sed -e $sparqlsubst -i /etc/sparqled/config.xml
+
+env ODBCINI=/etc/$VIRTUOSOVERSION/bd.ini isql-iodbc DSN=LocalVirtDBA < /etc/sparqled/create_user_sparql.sql;
+
+# Deploy the sparqled war file
+rm -f /var/lib/tomcat6/webapps/sparqled.war
+rm -rf /var/lib/tomcat6/webapps/sparqled
+cp /usr/share/sparqled/sparqled.war /var/lib/tomcat6/webapps
+
+echo "---- ending postinst $@"
+

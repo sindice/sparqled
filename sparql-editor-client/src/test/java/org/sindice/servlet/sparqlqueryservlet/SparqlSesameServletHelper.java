@@ -97,7 +97,6 @@ extends HttpServlet {
       .initClassAttributes(new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
 
       _backend.initialize();
-      System.out.println(_backend.getConnection().isEmpty());
       _backend.getConnection().add(dgsInputStream, "", format, _backend
       .getValueFactory().createURI(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH));
     } catch (RDFParseException e) {

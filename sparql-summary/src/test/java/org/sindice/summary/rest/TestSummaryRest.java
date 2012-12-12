@@ -29,8 +29,9 @@ import com.sun.jersey.test.framework.WebAppDescriptor;
 public class TestSummaryRest
 extends JerseyTest {
 
-  private static final String proxyRepo       = "./src/test/resources/rest/native/repo";
-  private static final String recommenderRepo = "./src/test/resources/rest/native/repo-summary";
+  private static final String INPUT_GRAPH      = "http://acme.ste.org/tech";
+  private static final String PROXY_REPO       = "./src/test/resources/rest/native/repo";
+  private static final String RECOMMENDER_REPO = "./src/test/resources/rest/native/repo-summary";
 
   public TestSummaryRest() throws Exception {
     super(new WebAppDescriptor.Builder("org.sindice.summary.rest")
@@ -41,10 +42,17 @@ extends JerseyTest {
   @BeforeClass
   public static void beforeClass()
   throws SesameBackendException {
-    System.setProperty("sindice.home", "./src/test/resources/sindice.home");
-    final String[] input;
-    input = ("--feed --type NATIVE --repository " + proxyRepo
-             + " --add ./src/test/resources/rest/data.nt").split(" ");
+    System.setProperty("sindice_home", "./src/test/resources/sindice.home");
+
+    String[] input;
+    input = ("--feed --type NATIVE --repository " + PROXY_REPO
+             + " --add ./src/test/resources/rest/data.nt"
+            ).split(" ");
+    Pipeline.main(input);
+
+    input = ("--feed --type NATIVE --repository " + PROXY_REPO
+             + " --add ./src/test/resources/rest/data.nt --domain " + INPUT_GRAPH
+            ).split(" ");
     Pipeline.main(input);
   }
 
@@ -59,8 +67,28 @@ extends JerseyTest {
   throws IOException, SesameBackendException {
     WebResource webResource = resource();
     webResource.path("summaries/create").post(String.class);
+    final SesameBackend<?, ?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
+    checkSummary(backend, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
+  }
 
-    checkSummary(SesameBackendFactory.getDgsBackend(BackendType.NATIVE, recommenderRepo), DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
+  @Test
+  public void testUpdate()
+  throws IOException, SesameBackendException {
+    final String graph = INPUT_GRAPH + "/summary";
+    final WebResource webResource = resource();
+    final Form form = new Form();
+
+    // Create the summary
+    form.add("input-graph", INPUT_GRAPH);
+    form.add("output-graph", graph);
+    webResource.path("summaries/create").post(String.class, form);
+    // Update it
+    form.add("graph", graph);
+    final String responseMsg = webResource.path("summaries/update").post(String.class, form);
+
+    assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
+    final SesameBackend<?, ?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
+    checkSummary(backend, graph);
   }
 
   @Test

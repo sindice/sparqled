@@ -44,7 +44,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * --- Changed for the ASE use case ---</br></br> Configures the servlet based
- * upon configuration in sindice.home/{appname} folder, or if that folder is not
+ * upon configuration in sindice_home/{appname} folder, or if that folder is not
  * defined then ~/sindice/{appname}. Creates the folder if needed using default
  * logging and configuration provided with the web application. This context
  * listener should be moved into a shared sindice package.
@@ -106,9 +106,9 @@ implements ServletContextListener {
             "/config.xml does not exists will try to determine sindiceHome");
     }
     // END DEBIAN PACKAGE LOD2 PROJECT INTEGRATION
-    if (sindiceHome == null && context.getAttribute("sindice.home") != null) {
-      sindiceHome = (String) context.getAttribute("sindice.home");
-      logger.info("Setting sindiceHome from sindice.home env variable to [" +
+    if (sindiceHome == null && context.getAttribute("sindice_home") != null) {
+      sindiceHome = (String) context.getAttribute("sindice_home");
+      logger.info("Setting sindiceHome from sindice_home env variable to [" +
                   sindiceHome + "]");
     }
     if (sindiceHome == null && context.getAttribute("SINDICE_HOME") != null) {
@@ -121,14 +121,14 @@ implements ServletContextListener {
       sindiceHome = (userHome == null ? "" : userHome) + File.separatorChar +
                     "sindice";
       logger
-      .warn("Neither sindice.home nor SINDICE_HOME are not defined, assuming {}", sindiceHome);
+      .warn("Neither sindice_home nor SINDICE_HOME are not defined, assuming {}", sindiceHome);
     }
 
     logger.info("Looking for configuration in [" + sindiceHome +
                 File.separatorChar + contextPath + "]");
 
     // important to set these two as they are used later in logback.xml
-    context.setAttribute("sindice.home", sindiceHome);
+    context.setAttribute("sindice_home", sindiceHome);
     context.setAttribute("app.name", contextPath);
 
     configFolder = new File(sindiceHome + File.separatorChar + contextPath);

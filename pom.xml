@@ -5,7 +5,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <groupId>org.sindice.core</groupId>
   <artifactId>analytics-parent</artifactId>
   <packaging>pom</packaging>
-  <version>wip-1.0</version>
+  <version>0.9-4</version>
   <name>analytics-parent</name>
   <modules>
     <module>analytics-commons</module>
@@ -16,6 +16,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <module>sesame-sparql-queryparser</module>
     <module>recommendation-servlet</module>
   </modules>
+  <scm>
+    <connection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</developerConnection>
+    <url>git:ssh://git@github.com/sindicetech/sparqled.git</url>
+  </scm>
   <properties>
     <sesame.version>2.6.6</sesame.version>
     <project.source.charset>UTF-8</project.source.charset>

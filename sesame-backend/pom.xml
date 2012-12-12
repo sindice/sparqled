@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.sindice.core</groupId>
     <artifactId>analytics-parent</artifactId>
-    <version>wip-1.0</version>
+    <version>0.9-4</version>
   </parent>
   <artifactId>sesame-backend</artifactId>
   <packaging>jar</packaging>
