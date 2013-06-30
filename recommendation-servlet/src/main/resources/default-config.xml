@@ -5,12 +5,12 @@
         <classAttributes>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</classAttributes>
 
         <backend>HTTP</backend>
-        <backendArgs>/home/stephane/test-sparqled</backendArgs>
+        <backendArgs>http://path/to/summary/repository</backendArgs>
     </recommender>
 
     <proxy>
         <backend>HTTP</backend>
-        <backendArgs>http://ssdtest.index.sindice.net:8890/sparql</backendArgs>
+        <backendArgs>http://path/to/repository</backendArgs>
     </proxy>
 
 </configuration>

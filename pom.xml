@@ -5,7 +5,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <groupId>org.sindice.core</groupId>
   <artifactId>analytics-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.9-4</version>
+  <version>0.9</version>
   <name>analytics-parent</name>
   <modules>
     <module>analytics-commons</module>
