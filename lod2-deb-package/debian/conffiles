@@ -1,0 +1,3 @@
+/etc/sparqled/config.xml
+/etc/sparqled/logback.xml
+/etc/sparqled/ranking.yaml

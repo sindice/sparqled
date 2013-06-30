@@ -29,7 +29,7 @@ public class DataGraphSummaryVocab {
   /*
    * Analytics Graphs Names
    */
-  private static final String DEFAULT_GSG           = "http://sindice.com/analytics";
+  public static final String  DEFAULT_GSG           = "http://sindice.com/analytics";
   public static String        GRAPH_SUMMARY_GRAPH   = DEFAULT_GSG;
 
   /*

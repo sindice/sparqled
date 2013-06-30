@@ -3,8 +3,10 @@
 Improvements
 
 * [GH-10] Make the class attributes definitions configurable
+* [GH-12] Improve pagination
 * [GH-13] Split the AnalyticsVocab class into one class per vocabulary
 
 New Features
 
 * [GH-11] Implement the Single-Class Label Model
+* [GH-9] Provide a REST API to SparQLed

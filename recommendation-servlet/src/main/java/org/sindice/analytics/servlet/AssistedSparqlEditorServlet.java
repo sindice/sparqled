@@ -58,18 +58,17 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorServlet
 extends HttpServlet {
 
-  private static final long             serialVersionUID = 4137296200305461786L;
+  private static final long             serialVersionUID     = 4137296200305461786L;
 
-  private static final Logger           logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
+  private static final Logger           logger               = LoggerFactory
+                                                             .getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String            QUERY            = "query";
-  public static final String            DATA_REQUEST     = "data";
-  public static final String            DEFAULT          = "DEFAULT";
-  public static final String            RESPONSE         = "response";
+  public static final String            DGS_GRAPH            = "dg";
+  public static final String            DATA_REQUEST         = "data";
+  private static final String           DEFAULT_DATA_REQUEST = "DEFAULT";
 
-  private static final int              EXPIR_DATE       = 604800;                                     //One week in seconds
-  private final List<LabelsRanking>     labelsRankings   = new ArrayList<LabelsRanking>();
-  private SesameBackend<Label, Context> dgsBackend       = null;
+  private final List<LabelsRanking>     labelsRankings       = new ArrayList<LabelsRanking>();
+  private SesameBackend<Label, Context> dgsBackend           = null;
   private int                           pagination;
   private int                           limit;
 
@@ -93,8 +92,6 @@ extends HttpServlet {
     final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
     DataGraphSummaryVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
-    // Set the graph summary graph
-    DataGraphSummaryVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
     // Set the dataset label definition
     DataGraphSummaryVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
 
@@ -137,6 +134,21 @@ extends HttpServlet {
       }
     }
     super.destroy();
+  }
+
+  /**
+   * Update the Graph name of the summary, where the data summary was
+   * saved in
+   */
+  @Override
+  protected void doPut(HttpServletRequest request, HttpServletResponse resp)
+  throws ServletException, IOException {
+    if (request.getParameter(DGS_GRAPH) != null) {
+      DataGraphSummaryVocab.setGraphSummaryGraph(request.getParameter(DGS_GRAPH));
+    } else {
+      DataGraphSummaryVocab.setGraphSummaryGraph(DataGraphSummaryVocab.DEFAULT_GSG);
+    }
+    logger.info("Using the summary: {}", DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
   }
 
   /**
@@ -183,7 +195,7 @@ extends HttpServlet {
   throws IOException {
     String response = "";
 
-    String queryType = DEFAULT;
+    String queryType = DEFAULT_DATA_REQUEST;
     if (request.getParameter(DATA_REQUEST) != null) {
       queryType = request.getParameter(DATA_REQUEST);
     }

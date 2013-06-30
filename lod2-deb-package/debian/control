@@ -1,0 +1,14 @@
+Source: sparqled
+Section: misc
+Priority: extra
+Maintainer: stephane campinas <stephane.campinas@deri.org>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.8.4
+Homepage: http://sindicetech.com/sindice-suite/sparqled/
+Vcs-Git: git://github.com/sindicetech/sparqled.git
+
+Package: sparqled
+Architecture: all
+Depends: tomcat6, openjdk-6-jre | sun-java6-jre
+Description: SparQLed, an Assisted SPARQL Editor for LOD2
+ SparQLed is an interactive SPARQL editor that provides context-aware recommendations, helping users in formulating complex SPARQL queries across multiple heterogeneous data sources.

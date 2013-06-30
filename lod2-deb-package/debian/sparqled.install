@@ -1,0 +1,5 @@
+sparqled.war /usr/share/sparqled
+config.xml /etc/sparqled
+logback.xml /etc/sparqled
+ranking.yaml /etc/sparqled
+create_user_sparql.sql /etc/sparqled

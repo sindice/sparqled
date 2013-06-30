@@ -1,9 +1,20 @@
 /**
- * @project Graph Summary SPARQL
- * @author Pierre Bailly <pierre.bailly@deri.org>
- * @copyright Copyright (C) 2012, All rights reserved.
+ * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
+ *
+ *
+ * This project is a free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
+ *
+ * This project is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.sindice.summary;
 
 import static java.util.Arrays.asList;
@@ -23,6 +34,7 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
+import org.sindice.summary.AbstractQuery.SummaryAlgorithm;
 import org.sindice.summary.multilabelled.HTTPMultiLabelledQuery;
 import org.sindice.summary.multilabelled.HTTPVirtuosoMultiLabelledQuery;
 import org.sindice.summary.multilabelled.MemoryMultiLabelledQuery;
@@ -35,34 +47,21 @@ import org.sindice.summary.singlelabelled.NativeSingleLabelledQuery;
 import org.sindice.summary.singlelabelled.RDBMSSingleLabelledQuery;
 
 /**
- * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
- *
- *
- * This project is a free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * This project is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- */
-/**
+ * @project Graph Summary SPARQL
  * @author Pierre Bailly <pierre.bailly@deri.org>
+ * @copyright Copyright (C) 2012, All rights reserved.
  */
 public class Pipeline {
 
-  private static final String HELP = "help";
-  private static final String CLASS_ATTRIBUTE = "class-attribute";
-  private static final String TYPE = "type";
-  private static final String FEED = "feed";
-  private static final String ADD = "add";
-  private static final String ADDFORMAT = "addformat";
-  private static final String PAGINATION = "pagination";
+  private final static Logger logger            = Logger.getLogger(Pipeline.class);
+
+  private static final String HELP              = "help";
+  private static final String CLASS_ATTRIBUTE   = "class-attribute";
+  private static final String TYPE              = "type";
+  private static final String FEED              = "feed";
+  private static final String ADD               = "add";
+  private static final String ADDFORMAT         = "addformat";
+  private static final String PAGINATION        = "pagination";
   private static final String SUMMARY_ALGORITHM = "summary-algorithm";
 
   /**
@@ -108,7 +107,7 @@ public class Pipeline {
             .withRequiredArg().ofType(String.class);
         acceptsAll(asList(SUMMARY_ALGORITHM, "algorithm"),
             "Allow the user to change the clustering algorithm to create the summary.")
-            .withRequiredArg().ofType(AbstractQuery.SummaryAlgorithm.class);
+            .withRequiredArg().ofType(SummaryAlgorithm.class).defaultsTo(SummaryAlgorithm.MULTI_LABELLED);
         accepts(HELP, "show help");
       }
     };
@@ -156,8 +155,7 @@ public class Pipeline {
       try {
         parser.printHelpOn(System.out);
       } catch (IOException e) {
-        Logger logger = Logger.getLogger(Pipeline.class);
-        logger.error(e.getMessage());
+        logger.error("", e);
       }
       System.exit(0);
     }
@@ -186,7 +184,6 @@ public class Pipeline {
     // First at all, get the location of the local repository
     String repository = "";
     repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
 
     AbstractQuery q = null;
     if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.RDBMS)) {
@@ -199,16 +196,18 @@ public class Pipeline {
           } else {
             logger.error("You need to define a password "
                 + "to connect to a MYSQL database");
-            System.exit(10);
+            throw new SesameBackendException("You need to define a password "
+                + "to connect to a MYSQL database");
           }
         } else {
           logger.error("You need to define a user to "
               + "connect to a MYSQL database");
-          System.exit(10);
+          throw new SesameBackendException("You need to define a user to "
+          + "connect to a MYSQL database");
         }
       } else {
         logger.error("You need to select a database");
-        System.exit(10);
+        throw new SesameBackendException("You need to select a database");
       }
     } else if (options.valueOf(TYPE).equals(
         SesameBackendFactory.BackendType.NATIVE)) {
@@ -229,7 +228,8 @@ public class Pipeline {
         } else {
           logger.error("You need to define a password "
               + "to connect to a virtuoso repository.");
-          System.exit(10);
+          throw new SesameBackendException("You need to define a password "
+          + "to connect to a virtuoso repository.");
         }
       } else {
         q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository);
@@ -250,7 +250,6 @@ public class Pipeline {
     // First at all, get the location of the local repository
     String repository = "";
     repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
 
     AbstractQuery q = null;
     if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.RDBMS)) {
@@ -263,16 +262,18 @@ public class Pipeline {
           } else {
             logger.error("You need to define a password "
                 + "to connect to a MYSQL database");
-            System.exit(10);
+            throw new SesameBackendException("You need to define a password "
+            + "to connect to a MYSQL database");
           }
         } else {
           logger.error("You need to define a user to "
               + "connect to a MYSQL database");
-          System.exit(10);
+          throw new SesameBackendException("You need to define a user to "
+          + "connect to a MYSQL database");
         }
       } else {
         logger.error("You need to select a database");
-        System.exit(10);
+        throw new SesameBackendException("You need to select a database");
       }
     } else if (options.valueOf(TYPE).equals(
         SesameBackendFactory.BackendType.NATIVE)) {
@@ -293,7 +294,8 @@ public class Pipeline {
         } else {
           logger.error("You need to define a password "
               + "to connect to a virtuoso repository.");
-          System.exit(10);
+          throw new SesameBackendException("You need to define a password "
+          + "to connect to a virtuoso repository.");
         }
       } else {
         q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository);
@@ -311,8 +313,6 @@ public class Pipeline {
    */
   private static void normalInput(OptionSet options)
       throws SesameBackendException {
-
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
 
     if (options.has(CLASS_ATTRIBUTE)) {
       // Suggestion :
@@ -340,9 +340,8 @@ public class Pipeline {
     // the query.
     AbstractQuery q = null;
     try {
-      if (options.has(SUMMARY_ALGORITHM)
-          && (options.valueOf(SUMMARY_ALGORITHM)
-              .equals(AbstractQuery.SummaryAlgorithm.MULTI_LABELLED))) {
+      final SummaryAlgorithm sa = (SummaryAlgorithm) options.valueOf(SUMMARY_ALGORITHM);
+      if (sa.equals(SummaryAlgorithm.MULTI_LABELLED)) {
         q = getMultiLabelledQueryInstance(options);
       } else {
         q = getSingleLabelledQueryInstance(options);
@@ -354,9 +353,9 @@ public class Pipeline {
       try {
         q.stopConnexion();
       } catch (Exception e1) {
-        logger.error(e1.getMessage());
+        logger.error("", e1);
       }
-      System.exit(10);
+      throw new SesameBackendException("Connection failed", e);
     }
 
     // Set the domain
@@ -391,16 +390,16 @@ public class Pipeline {
           }
         } catch (RDFParseException e) {
           // Invalid output RDF => print the stack
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.error("", e);
+          throw new SesameBackendException(e);
         } catch (RepositoryException e) {
           logger.warn("Repository not found\n");
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.error("", e);
+          throw new SesameBackendException(e);
         } catch (IOException e) {
           logger.warn("File not found or not readable\n");
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.error("", e);
+          throw new SesameBackendException(e);
         }
       }
     }
@@ -426,20 +425,18 @@ public class Pipeline {
       // Launch query for getting predicates
       q.computePredicate();
     } catch (Exception e) {
-      // print the stack, with big debug
-      logger.error(e.getMessage());
-      logger.error("Wrong query");
+      logger.error("Wrong query", e);
       try {
         q.stopConnexion();
       } catch (Exception e1) {
-        logger.error(e1.getMessage());
+        logger.error("", e1);
       }
-      System.exit(13);
+      throw new SesameBackendException("Wrong query", e);
     } finally {
       try {
         q.stopConnexion();
       } catch (Exception e1) {
-        logger.error(e1.getMessage());
+        logger.error("", e1);
       }
     }
   }
@@ -454,26 +451,19 @@ public class Pipeline {
    */
   private static void feedInput(OptionSet options)
       throws IllegalArgumentException, SesameBackendException {
-    // First at all, get the location of the local repository
-    String repository = "";
-    repository = options.valueOf("repository").toString();
-    Logger logger = Logger.getLogger("org.sindice.summary.pipeline");
-
-    // Then create the Query. The local repository is created and open in
-    // the query.
     AbstractQuery q = null;
 
     try {
       q = getSingleLabelledQueryInstance(options);
     } catch (Exception e) {
       // Fail at the connection, need to print the stack
-      logger.error(e.getMessage());
+      logger.error("", e);
       try {
         q.stopConnexion();
       } catch (Exception e1) {
-        logger.error(e1.getMessage());
+        logger.error("", e1);
       }
-      System.exit(10);
+      throw new SesameBackendException("Connection failed");
     }
 
     // Set the domain
@@ -508,16 +498,16 @@ public class Pipeline {
           }
         } catch (RDFParseException e) {
           // Invalid output RDF => print the stack
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.error("", e);
+          throw new SesameBackendException(e);
         } catch (RepositoryException e) {
-          logger.warn("Repository not found\n");
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.warn("Repository not found");
+          logger.error("Repository not found", e);
+          throw new SesameBackendException(e);
         } catch (IOException e) {
-          logger.warn("File not found or not readable\n");
-          logger.error(e.getMessage());
-          System.exit(12);
+          logger.warn("File not found or not readable");
+          logger.error("", e);
+          throw new SesameBackendException("File not found or not readable", e);
         }
       }
     }
@@ -525,7 +515,8 @@ public class Pipeline {
     try {
       q.stopConnexion();
     } catch (Exception e1) {
-      logger.error(e1.getMessage());
+      logger.error("", e1);
     }
   }
+
 }

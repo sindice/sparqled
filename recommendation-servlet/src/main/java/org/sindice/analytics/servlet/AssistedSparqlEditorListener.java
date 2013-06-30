@@ -35,6 +35,8 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
+import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

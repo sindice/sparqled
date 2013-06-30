@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -111,8 +110,7 @@ public abstract class AbstractSesameBackendCLI {
     try {
       options = parser.parse(args);
     } catch (final OptionException e) {
-      System.err.println("Error: " + e.getMessage());
-      System.err.println("");
+      logger.error("", e);
       parser.printHelpOn(System.err);
       System.exit(1);
     }
@@ -130,7 +128,7 @@ public abstract class AbstractSesameBackendCLI {
         backend = SesameBackendFactory.getDgsBackend(type);
       }
     } else {
-      System.err.println("Missing type option");
+      logger.error("Missing type option");
       parser.printHelpOn(System.out);
       System.exit(1);
     }
@@ -150,10 +148,7 @@ public abstract class AbstractSesameBackendCLI {
     try {
       this.execute(options);
     } catch (final IllegalArgumentException e) {
-      final StringWriter w = new StringWriter();
-      e.printStackTrace(new PrintWriter(w));
-      System.err.println("Error: " + e.getMessage() + "\n" + w.toString());
-      System.err.println("");
+      logger.error("", e);
       parser.printHelpOn(System.err);
       System.exit(1);
     }
@@ -205,9 +200,9 @@ public abstract class AbstractSesameBackendCLI {
           Iterator<Binding> it = bs.iterator();
           while (it.hasNext()) {
             Binding b = it.next();
-            System.out.println(b.getName() + ": " + b.getValue());
+            logger.info("{}: {}", b.getName(), b.getValue());
           }
-          System.out.println("\n");
+          logger.info("\n");
         }
       }
     } finally {
