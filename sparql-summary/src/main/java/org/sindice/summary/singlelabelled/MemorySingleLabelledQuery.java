@@ -1,14 +1,3 @@
-package org.sindice.summary.singlelabelled;
-
-import java.io.IOException;
-
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFParseException;
-import org.sindice.core.sesame.backend.SesameBackendException;
-import org.sindice.core.sesame.backend.SesameBackendFactory;
-import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.summary.Dump;
-
 /**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
  *
@@ -26,8 +15,19 @@ import org.sindice.summary.Dump;
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sindice.summary.singlelabelled;
+
+import java.io.IOException;
+
+import org.openrdf.repository.RepositoryException;
+import org.openrdf.rio.RDFParseException;
+import org.sindice.core.sesame.backend.SesameBackendException;
+import org.sindice.core.sesame.backend.SesameBackendFactory;
+import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.summary.Dump;
+
 /**
- * @author Pierre Bailly <pierre.bailly@deri.org>
+ * 
  */
 public class MemorySingleLabelledQuery extends AbstractSingleLabelledQuery {
 
@@ -44,7 +44,6 @@ public class MemorySingleLabelledQuery extends AbstractSingleLabelledQuery {
    * @throws RDFParseException
    * @throws SesameBackendException
    */
-
   public MemorySingleLabelledQuery(Dump d, String memoryStoreLocation)
       throws RepositoryException, RDFParseException, IOException,
       SesameBackendException {
@@ -65,7 +64,6 @@ public class MemorySingleLabelledQuery extends AbstractSingleLabelledQuery {
    * @throws RDFParseException
    * @throws SesameBackendException
    */
-
   public MemorySingleLabelledQuery(String memoryStoreLocation)
       throws RepositoryException, RDFParseException, IOException,
       SesameBackendException {

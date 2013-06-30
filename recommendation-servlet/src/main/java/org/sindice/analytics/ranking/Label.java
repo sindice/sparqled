@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,16 +14,12 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.ranking;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,10 +40,10 @@ public class Label {
    * The key is the name of the variable in the DGSquery, the array contains
    * the list of values the variable maps to.
    */
-  private final Map<String, ArrayList<Object>> context = new HashMap<String, ArrayList<Object>>();
-  private String                               label;
-  private final long                           cardinality;
-  private LabelType                            type;
+  private final Map<String, List<Object>> context = new HashMap<String, List<Object>>();
+  private String                          label;
+  private final long                      cardinality;
+  private LabelType                       type;
 
   public Label(LabelType labelType, String label, long cardinality) {
     this.cardinality = cardinality;
@@ -77,7 +73,7 @@ public class Label {
   /**
    * @return the context
    */
-  public Map<String, ArrayList<Object>> getContext() {
+  public Map<String, List<Object>> getContext() {
     return context;
   }
 

@@ -47,9 +47,7 @@ import org.sindice.summary.singlelabelled.NativeSingleLabelledQuery;
 import org.sindice.summary.singlelabelled.RDBMSSingleLabelledQuery;
 
 /**
- * @project Graph Summary SPARQL
- * @author Pierre Bailly <pierre.bailly@deri.org>
- * @copyright Copyright (C) 2012, All rights reserved.
+ * 
  */
 public class Pipeline {
 

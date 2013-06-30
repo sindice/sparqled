@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.analytics.queryProcessor;
 
 import static org.junit.Assert.assertEquals;
@@ -38,9 +38,6 @@ public class TestPofNodesMetadata {
 
   private ASTQueryContainer ast;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp()
   throws Exception {

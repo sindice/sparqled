@@ -1,30 +1,4 @@
 /**
- * @project analytics
- * @author Thomas Perry <thomas.perry@deri.org>
- * @copyright Copyright (C) 2011, All rights reserved.
- */
-package org.sindice.servlet.sparqlqueryservlet;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-
-import net.spy.memcached.AddrUtil;
-import net.spy.memcached.MemcachedClient;
-
-import org.apache.commons.configuration.XMLConfiguration;
-import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
-import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
-/*******************************************************************************
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -40,9 +14,29 @@ import org.slf4j.LoggerFactory;
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
+package org.sindice.servlet.sparqlqueryservlet;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
+import net.spy.memcached.AddrUtil;
+import net.spy.memcached.MemcachedClient;
+
+import org.apache.commons.configuration.XMLConfiguration;
+import org.sindice.core.analytics.commons.webapps.MemcachedClientWrapper;
+import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
+import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * @author Pierre Bailly <pierre.bailly@deri.org>
+ * 
  */
 public class SparqlQueryServletListener
 extends ServletConfigurationContextListener {

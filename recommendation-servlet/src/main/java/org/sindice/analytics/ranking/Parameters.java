@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparqlEditorServlet
- * @author Campinas Stephane [ 31 Oct 2011 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.ranking;
 
@@ -100,28 +95,6 @@ public final class Parameters {
      */
     parameters.put(Vocab.TOPK.toString(), 50);
     parameters.put(Vocab.OUTPUT_FORMAT.toString(), "html");
-
-//    /*
-//     * The mapfile path used by {@link MapFileURIRanking}
-//     */
-//    parameters.setProperty("mapfile-type", "");
-//    parameters.setProperty("mapfile-predicate", "");
-//
-//    /*
-//     * USE ONLY FOR THE EVALUATION
-//     */
-//    /*
-//     * The MapFile with key=uri value=rank (as per TF or TF-IDF score) used in the evaluation
-//     */
-//    parameters.setProperty("property-score-uri_w-domain", "");
-//    parameters.setProperty("type-score-uri_w-domain", "");
-//    parameters.setProperty("property-score-uri_wo-domain", "");
-//    parameters.setProperty("type-score-uri_wo-domain", "");
-//    /*
-//     * The MapFile with key=URI value=List_of_Domains used in the evaluation
-//     */
-//    parameters.setProperty("property-uri-domains", "");
-//    parameters.setProperty("type-uri-domains", "");
   }
 
 }

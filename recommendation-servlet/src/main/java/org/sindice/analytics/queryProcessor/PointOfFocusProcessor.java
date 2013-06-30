@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,17 +14,13 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 19 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openrdf.sindice.query.parser.sparql.ASTVisitorBase;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTAskQuery;
@@ -129,7 +125,7 @@ public final class PointOfFocusProcessor {
     public Object visit(ASTSelect node, Object data)
     throws VisitorException {
       final List<String> varsToProject = (List<String>) data;
-      final HashSet<String> hasPof = new HashSet<String>();
+      final Set<String> hasPof = new HashSet<String>();
 
       final CheckSelectForPOF cpof = new CheckSelectForPOF();
       cpof.visit((ASTSelectQuery) node.jjtGetParent(), hasPof);

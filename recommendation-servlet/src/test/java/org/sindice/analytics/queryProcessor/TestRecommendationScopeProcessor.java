@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 12 Apr 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -39,9 +34,6 @@ public class TestRecommendationScopeProcessor {
 
   private ASTQueryContainer ast;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp()
   throws Exception {

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.analytics.servlet;
 
 import java.io.File;
@@ -33,15 +33,15 @@ import net.spy.memcached.MemcachedClient;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
+import org.sindice.core.analytics.commons.webapps.MemcachedClientWrapper;
+import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.sparqled.webapps.commons.MemcachedClientWrapper;
-import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stephane Campinas
+ * 
  */
 public class AssistedSparqlEditorListener
 extends ServletConfigurationContextListener {

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project siren-ranking
- * @author Campinas Stephane [ 14 Jul 2011 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.ranking;
 
@@ -43,9 +38,9 @@ import org.yaml.snakeyaml.Yaml;
  */
 public class LabelsRankingYAMLoader {
 
-  private static final Logger       logger      = LoggerFactory.getLogger(LabelsRankingYAMLoader.class);
+  private static final Logger       logger              = LoggerFactory.getLogger(LabelsRankingYAMLoader.class);
 
-  private final Yaml                yaml        = new Yaml();
+  private final Yaml                yaml                = new Yaml();
   private final InputStream         yamlStream;
   private final List<LabelsRanking> labelsRankings      = new ArrayList<LabelsRanking>();
   private final Set<String>         labelsRankingsNames = new HashSet<String>();

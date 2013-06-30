@@ -52,7 +52,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>analytics-commons</artifactId>
+            <artifactId>sparqled-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -66,12 +66,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.18</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.sindice.core</groupId>
-            <artifactId>webapps-commons</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>

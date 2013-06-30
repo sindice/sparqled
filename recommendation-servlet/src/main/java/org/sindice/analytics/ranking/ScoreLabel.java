@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,14 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @author Diego Ceccarelli [ 15 Apr 2012 ]
- * @link stephane.campinas@deri.org
  */
-
 package org.sindice.analytics.ranking;
 
 import java.util.ArrayList;

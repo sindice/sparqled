@@ -10,3 +10,7 @@ New Features
 
 * [GH-11] Implement the Single-Class Label Model
 * [GH-9] Provide a REST API to SparQLed
+
+Tasks
+
+* [GL-27] Clean the code

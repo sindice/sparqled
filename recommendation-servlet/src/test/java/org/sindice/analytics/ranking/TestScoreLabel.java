@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,12 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.analytics.ranking;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ import org.sindice.analytics.ranking.Label.LabelType;
 public class TestScoreLabel {
 
   public List<Label> getFakeData() {
-    List<Label> results = new ArrayList<Label>() {
+    final List<Label> results = new ArrayList<Label>() {
       {
         add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 618090937));
         add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 612638304));
@@ -102,27 +103,39 @@ public class TestScoreLabel {
   }
 
   @Test
-  public void testCardinalityScorer() {
-    BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
-    ranker.rank(getFakeData());
-    final LabelList labels = ranker.getLabelList();
+  public void testCardinalityScorer()
+  throws Exception {
+    final BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
 
-    assertEquals("http://xmlns.com/foaf/0.1/Person", labels.get(0).getRecommendation());
-    assertEquals("blog", labels.get(labels.size() - 1).getRecommendation());
-    assertEquals(40179723, labels.getScore("article"), 0.01);
+    try {
+      ranker.rank(getFakeData());
+      final LabelList labels = ranker.getLabelList();
+
+      assertEquals("http://xmlns.com/foaf/0.1/Person", labels.get(0).getRecommendation());
+      assertEquals("blog", labels.get(labels.size() - 1).getRecommendation());
+      assertEquals(40179723, labels.getScore("article"), 0.01);
+    } finally {
+      ranker.close();
+    }
   }
 
   @Test
-  public void testCardinalityScorer2() {
-    BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
-    ranker.rank(getFakeData2());
-    final LabelList labels = ranker.getLabelList();
+  public void testCardinalityScorer2()
+  throws Exception {
+    final BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
 
-    assertEquals("http://www.w3.org/2006/vcard/ns#Location", labels.get(0).getRecommendation());
-    assertEquals(7, labels.getScore("http://www.w3.org/2006/vcard/ns#Location"), 0.01);
-    assertEquals("http://www.w3.org/2006/vcard/ns#Address", labels.get(labels.size() - 1).getRecommendation());
-    assertEquals(2, labels.getScore("http://www.w3.org/2006/vcard/ns#Address"), 0.01);
-    assertEquals(6, labels.getScore("http://www.w3.org/2006/vcard/ns#Name"), 0.01);
+    try {
+      ranker.rank(getFakeData2());
+      final LabelList labels = ranker.getLabelList();
+  
+      assertEquals("http://www.w3.org/2006/vcard/ns#Location", labels.get(0).getRecommendation());
+      assertEquals(7, labels.getScore("http://www.w3.org/2006/vcard/ns#Location"), 0.01);
+      assertEquals("http://www.w3.org/2006/vcard/ns#Address", labels.get(labels.size() - 1).getRecommendation());
+      assertEquals(2, labels.getScore("http://www.w3.org/2006/vcard/ns#Address"), 0.01);
+      assertEquals(6, labels.getScore("http://www.w3.org/2006/vcard/ns#Name"), 0.01);
+    } finally {
+      ranker.close();
+    }
   }
 
   private void addRandomPOFresourceURI(List<Label> results) {
