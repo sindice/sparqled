@@ -2,12 +2,12 @@
 
 <configuration>
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${sindice.home}/log/${app.name}/${app.name}.log</File>
+    <File>${sindice_home}/log/${app.name}/${app.name}.log</File>
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%date{ISO8601} [%thread] %-5level %logger{2} - %message%n</Pattern>
     </layout>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${sindice.home}/log/${app.name}/${app.name}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <fileNamePattern>${sindice_home}/log/${app.name}/${app.name}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <maxFileSize>200MB</maxFileSize>
       </timeBasedFileNamingAndTriggeringPolicy>

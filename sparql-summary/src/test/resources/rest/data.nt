@@ -1,0 +1,14 @@
+<http://data.semanticweb.org/person/tim-berners-lee> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://data.semanticweb.org/ns/swc/ontology#givesKeynoteTalk> <http://data.semanticweb.org/conference/www/2008/keynote/berners-Lee> .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://www.w3.org/2000/01/rdf-schema#label> "Tim Berners-Lee" .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://xmlns.com/foaf/0.1/name> "Tim Berners-Lee" .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://data.semanticweb.org/ns/swc/ontology#holdsRole> <http://data.semanticweb.org/workshop/LDOW/2008/chair/workshopchair> .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://swrc.ontoware.org/ontology#affiliation> <http://data.semanticweb.org/organization/massachusetts-institute-of-technology> .
+<http://data.semanticweb.org/person/tim-berners-lee> <http://xmlns.com/foaf/0.1/made> <http://data.semanticweb.org/conference/iswc/2009/paper/research/375> .
+<http://data.semanticweb.org/conference/www/2008/keynote/berners-Lee> <http://data.semanticweb.org/ns/swc/ontology#speaker> <http://data.semanticweb.org/person/tim-berners-lee> .
+<http://data.semanticweb.org/workshop/LDOW/2008/chair/workshopchair> <http://data.semanticweb.org/ns/swc/ontology#heldBy> <http://data.semanticweb.org/person/tim-berners-lee> .
+<http://data.semanticweb.org/conference/iswc/2009/paper/research/375> <http://purl.org/dc/elements/1.1/creator> <http://data.semanticweb.org/person/tim-berners-lee> .
+<http://data.semanticweb.org/conference/iswc/2009/paper/research/375> <http://swrc.ontoware.org/ontology#author> <http://data.semanticweb.org/person/tim-berners-lee> .
+_:node0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#_3> <http://data.semanticweb.org/person/tim-berners-lee> .
+<http://data.semanticweb.org/conference/iswc/2009/paper/research/375> <http://xmlns.com/foaf/0.1/maker> <http://data.semanticweb.org/person/tim-berners-lee> .
+<http://data.semanticweb.org/organization/massachusetts-institute-of-technology> <http://xmlns.com/foaf/0.1/member> <http://data.semanticweb.org/person/tim-berners-lee> .

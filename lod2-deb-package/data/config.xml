@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <recommender>
+        <classAttributes>http://www.w3.org/1999/02/22-rdf-syntax-ns#type</classAttributes>
+
+        <backend>VIRTUOSO</backend>
+	<backendArgs>jdbc:virtuoso://localhost:1111/charset=UTF-8/log_enable=2</backendArgs>
+	<backendArgs>sparqled</backendArgs>
+	<backendArgs>PWDSPARQL</backendArgs>
+    </recommender>
+
+    <proxy>
+    	<backend>VIRTUOSO</backend>
+	<backendArgs>jdbc:virtuoso://localhost:1111/charset=UTF-8/log_enable=2</backendArgs>
+	<backendArgs>sparqled</backendArgs>
+	<backendArgs>PWDSPARQL</backendArgs>
+    </proxy>
+
+</configuration>

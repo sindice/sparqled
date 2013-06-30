@@ -1,3 +1,4 @@
+package org.sindice.sparqled.webapps.commons;
 /*******************************************************************************
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
@@ -15,7 +16,6 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package org.sindice.servlet.sparqlqueryservlet;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,32 +43,31 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
- * --- Changed for the ASE use case ---</br></br>
- * 
- * Configures the servlet based upon configuration in sindice.home/{appname}
- * folder, or if that folder is not defined then ~/sindice/{appname}. Creates
- * the folder if needed using default logging and configuration provided with
- * the web application. This context listener should be moved into a shared
- * sindice package.
+ * --- Changed for the ASE use case ---</br></br> Configures the servlet based
+ * upon configuration in sindice_home/{appname} folder, or if that folder is not
+ * defined then ~/sindice/{appname}. Creates the folder if needed using default
+ * logging and configuration provided with the web application. This context
+ * listener should be moved into a shared sindice package.
  * 
  * @author robful modified by szymon danielczyk (made it platform independent)
  *         If application deployed in ROOT context tries get the applicationName
  *         from web.xml <context-param> <param-name>applicationName</param-name>
- *         <param-value>xxx</param-value> </context-param>
- * 
- *         if present will use ROOT_xxx in not will use ROOT as contextPath
- * 
+ *         <param-value>xxx</param-value> </context-param> if present will use
+ *         ROOT_xxx in not will use ROOT as contextPath
  */
 public class ServletConfigurationContextListener
 implements ServletContextListener {
 
-  private static final Logger logger          = LoggerFactory.getLogger(ServletConfigurationContextListener.class);
+  private static final Logger logger          = LoggerFactory
+                                              .getLogger(ServletConfigurationContextListener.class);
   private static final String DEFAULT_LOGGING = "default-logback.xml";
 
   @Override
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
     logger.info("destroying context");
   }
+
+  protected File configFolder;
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
@@ -86,8 +85,9 @@ implements ServletContextListener {
     } else {
       logger.info("Application deployed in [" + contextPath + "] context.");
     }
-    logger.info("Will use [" + contextPath + "] as a part of a path for reading/storing configuration");
-    
+    logger.info("Will use [" + contextPath +
+                "] as a part of a path for reading/storing configuration");
+
     String servletContextName = context.getServletContextName();
     addEnvToContext(context);
     
@@ -97,45 +97,45 @@ implements ServletContextListener {
     // if yes please use it
     if (new File("/etc/" + contextPath + "/config.xml").exists()) {
       sindiceHome = "/etc";
-      logger.info("Found config.xml at [/etc/" + contextPath
-          + "/config.xml]. Setting sindiceHome to : [" + sindiceHome + "]");
+      logger.info("Found config.xml at [/etc/" + contextPath +
+                  "/config.xml]. Setting sindiceHome to : [" + sindiceHome +
+                  "]");
     } else {
-      logger.info("File /etc/" + contextPath
-          + "/config.xml does not exists will try to determine sindiceHome");
+      logger
+      .info("File /etc/" + contextPath +
+            "/config.xml does not exists will try to determine sindiceHome");
     }
     // END DEBIAN PACKAGE LOD2 PROJECT INTEGRATION
-    if (sindiceHome == null && context.getAttribute("sindice.home") != null) {
-      sindiceHome = (String) context.getAttribute("sindice.home");
-      logger.info("Setting sindiceHome from sindice.home env variable to ["
-          + sindiceHome + "]");
+    if (sindiceHome == null && context.getAttribute("sindice_home") != null) {
+      sindiceHome = (String) context.getAttribute("sindice_home");
+      logger.info("Setting sindiceHome from sindice_home env variable to [" +
+                  sindiceHome + "]");
     }
     if (sindiceHome == null && context.getAttribute("SINDICE_HOME") != null) {
       sindiceHome = (String) context.getAttribute("SINDICE_HOME");
-      logger.info("Setting sindiceHome from SINDICE_HOME env variable to ["
-          + sindiceHome + "]");
+      logger.info("Setting sindiceHome from SINDICE_HOME env variable to [" +
+                  sindiceHome + "]");
     }
     if (sindiceHome == null || "".equals(sindiceHome.trim())) {
       String userHome = (String) context.getAttribute("user.home");
-      sindiceHome = (userHome == null ? "" : userHome) + File.separatorChar
-          + "sindice";
-      logger.warn(
-          "Neither sindice.home nor SINDICE_HOME are not defined, assuming {}",
-          sindiceHome);
+      sindiceHome = (userHome == null ? "" : userHome) + File.separatorChar +
+                    "sindice";
+      logger
+      .warn("Neither sindice_home nor SINDICE_HOME are not defined, assuming {}", sindiceHome);
     }
-    
-    logger.info("Looking for configuration in [" + sindiceHome
-        + File.separatorChar + contextPath + "]");
-    
+
+    logger.info("Looking for configuration in [" + sindiceHome +
+                File.separatorChar + contextPath + "]");
+
     // important to set these two as they are used later in logback.xml
-    context.setAttribute("sindice.home", sindiceHome);
+    context.setAttribute("sindice_home", sindiceHome);
     context.setAttribute("app.name", contextPath);
-    
-    File configFolder = new File(sindiceHome + File.separatorChar + contextPath);
+
+    configFolder = new File(sindiceHome + File.separatorChar + contextPath);
     if (!(configFolder.exists() && configFolder.isDirectory())) {
       logger.warn("Missing configuration folder {}", configFolder);
       if (configFolder.mkdirs()) {
         logger.warn("Creating default configuration at " + configFolder);
-        
       } else {
         // set logging level to INFO
         configureLogging(context, configFolder);
@@ -163,18 +163,19 @@ implements ServletContextListener {
         config.load(applicationConfigFile);
         logger.info("parsed {}", applicationConfigFile);
       } catch (ConfigurationException e) {
-        logger.error("Could not load configuration from {}",
-            applicationConfigFile, e);
+        logger
+        .error("Could not load configuration from {}", applicationConfigFile, e);
         loadDefaultConfiguration(config, null);
       }
     }
     context.setAttribute("config", config);
-    logger.info("config now availabe via the following line of code\n"
-                + "    XMLConfiguration appConfig = (XMLConfiguration) servletContext.getAttribute(\"config\");");
-    
+    logger
+    .info("config now availabe via the following line of code\n"
+          + "    XMLConfiguration appConfig = (XMLConfiguration) servletContext.getAttribute(\"config\");");
+
     logger.info("Starting up {}", servletContextName);
   }
-  
+
   private XMLConfiguration createXMLConfiguration(final ServletContext context) {
     final XMLConfiguration config = new XMLConfiguration();
     ConfigurationInterpolator interpolator = config.getInterpolator();
@@ -193,11 +194,12 @@ implements ServletContextListener {
     });
     return config;
   }
-  
+
   private void loadDefaultConfiguration(final XMLConfiguration config,
-      File saveAs) {
+                                        File saveAs) {
     logger.info("loading default configuration");
-    InputStream in = ServletConfigurationContextListener.class.getClassLoader().getResourceAsStream("default-config.xml");
+    InputStream in = ServletConfigurationContextListener.class.getClassLoader()
+    .getResourceAsStream("default-config.xml");
     if (in == null) {
       logger.error("application is missing default-config.xml from classpath");
     } else {
@@ -223,12 +225,12 @@ implements ServletContextListener {
       }
     }
   }
-  
+
   private void addEnvToContext(ServletContext context) {
     addToContext(context, System.getenv());
     addToContext(context, System.getProperties());
   }
-  
+
   private void addToContext(ServletContext context, Map map) {
     for (Object key : map.keySet()) {
       if (context.getAttribute(key.toString()) == null) {
@@ -236,7 +238,7 @@ implements ServletContextListener {
       }
     }
   }
-  
+
   private void configureLogging(ServletContext context, final File configFolder) {
     InputStream in = openLoggingConfig(configFolder);
     if (in == null) {
@@ -244,7 +246,8 @@ implements ServletContextListener {
       return;
     }
     try {
-      final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+      final LoggerContext lc = (LoggerContext) LoggerFactory
+      .getILoggerFactory();
       final JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(lc);
       lc.reset();
@@ -273,7 +276,7 @@ implements ServletContextListener {
       }
     }
   }
-  
+
   /**
    * Opens the logging configuration file logback.xml. If that doesn't exist try
    * to create it by copying default-logback.xml which should be provided in the
@@ -283,15 +286,15 @@ implements ServletContextListener {
    * @return
    */
   private InputStream openLoggingConfig(File configFolder) {
-    String loggerConfigFileName = configFolder.getAbsolutePath()
-        + File.separatorChar + "logback.xml";
+    String loggerConfigFileName = configFolder.getAbsolutePath() +
+                                  File.separatorChar + "logback.xml";
     File logConfigFile = new File(loggerConfigFileName);
     if (!logConfigFile.exists()) {
       logger.warn("Missing logging configuration file " + loggerConfigFileName);
       createLogConfigFile(logConfigFile);
     } else {
-      logger.info("Will try to configure logging from:"
-          + logConfigFile.getAbsolutePath());
+      logger.info("Will try to configure logging from:" +
+                  logConfigFile.getAbsolutePath());
     }
     if (logConfigFile.exists()) {
       try {
@@ -300,12 +303,14 @@ implements ServletContextListener {
         logger.warn("problem reading log file", e);
       }
     }
-    return ServletConfigurationContextListener.class.getClassLoader().getResourceAsStream(DEFAULT_LOGGING);
+    return ServletConfigurationContextListener.class.getClassLoader()
+    .getResourceAsStream(DEFAULT_LOGGING);
   }
-  
+
   private void createLogConfigFile(File logConfigFile) {
     try {
-      InputStream in = ServletConfigurationContextListener.class.getClassLoader().getResourceAsStream(DEFAULT_LOGGING);
+      InputStream in = ServletConfigurationContextListener.class
+      .getClassLoader().getResourceAsStream(DEFAULT_LOGGING);
       if (in == null) {
         logger.warn("missing default-logging.xml from classpath");
       } else {
@@ -330,20 +335,23 @@ implements ServletContextListener {
       logger.warn("couldn't write logConfigFile {}", logConfigFile, e);
     }
   }
-  
+
   private void setDefaultLogging() {
     final Logger rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     if (rootLogger instanceof ch.qos.logback.classic.Logger) {
       ((ch.qos.logback.classic.Logger) rootLogger).setLevel(Level.INFO);
     }
-    logger.warn("Log level set to INFO, create the logging configuration file to change this.");
+    logger
+    .warn("Log level set to INFO, create the logging configuration file to change this.");
   }
-  
-  protected static final String getParameterWithLogging(XMLConfiguration config, String name, String defaultValue) {
+
+  protected static final String getParameterWithLogging(XMLConfiguration config,
+                                                        String name,
+                                                        String defaultValue) {
     if (config == null) {
       return defaultValue;
     }
-    
+
     String value = config.getString(name);
     if (value == null) {
       logger.info("missing init parameter " + name + ", using default value");
@@ -352,12 +360,14 @@ implements ServletContextListener {
     logger.info("using " + name + "=[" + value + "]");
     return value;
   }
-  
-  protected static final String[] getParametersWithLogging(XMLConfiguration config, String name, String[] defalt) {
+
+  protected static final String[] getParametersWithLogging(XMLConfiguration config,
+                                                           String name,
+                                                           String[] defalt) {
     if (config == null) {
       return defalt;
     }
-    
+
     String[] value = config.getStringArray(name);
     if (value.length == 0) {
       logger.info("missing init parameter " + name + ", using default value");
@@ -373,5 +383,5 @@ implements ServletContextListener {
     logger.info("using " + name + "=[" + sb + "]");
     return value;
   }
-  
+
 }

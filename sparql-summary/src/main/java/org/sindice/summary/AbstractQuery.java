@@ -43,8 +43,7 @@ import org.sindice.core.sesame.backend.SesameBackendException;
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
 abstract public class AbstractQuery {
-  // protected static RepositoryConnection _con;
-  //  protected Stack<TupleQueryResult> _queriesResults;
+
   protected String _graphFrom;
   protected static SesameBackend<BindingSet, Context> _repository;
   protected Logger _logger;
@@ -100,8 +99,7 @@ abstract public class AbstractQuery {
       Random rand = new Random();
       int r = rand.nextInt();
       initDump("/tmp/Graph-Summary-out/out" + r);
-      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out"
-          + r);
+      _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" + r);
     }
     _logger.info("LAUNCH QUERY");
     QueryIterator<BindingSet, Context> queryIt = _repository.submit(query);
@@ -207,8 +205,7 @@ abstract public class AbstractQuery {
    */
   public void initDump(String output) throws Exception {
     if (!_setGraph || _domain.equals("")) {
-      _logger.error("Dump initialization without a graph initialised.\n"
-          + "Second domain = sindice.com");
+      _logger.error("Dump initialization without a graph initialised.");
       _domain = "sindice.com";
     }
     _initDump = true;
@@ -244,4 +241,5 @@ abstract public class AbstractQuery {
     }
     _dump.closeRDF();
   }
+
 }

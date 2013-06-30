@@ -5,6 +5,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <display-name>sparqled</display-name>
 
+    <!-- Recommender Servlet -->
     <servlet>
         <servlet-name>AssistedSparqlEditorServlet</servlet-name>
         <servlet-class>org.sindice.analytics.servlet.AssistedSparqlEditorServlet</servlet-class>
@@ -16,7 +17,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <url-pattern>/AssistedSparqlEditorServlet</url-pattern>
     </servlet-mapping>
 
-
+    <!-- Query servlet -->
     <servlet>
         <servlet-name>SparqlQueryServlet</servlet-name>
         <servlet-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServlet</servlet-class>
@@ -36,15 +37,34 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <listener-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServletListener</listener-class>
     </listener>
 
-
+    <!-- JSON wrapping -->
     <filter>
         <filter-name>jsonpCallbackFilter</filter-name>
-        <filter-class>org.sindice.analytics.servlet.JsonpCallbackFilter</filter-class>
+        <filter-class>org.sindice.sparqled.webapps.commons.JsonpCallbackFilter</filter-class>
     </filter>
 
     <filter-mapping>
         <filter-name>jsonpCallbackFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <!-- REST API for the summary computation -->
+    <servlet>
+        <servlet-name>summaries</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>org.sindice.summary.rest</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>summaries</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+
+    <listener>
+        <listener-class>org.sindice.summary.rest.SummaryRestContextListener</listener-class>
+    </listener>
 
 </web-app>

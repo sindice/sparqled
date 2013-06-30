@@ -1,0 +1,6 @@
+---
+name: DEFAULT
+ranking: BASE
+scorer: CARDINALITY
+ranking-parameters:
+         - topk: 1000

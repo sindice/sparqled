@@ -113,7 +113,8 @@ extends HttpServlet {
                   SparqlQueryServletListener.BACKEND_ARGS);
 
     // create repository
-    _repository = SesameBackendFactory.getDgsBackend(backend, backendArgs);
+    _repository = SesameBackendFactory.getDgsBackend(backend,
+                                                     backendArgs);
     try {
       _repository.initConnection();
     } catch (SesameBackendException e) {

@@ -9,12 +9,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <name>analytics-parent</name>
   <modules>
     <module>analytics-commons</module>
+    <module>webapps-commons</module>
     <module>sesame-backend</module>
     <module>sparql-summary</module>
     <module>sparql-editor-client</module>
     <module>sesame-sparql-queryparser</module>
     <module>recommendation-servlet</module>
   </modules>
+  <scm>
+    <connection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</developerConnection>
+    <url>git:ssh://git@github.com/sindicetech/sparqled.git</url>
+  </scm>
   <properties>
     <sesame.version>2.6.6</sesame.version>
     <project.source.charset>UTF-8</project.source.charset>
@@ -64,6 +70,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <artifactId>slf4j-api</artifactId>
       <version>1.6.4</version>
     </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     <dependency>
       <groupId>net.sf.jopt-simple</groupId>
       <artifactId>jopt-simple</artifactId>
