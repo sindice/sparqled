@@ -8,8 +8,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <version>0.9</version>
   <name>analytics-parent</name>
   <modules>
-    <module>analytics-commons</module>
-    <module>webapps-commons</module>
+    <module>sparqled-commons</module>
     <module>sesame-backend</module>
     <module>sparql-summary</module>
     <module>sparql-editor-client</module>

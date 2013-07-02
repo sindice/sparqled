@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,12 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Pierre Bailly <pierre.bailly@deri.org>
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.core.sesame.backend;
 
@@ -73,13 +67,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stephane Campinas
- * @email stephane.campinas@deri.org
  * @param <VALUE>
  * @param <CONTEXT>
  */
-public abstract class AbstractSesameBackend<VALUE, CONTEXT> implements
-    SesameBackend<VALUE, CONTEXT> {
+public abstract class AbstractSesameBackend<VALUE, CONTEXT>
+implements SesameBackend<VALUE, CONTEXT> {
 
   protected static final Logger logger = LoggerFactory
       .getLogger(AbstractSesameBackend.class);

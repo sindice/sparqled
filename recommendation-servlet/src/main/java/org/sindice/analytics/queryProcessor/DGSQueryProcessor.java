@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,17 +14,11 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 25 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTLimit;
@@ -32,10 +26,6 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
-import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
-import org.sindice.core.analytics.commons.util.URIUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -43,13 +33,11 @@ import org.slf4j.LoggerFactory;
 public class DGSQueryProcessor
 implements QueryProcessor {
 
-  private static final Logger            logger       = LoggerFactory.getLogger(QueryProcessor.class);
+  private ASTQueryContainer  ast;
+  private String             dgsQuery;
+  private RecommendationType type;
 
-  private ASTQueryContainer              ast;
-  private String                         dgsQuery;
-  private RecommendationType             type;
-
-  private POFMetadata                    pofMetadata; // The Point Of Focus metadata
+  private POFMetadata        pofMetadata; // The Point Of Focus metadata
 
   @Override
   public String getDGSQueryWithLimit(int limit, ASTConstraint... contraints)
@@ -112,57 +100,6 @@ implements QueryProcessor {
   @Override
   public POFMetadata getPofASTMetadata() {
     return pofMetadata;
-  }
-
-  @Override
-  public String getDomainsQuery(String domain, int limit)
-  throws DGSException {
-    throw new NotImplementedException();
-  }
-
-  @Override
-  public String getPropertiesQuery(String domain, int limit)
-  throws DGSException {
-    if (domain == null) {
-      throw new DGSException("The given domain is null");
-    }
-    final StringBuilder sb = new StringBuilder();
-    final String d = URIUtil.getSndDomainFromUrl(domain);
-    if (d == null) {
-      throw new DGSException("Unable to get second-level domain name from " + domain);
-    }
-    domain = d;
-    sb.append("SELECT DISTINCT ?property FROM <").append(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
-      .append("  ?edge <").append(DataGraphSummaryVocab.EDGE_PUBLISHED_IN).append("> ")
-      .append(domain.isEmpty() ? "?domain .\n" : "<" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
-      .append("  ?edge <").append(DataGraphSummaryVocab.LABEL).append("> ?property .\n}\nORDER BY (?property)\n");
-    if (limit != 0) {
-      sb.append("LIMIT ").append(limit);
-    }
-    return sb.toString();
-  }
-
-  @Override
-  public String getClassesQuery(String domain, int limit)
-  throws DGSException {
-    if (domain == null) {
-      throw new DGSException("The given domain is null");
-    }
-    final StringBuilder sb = new StringBuilder();
-    final String d = URIUtil.getSndDomainFromUrl(domain);
-    if (d == null) {
-      throw new DGSException("Unable to get second-level domain name from " + domain);
-    }
-    domain = d;
-    sb.append("SELECT DISTINCT ?class FROM <").append(DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH).append("> WHERE {\n")
-      .append("  ?node <").append(DataGraphSummaryVocab.DOMAIN_URI).append("> ")
-      .append(domain.isEmpty() ? "?domain .\n" : "<" + DataGraphSummaryVocab.DOMAIN_URI_PREFIX + domain + "> .\n")
-      .append("  ?node <").append(DataGraphSummaryVocab.LABEL).append("> ?l .\n")
-      .append("  ?l <").append(DataGraphSummaryVocab.LABEL).append("> ?class .\n}\nORDER BY (?class)\n");
-    if (limit != 0) {
-      sb.append("LIMIT ").append(limit);
-    }
-    return sb.toString();
   }
 
   @Override

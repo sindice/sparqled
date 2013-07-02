@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.analytics.backend;
 
 import java.util.Iterator;
@@ -35,8 +35,7 @@ import org.slf4j.LoggerFactory;
 public class DGSQueryResultProcessor
 implements QueryResultProcessor<Label, DGSQueryResultProcessor.Context> {
 
-  protected static final Logger logger = LoggerFactory
-                                       .getLogger(DGSQueryResultProcessor.class);
+  protected static final Logger logger = LoggerFactory.getLogger(DGSQueryResultProcessor.class);
 
   public class Context {
     public RecommendationType type;

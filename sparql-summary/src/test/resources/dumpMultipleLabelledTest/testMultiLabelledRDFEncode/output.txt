@@ -1,0 +1,7 @@
+<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#label> "test complexe" .
+<http://vocab.sindice.net/analytics#ecn5758280603750808292> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type5362401009120084618> .
+<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .
+<http://vocab.sindice.net/analytics#type5362401009120084618> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ecn5758280603750808292> .
+<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#noden42961954810497749> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .

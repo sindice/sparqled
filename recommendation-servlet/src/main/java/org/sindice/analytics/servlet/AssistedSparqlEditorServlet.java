@@ -1,6 +1,4 @@
-package org.sindice.analytics.servlet;
-
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -16,7 +14,8 @@ package org.sindice.analytics.servlet;
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
+package org.sindice.analytics.servlet;
 
 
 import java.io.BufferedInputStream;
@@ -52,8 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Stephane Campinas
- * @email stephane.campinas@deri.org
+ * 
  */
 public class AssistedSparqlEditorServlet
 extends HttpServlet {

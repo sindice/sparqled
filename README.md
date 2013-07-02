@@ -7,12 +7,12 @@ Thanks for using SparQLed.
 
 #### General Information
 
-* Project and contact information: [http://sindicetech.com/sindice-suite/sparqled/](http://sindicetech.com/sindice-suite/sparqled/)
+* Project and contact information: [http://sindice.com/sparqled/](http://sindice.com/sparqled/)
 * Instructions for installing SparQLed are available in the **Downloads** section
 
 #### Live Demos
 
-* [SparQLed](http://hcls.sindicetech.com/sparql-editor/) on the Health Care Life Science datasets
+* [SparQLed](http://hcls.sindice.com/sparql-editor/) on the Health Care Life Science datasets
 * [SparQLed](http://demo.sindice.net/dbpedia-sparqled/) on the English part of DBpedia 3.7
 
 #### Distribution Content
@@ -22,7 +22,7 @@ This distribution includes 6 modules:
 * _recommendation-servlet:_ the servlet for providing query element recommendations;
 * _sesame-sparql-queryparser:_ [Sesame](http://www.openrdf.org/) SPARQL query parser extended for the SparQLed use case;
 * _sesame-backend:_ Utility classes for operating on SPARQL endpoint through Sesame;
-* _analytics-commons:_ Utility classes used in the Data Graph Summary computation;
+* _sparqled-commons:_ Utility classes used in the Data Graph Summary computation;
 * _sparql-summary:_ an SPARQL-based Data Graph Summary Computation.
 
 #### Acknowledgements

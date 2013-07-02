@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with SIREn. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * @project sparql-editor-servlet
- * @author Diego Ceccarelli [ 15/apr/2012 ] 
- * @link diego.ceccarelli@deri.org
- * @copyright Copyright (C) 2012, All rights reserved.
- */
 package org.sindice.analytics.ranking;
 
 import java.util.ArrayList;
@@ -45,7 +39,7 @@ public class LabelList extends ArrayList<ScoreLabel> {
   }
 
   public String toString() {
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     for (ScoreLabel l : this) {
       sb.append(l.getRecommendation()).append("\t").append(l.getScore()).append("\n");
     }

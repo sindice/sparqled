@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>analytics-commons</artifactId>
+            <artifactId>sparqled-commons</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
@@ -139,7 +139,7 @@
 
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>webapps-commons</artifactId>
+            <artifactId>sparqled-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

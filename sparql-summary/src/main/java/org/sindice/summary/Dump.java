@@ -1,31 +1,4 @@
 /**
- * @project Graph Summary SPARQL
- * @author Pierre Bailly <pierre.bailly@deri.org>
- * @copyright Copyright (C) 2012, All rights reserved.
- */
-
-package org.sindice.summary;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.URLDecoder;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.zip.GZIPOutputStream;
-
-import org.apache.log4j.Logger;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.QueryEvaluationException;
-import org.semanticweb.yars.nx.Resource;
-import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
-import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
-import org.sindice.core.analytics.commons.util.Hash;
-import org.sindice.core.analytics.commons.util.URIUtil;
-
-/**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -42,24 +15,89 @@ import org.sindice.core.analytics.commons.util.URIUtil;
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sindice.summary;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.URLDecoder;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.zip.GZIPOutputStream;
+
+import org.apache.log4j.Logger;
+import org.openrdf.model.Literal;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.rio.ntriples.NTriplesUtil;
+import org.openrdf.sail.memory.model.MemValueFactory;
+import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
+import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
+import org.sindice.core.analytics.commons.util.Hash;
+import org.sindice.core.analytics.commons.util.URIUtil;
+
+
 /**
- * @author Pierre Bailly <pierre.bailly@deri.org>
+ * 
  */
 public class Dump {
 
-  private BufferedWriter _output;
-  private int _nodeCounter = 0;
-  private String _domain = "";
-  private String _sndDomain = "";
-  protected static final Logger _logger = Logger.getLogger(Dump.class);
+  protected static final Logger _logger      = Logger.getLogger(Dump.class);
 
-  private void dumpTriple(String s, String p, String o) throws IOException {
-    _output.write(s);
+  private final ValueFactory    vFactory     = new MemValueFactory();
+  private BufferedWriter        _output;
+  private int                   _nodeCounter = 0;
+  private String                _domain      = "";
+  private String                _sndDomain   = "";
+
+  /**
+   * Write a triple statement to {@link #_output};
+   * @param s the subject {@link Value}
+   * @param p the predicate {@link Value}
+   * @param o the object {@link Value}
+   * @throws IOException if an error occurred while writing the statement
+   */
+  private void dumpTriple(Value s, Value p, Value o) throws IOException {
+    _output.write(NTriplesUtil.toNTriplesString(s));
     _output.write(" ");
-    _output.write(p);
+    _output.write(NTriplesUtil.toNTriplesString(p));
     _output.write(" ");
-    _output.write(o);
+    _output.write(NTriplesUtil.toNTriplesString(o));
     _output.write(" .\n");
+  }
+
+  /**
+   * Create a {@link URI} from the given label
+   */
+  private Value createURI(String label) {
+    return vFactory.createURI(label);
+  }
+
+  /**
+   * Create a {@link URI} from the given label, after removing dash characters from the label.
+   */
+  private Value createUriAndReplace(String label) {
+    return vFactory.createURI(label.replace('-', 'n'));
+  }
+
+  /**
+   * Create a {@link Literal} with the given label
+   */
+  private Value createLiteral(String label) {
+    return vFactory.createLiteral(label);
+  }
+
+  /**
+   * Create a {@link Literal} with the given value, adding the xsd:long datatype tag.
+   */
+  private Value createLiteral(long l) {
+    return vFactory.createLiteral(l);
   }
 
   /**
@@ -72,18 +110,17 @@ public class Dump {
    * @param domain
    *          The domain of the search
    * @return The hash of the node
-   * @throws IOException
    */
-  private long dumpRDFNodeCollection(String nodeType, String cardinality,
-      String domain) throws IOException {
-    Resource s = null;
-    Resource p = null;
-    Resource o = null;
+  private long dumpRDFNodeCollection(String nodeType, String cardinality, String domain)
+  throws IOException {
+    Value s = null;
+    Value p = null;
+    Value o = null;
     StringBuilder idNode = new StringBuilder(0);
     String type;
     String element;
     nodeType = nodeType.substring(1, nodeType.length() - 1);
-    HashSet<String> nodeList = new HashSet<String>();
+    Set<String> nodeList = new HashSet<String>();
 
     // parse
     for (String pair : nodeType.split(" ")) {
@@ -91,19 +128,16 @@ public class Dump {
       type = pair.substring(pair.length() - 2, pair.length() - 1);
 
       // an:ecID an:label value .
-      s = new Resource(
-          (DataGraphSummaryVocab.DGS_PREFIX + "ec" + Hash.getLong(domain
-              + nodeType + element)).replace('-', 'n'), false);
+      s = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "ec" + Hash.getLong(domain + nodeType + element));
       if (!nodeList.contains(element)) {
-        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
+        p = createURI(DataGraphSummaryVocab.LABEL);
 
         try {
-          o = new Resource((URLDecoder.decode(element, "UTF-8")), true);
+          o = NTriplesUtil.parseValue(URLDecoder.decode(element, "UTF-8"), vFactory);
         } catch (Exception e) {
-          _logger.info("UTF-8 error");
-          _logger.info(e.toString());
+          _logger.info("UTF-8 error", e);
         }
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        dumpTriple(s, p, o);
         nodeList.add(element);
 
       }
@@ -115,23 +149,21 @@ public class Dump {
 
       // an:ecID an:type an:typeID .
       // still the same s
-      p = new Resource(DataGraphSummaryVocab.TYPE.toString(), false);
-      o = new Resource((DataGraphSummaryVocab.TYPE.toString() + Hash.getLong(domain
-          + nodeType + type + element)).replace('-', 'n'), false);
+      p = createURI(DataGraphSummaryVocab.TYPE);
+      o = createUriAndReplace(DataGraphSummaryVocab.TYPE + Hash.getLong(domain + nodeType + type + element));
 
-      dumpTriple(s.toN3(), p.toN3(), o.toN3());
+      dumpTriple(s, p, o);
 
       // an:typeID an:label uri .
       // last o become the new s
-      p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
+      p = createURI(DataGraphSummaryVocab.LABEL);
       int vocabValue = Integer.parseInt(type);
 
-      dumpTriple(o.toN3(), p.toN3(), "<"
-          + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(vocabValue) + ">");
+      dumpTriple(o, p, createURI(AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(vocabValue)));
       // an:typeID an:cardinality Cardinality .
       // always the same o as the s
-      p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
-      dumpTriple(o.toN3(), p.toN3(), cardinality);
+      p = createURI(DataGraphSummaryVocab.CARDINALITY);
+      dumpTriple(o, p, createLiteral(Long.valueOf(cardinality)));
     }
 
     // get the id of this node
@@ -144,14 +176,10 @@ public class Dump {
       if (!nodeList.contains(element)) {
         // Create the nodes "nc" and get the ID of this node
         // an:nodeID an:label an:ecID .
-        s = new Resource(
-            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + hash).replace(
-                '-', 'n'), false);
-        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
-        o = new Resource(
-            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "ec" + Hash.getLong(domain
-                + nodeType + element)).replace('-', 'n'), false);
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        s = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "node" + hash);
+        p = createURI(DataGraphSummaryVocab.LABEL);
+        o = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "ec" + Hash.getLong(domain + nodeType + element));
+        dumpTriple(s, p, o);
         nodeList.add(element);
       }
     }
@@ -164,14 +192,12 @@ public class Dump {
    * 
    * @param BindingSet
    *          Result of the query from computeName()
-   * @throws QueryEvaluationException
-   * @throws IOException
    */
   public void dumpRDFNode(BindingSet bindingSet)
-      throws QueryEvaluationException, IOException {
-    Resource s = null;
-    Resource p = null;
-    Resource o = null;
+  throws QueryEvaluationException, IOException {
+    Value s = null;
+    Value p = null;
+    Value o = null;
 
     // label => new line => new hash
     // make the node
@@ -179,39 +205,25 @@ public class Dump {
 
     if (bindingSet.hasBinding("label")) {
       // label
-      long hash = dumpRDFNodeCollection(bindingSet.getValue("label")
-          .toString(), bindingSet.getValue("cardinality").toString(),
-          _sndDomain);
+      long hash = dumpRDFNodeCollection(bindingSet.getValue("label").toString(),
+        bindingSet.getValue("cardinality").stringValue(), _sndDomain);
       // create the id of the node
-      s = new Resource(
-          (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + hash).replace(
-              '-', 'n'), false);
-
-      // domain: AnalyticsVocab.DOMAIN_NAME.toString()
-      p = new Resource(DataGraphSummaryVocab.DOMAIN_NAME.toString(), false);
-      if (_domain.startsWith("\"") && _domain.endsWith("\"")) {
-        o = new Resource(_domain, true);
-      } else {
-        o = new Resource("\"" + _domain + "\"", true);
-      }
-
-      dumpTriple(s.toN3(), p.toN3(), o.toN3());
+      s = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "node" + hash);
 
       // domain URI
-      p = new Resource(DataGraphSummaryVocab.DOMAIN_URI.toString(), false);
+      p = createURI(DataGraphSummaryVocab.DOMAIN_URI);
       if (_domain.equals("sindice.com")) {
-        o = new Resource(
-            DataGraphSummaryVocab.DOMAIN_URI_PREFIX.toString() + _domain, false);
+        o = createURI(DataGraphSummaryVocab.DOMAIN_URI_PREFIX.toString() + _domain);
       } else {
-        o = new Resource(_domain, false);
+        o = createURI(_domain);
       }
-      dumpTriple(s.toN3(), p.toN3(), o.toN3());
+      dumpTriple(s, p, o);
 
       // cardinality
-      p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
-      o = new Resource(bindingSet.getValue("cardinality").toString(), true);
+      p = createURI(DataGraphSummaryVocab.CARDINALITY);
+      o = createLiteral(Long.valueOf(bindingSet.getValue("cardinality").stringValue()));
 
-      dumpTriple(s.toN3(), p.toN3(), o.toN3());
+      dumpTriple(s, p, o);
     } else {
       _logger.info("No result");
     }
@@ -223,73 +235,59 @@ public class Dump {
    * 
    * @param bindingSet
    *          Result of the query from computePredicate()
-   * @throws QueryEvaluationException
-   * @throws IOException
    */
   public void dumpRDFPred(BindingSet bindingSet)
-      throws QueryEvaluationException, IOException {
+  throws QueryEvaluationException, IOException {
     if (bindingSet.hasBinding("label")) {
       Random randomGenerator = new Random();
-      Resource s = null;
-      Resource p = null;
-      Resource o = null;
+      Value s = null;
+      Value p = null;
+      Value o = null;
 
-      if (!AnalyticsClassAttributes.isClass(bindingSet.getValue("label")
-          .toString())) {
+      if (!AnalyticsClassAttributes.isClass(bindingSet.getValue("label").toString())) {
         // label => new line => new hash
 
-        s = new Resource(
-            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "edge" + Hash.getLong(_domain
-                + _nodeCounter + bindingSet.getValue("label").toString())).replace(
-                '-', 'n'), false);
+        s = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "edge" + Hash.getLong(_domain + _nodeCounter
+          + bindingSet.getValue("label").toString()));
         ++_nodeCounter;
-        p = new Resource(DataGraphSummaryVocab.LABEL.toString(), false);
-        o = new Resource(bindingSet.getValue("label").toString(), false);
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        p = createURI(DataGraphSummaryVocab.LABEL);
+        o = createURI(bindingSet.getValue("label").stringValue());
+        dumpTriple(s, p, o);
 
-        p = new Resource(DataGraphSummaryVocab.CARDINALITY.toString(), false);
-        o = new Resource(bindingSet.getValue("cardinality").toString(), true);
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        p = createURI(DataGraphSummaryVocab.CARDINALITY);
+        o = createLiteral(Long.valueOf(bindingSet.getValue("cardinality").stringValue()));
+        dumpTriple(s, p, o);
 
-        p = new Resource(DataGraphSummaryVocab.EDGE_SOURCE.toString(), false);
-        o = new Resource(
-            (DataGraphSummaryVocab.DGS_PREFIX.toString() + "node" + Hash
-                .getLong(_sndDomain + bindingSet.getValue("source").toString()))
-                .replace('-', 'n'),
-            false);
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        p = createURI(DataGraphSummaryVocab.EDGE_SOURCE);
+        o = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "node" + Hash.getLong(_sndDomain +
+          bindingSet.getValue("source").toString()));
+        dumpTriple(s, p, o);
 
         // target => can be a blank collection or not
         if ((bindingSet.getValue("target") == null)
             || (bindingSet.getValue("target").toString().equals("\"\""))) {
           // blank collection
-          p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
-          o = new Resource(
-              (DataGraphSummaryVocab.DGS_PREFIX.toString() + "bc" + randomGenerator
-                  .nextInt()).replace('-', 'n'), false);
+          p = createURI(DataGraphSummaryVocab.EDGE_TARGET);
+          o = createURI(DataGraphSummaryVocab.DGS_PREFIX + "bc" + randomGenerator.nextInt());
         } else {
-          p = new Resource(DataGraphSummaryVocab.EDGE_TARGET.toString(), false);
-          o = new Resource((DataGraphSummaryVocab.DGS_PREFIX.toString()
-              + "node" + Hash.getLong(_sndDomain
-              + bindingSet.getValue("target").toString())).replace('-', 'n'),
-              false);
+          p = createURI(DataGraphSummaryVocab.EDGE_TARGET);
+          o = createUriAndReplace(DataGraphSummaryVocab.DGS_PREFIX + "node" + Hash.getLong(_sndDomain +
+            bindingSet.getValue("target").toString()));
         }
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        dumpTriple(s, p, o);
 
         // Dummy node
-        o = new Resource("\""
-            + DataGraphSummaryVocab.BLANK_NODE_COLLECTION.toString() + "\"", true);
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        o = createLiteral(DataGraphSummaryVocab.BLANK_NODE_COLLECTION);
+        dumpTriple(s, p, o);
 
         // published In
-        p = new Resource(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString(), false);
+        p = createURI(DataGraphSummaryVocab.EDGE_PUBLISHED_IN);
         if (_domain.equals("sindice.com")) {
-          o = new Resource(DataGraphSummaryVocab.DOMAIN_URI_PREFIX.toString()
-              + _domain, false);
+          o = createURI(DataGraphSummaryVocab.DOMAIN_URI_PREFIX + _domain);
         } else {
-          o = new Resource(_domain, false);
+          o = createURI(_domain);
         }
-        dumpTriple(s.toN3(), p.toN3(), o.toN3());
+        dumpTriple(s, p, o);
       }
     } else {
       _logger.info("No result");
@@ -322,7 +320,7 @@ public class Dump {
       _nodeCounter = 0;
 
     } catch (Exception e) {// Catch exception if any
-      _logger.debug("Error: " + e.getMessage());
+      _logger.debug("", e);
     }
   }
 
@@ -333,7 +331,7 @@ public class Dump {
     try {
       _output.close();
     } catch (Exception e) {// Catch exception if any
-      _logger.debug("Error: " + e.getMessage());
+      _logger.debug("", e);
     }
   }
 
