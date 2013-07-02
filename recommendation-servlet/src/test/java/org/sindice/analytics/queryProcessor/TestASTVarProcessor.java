@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 19 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -27,8 +22,6 @@ import static org.junit.Assert.assertArrayEquals;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
@@ -37,20 +30,6 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
  * 
  */
 public class TestASTVarProcessor {
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @Before
-  public void setUp()
-  throws Exception {}
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @After
-  public void tearDown()
-  throws Exception {}
 
   @Test
   public void testASTVar()

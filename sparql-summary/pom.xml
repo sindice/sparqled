@@ -52,7 +52,7 @@
     <dependencies>
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>analytics-commons</artifactId>
+            <artifactId>sparqled-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -69,23 +69,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.sindice.core</groupId>
-            <artifactId>webapps-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- Jersey Dependencies -->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
             <version>1.13</version>
         </dependency>
+
         <dependency>
             <groupId>com.sun.jersey.jersey-test-framework</groupId>
             <artifactId>jersey-test-framework-grizzly2</artifactId>

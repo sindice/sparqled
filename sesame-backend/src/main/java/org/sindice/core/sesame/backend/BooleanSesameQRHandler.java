@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,16 +14,13 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.core.sesame.backend;
 
 import org.openrdf.query.QueryEvaluationException;
 
 /**
  * ASK query result
- * @author Stephane Campinas [17 Jun 2012]
- * @email stephane.campinas@deri.org
- *
  */
 public class BooleanSesameQRHandler
 implements SesameQRHandler<Boolean> {

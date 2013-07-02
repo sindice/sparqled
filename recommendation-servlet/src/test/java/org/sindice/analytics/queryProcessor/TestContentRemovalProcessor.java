@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 19 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -38,11 +33,8 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
  */
 public class TestContentRemovalProcessor {
 
-  private ASTQueryContainer   ast;
+  private ASTQueryContainer ast;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp()
   throws Exception {

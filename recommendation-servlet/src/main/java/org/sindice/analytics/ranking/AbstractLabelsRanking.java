@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
 package org.sindice.analytics.ranking;
 
 import java.io.IOException;
@@ -65,7 +65,6 @@ implements LabelsRanking {
     scores.clear();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public void rank(List<Label> elements) {
     Collection<ScoreLabel> csl = scoreLabels(elements, scores);

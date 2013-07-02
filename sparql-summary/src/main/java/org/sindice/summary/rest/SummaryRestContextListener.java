@@ -1,6 +1,4 @@
-package org.sindice.summary.rest;
-
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -16,7 +14,8 @@ package org.sindice.summary.rest;
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
+ */
+package org.sindice.summary.rest;
 
 import java.util.Arrays;
 
@@ -24,8 +23,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.commons.configuration.XMLConfiguration;
+import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.sparqled.webapps.commons.ServletConfigurationContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

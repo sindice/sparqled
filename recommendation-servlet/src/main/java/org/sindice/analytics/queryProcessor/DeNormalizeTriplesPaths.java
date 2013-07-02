@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 17 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -43,9 +38,6 @@ import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 /**
  * Transforms triple path into a sequence of basic triple patterns
- * @author Stephane Campinas [17 Jun 2012]
- * @email stephane.campinas@deri.org
- *
  */
 public final class DeNormalizeTriplesPaths {
 
@@ -71,7 +63,7 @@ public final class DeNormalizeTriplesPaths {
     @Override
     public Object visit(ASTPropertyListPath node, Object data)
     throws VisitorException {
-      final ArrayList<Node> group = (ArrayList<Node>) data;
+      final List<Node> group = (List<Node>) data;
       final SimpleNode verb = (SimpleNode) node.getVerb();
 
       if (verb instanceof ASTVar) { // VerbSimple
@@ -121,7 +113,7 @@ public final class DeNormalizeTriplesPaths {
     private void createPathSequenceUnion(int startGroupIndex,
                                          int pathSequencePos,
                                          int nPathSequence,
-                                         ArrayList<Node> group) {
+                                         List<Node> group) {
       final int end = group.size();
       final ASTGraphPatternGroup gpgLhs = new ASTGraphPatternGroup(SyntaxTreeBuilderTreeConstants.JJTGRAPHPATTERNGROUP);
       final ASTBasicGraphPattern bgpLhs = new ASTBasicGraphPattern(SyntaxTreeBuilderTreeConstants.JJTBASICGRAPHPATTERN);
@@ -168,7 +160,7 @@ public final class DeNormalizeTriplesPaths {
     private void processObjectList(Node subject,
                                    Node verb,
                                    ASTObjectList objList,
-                                   ArrayList<Node> group) {
+                                   List<Node> group) {
       this.processObjectList(subject, verb, objList, false, group);
     }
 
@@ -176,18 +168,14 @@ public final class DeNormalizeTriplesPaths {
                                    Node verb,
                                    ASTObjectList objList,
                                    boolean isInverse,
-                                   ArrayList<Node> group) {
+                                   List<Node> group) {
       for (int i = 0; i < objList.jjtGetNumChildren(); i++) {
         final Node o = objList.jjtGetChild(i);
-
-        // simple object list
-//        if (o instanceof ASTVar || o instanceof ASTQName || o instanceof ASTIRI) {
-          if (isInverse) {
-            group.add(ASTProcessorUtil.createTriple(o, verb, subject));
-          } else {
-            group.add(ASTProcessorUtil.createTriple(subject, verb, o));
-          }
-//        }
+        if (isInverse) {
+          group.add(ASTProcessorUtil.createTriple(o, verb, subject));
+        } else {
+          group.add(ASTProcessorUtil.createTriple(subject, verb, o));
+        }
       }
     }
 

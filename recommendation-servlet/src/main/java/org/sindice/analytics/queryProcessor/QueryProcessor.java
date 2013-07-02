@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -33,7 +28,7 @@ import org.openrdf.sindice.query.parser.sparql.ast.TokenMgrError;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 /**
- * Issue ASE-16
+ * 
  */
 public interface QueryProcessor {
 
@@ -109,36 +104,6 @@ public interface QueryProcessor {
    * @return
    */
   public POFMetadata getPofASTMetadata();
-
-  /**
-   * Returns a query for getting the set of properties from the specified domain
-   * @param domain if empty string, returns all the properties available
-   * @param limit limit the response to the first "limit" solutions
-   * @return
-   * @throws DGSException 
-   */
-  public String getPropertiesQuery(String domain, int limit)
-  throws DGSException;
-
-  /**
-   * Returns a query for getting the set of classes from the specified domain
-   * @param domain if empty string, returns all the classes available
-   * @param limit limit the response to the first "limit" solutions
-   * @return
-   * @throws DGSException
-   */
-  public String getClassesQuery(String domain, int limit)
-  throws DGSException;
-
-  /**
-   * Returns a query for getting the set of domains
-   * @param domain if empty string, returns all the domains available
-   * @param limit limit the response to the first "limit" solutions
-   * @return
-   * @throws DGSException
-   */
-  public String getDomainsQuery(String domain, int limit)
-  throws DGSException;
 
   public RecommendationType getRecommendationType();
 

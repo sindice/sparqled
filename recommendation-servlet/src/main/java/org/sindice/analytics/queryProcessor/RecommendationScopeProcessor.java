@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.analytics.queryProcessor;
 
@@ -45,9 +40,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Reduce the recommended query down to its effective scope
- * @author Stephane Campinas [17 Jun 2012]
- * @email stephane.campinas@deri.org
- *
  */
 public final class RecommendationScopeProcessor {
 
@@ -156,18 +148,6 @@ public final class RecommendationScopeProcessor {
       }
 
       for (int hc : sc.connectedVars) {
-//        if ((subjectVar == hc && (objectVar == -1 || !sc.flagedVars.contains(objectVar))) ||
-//            (predicateVar != null && predicateVar == hc && !sc.flagedVars.contains(objectVar))) {
-//          if (objectVar != -1) {
-//            sc.newConnectedVars.add(objectVar);
-//          }
-//          updateScope(node);
-//        }
-//        if (objectVar == hc && !sc.flagedVars.contains(subjectVar) ||
-//            predicateVar != null && predicateVar == hc && !sc.flagedVars.contains(subjectVar)) {
-//          sc.newConnectedVars.add(subjectVar);
-//          updateScope(node);
-//        }
         /*
          * the object variable is connected. In case where the seed variable
          * is the predicate, add the object.

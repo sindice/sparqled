@@ -18,12 +18,6 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with SIREn. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * @project sparql-editor-servlet
- * @author Diego Ceccarelli [ 15/apr/2012 ] 
- * @link diego.ceccarelli@deri.org
- * @copyright Copyright (C) 2012, All rights reserved.
- */
 package org.sindice.analytics.ranking;
 
 import java.util.Properties;

@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sparql-editor-servlet
- * @author Campinas Stephane [ 28 Feb 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.sindice.core.sesame.backend;
 
@@ -35,9 +30,7 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
 
 /**
  * Provides access method to Sesame repositories: query, adding data.
- * @author Stephane Campinas [17 Jun 2012]
- * @email stephane.campinas@deri.org
- *
+ * 
  * @param <VALUE> The type of the query's results
  * @param <CONTEXT> a Context class passed to the {@link QueryResultProcessor}
  */
