@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sindice.core</groupId>
+        <artifactId>analytics-parent</artifactId>
+        <version>0.9</version>
+    </parent>
+
+    <artifactId>debian</artifactId>
+    <packaging>war</packaging>
+    <name>debian</name>
+
+    <build>
+        <finalName>sparqled</finalName>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>sesame-sparql-queryparser</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>sesame-backend</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>sparql-editor-client</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>sparql-summary</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>sparqled-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sindice.core</groupId>
+            <artifactId>recommendation-servlet</artifactId>
+	    <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>lod2-debian</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <configuration>
+                            <tasks>
+                                <echo message="Creating Debian package for LOD2" />
+                                <exec dir="${basedir}/lod2-deb-package"
+                                    executable="${basedir}/lod2-deb-package/build_debpkg.sh"
+                                    failonerror="true">
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>lod2-debian</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

@@ -181,36 +181,4 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>deb-pkg</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <configuration>
-                            <tasks>
-                                <echo message="Creating deb package" />
-                                <exec dir="${basedir}/../lod2-deb-package"
-                                    executable="${basedir}/../lod2-deb-package/build_debpkg.sh"
-                                    failonerror="true">
-                                </exec>
-                            </tasks>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>deb-pkg</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

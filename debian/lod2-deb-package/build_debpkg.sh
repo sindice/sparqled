@@ -6,7 +6,7 @@ rm -rf ../target/deb-pkg
 mkdir -p ../target/deb-pkg
 # Add the Debian control files
 cp -r debian ../target/deb-pkg
-cp ../recommendation-servlet/target/sparqled.war ../target/deb-pkg
+cp ../../recommendation-servlet/target/sparqled.war ../target/deb-pkg
 cp data/* ../target/deb-pkg
 # Build the package and sign it.
 cd ../target/deb-pkg
