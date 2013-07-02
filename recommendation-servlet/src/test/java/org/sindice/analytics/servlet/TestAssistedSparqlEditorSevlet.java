@@ -52,14 +52,10 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mortbay.jetty.testing.ServletTester;
 import org.openrdf.http.protocol.Protocol;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.RDFParserFactory;
-import org.openrdf.rio.RDFParserRegistry;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.core.sesame.backend.testHelper.SesameNxParser;
 
 @RunWith(value=Parameterized.class)
 public class TestAssistedSparqlEditorSevlet {
@@ -124,27 +120,13 @@ public class TestAssistedSparqlEditorSevlet {
   throws Exception {
     // reset the vocab parameters
     DataGraphSummaryVocab.resetToDefaults();
-    // Add the nquads parser
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-  
-      @Override
-      public RDFFormat getRDFFormat() {
-        return SesameNxParser.nquadsFormat;
-      }
-  
-      @Override
-      public RDFParser getParser() {
-        return new SesameNxParser();
-      }
-  
-    });
 
     client = new HttpClient();
 
     aseTester = new ServletTester();
     aseTester.setContextPath("/");
     aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(dgsInput)));
-    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, SesameNxParser.nquadsFormat);
+    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
     aseTester.addServlet(MemorySesameServletHelper.class, "/DGS-repo");
 
     String url = aseTester.createSocketConnector(true);

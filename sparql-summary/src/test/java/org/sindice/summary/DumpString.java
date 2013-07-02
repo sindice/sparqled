@@ -27,6 +27,7 @@ import org.openrdf.query.QueryEvaluationException;
  * 
  */
 public class DumpString extends Dump {
+
   private String _outputstr;
 
   public DumpString() {

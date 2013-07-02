@@ -1,0 +1,45 @@
+<http://vocab.sindice.net/analytics#ec7529220587856463086> <http://vocab.sindice.net/analytics#label> "Thing" .
+<http://vocab.sindice.net/analytics#ec7529220587856463086> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen2335203843773632621> .
+<http://vocab.sindice.net/analytics#typen2335203843773632621> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#type> .
+<http://vocab.sindice.net/analytics#typen2335203843773632621> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec7529220587856463086> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#ec3220177607457310356> <http://vocab.sindice.net/analytics#label> "Human" .
+<http://vocab.sindice.net/analytics#ec3220177607457310356> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#type7092576437160209772> .
+<http://vocab.sindice.net/analytics#type7092576437160209772> <http://vocab.sindice.net/analytics#label> <http://opengraphprotocol.org/schema/type> .
+<http://vocab.sindice.net/analytics#type7092576437160209772> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec3220177607457310356> .
+<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#node8479274785035382848> <http://vocab.sindice.net/analytics#cardinality> "1"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#ec1701502297987654852> <http://vocab.sindice.net/analytics#label> "Thing" .
+<http://vocab.sindice.net/analytics#ec1701502297987654852> <http://vocab.sindice.net/analytics#type> <http://vocab.sindice.net/analytics#typen5869117135414585920> .
+<http://vocab.sindice.net/analytics#typen5869117135414585920> <http://vocab.sindice.net/analytics#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> .
+<http://vocab.sindice.net/analytics#typen5869117135414585920> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/analytics#label> <http://vocab.sindice.net/analytics#ec1701502297987654852> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/domain_uri> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#node9175872694952342699> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#label> <http://purl.org/dc/elements/1.1/like> .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node8479274785035382848> .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#target> "dummy class: 4841526962763945421" .
+<http://vocab.sindice.net/analytics#edge2096773358028559333> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#label> <http://purl.org/dc/elements/1.1/like> .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#target> "dummy class: 4841526962763945421" .
+<http://vocab.sindice.net/analytics#edge6346862235618451077> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#like> .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node8479274785035382848> .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#target> "dummy class: 4841526962763945421" .
+<http://vocab.sindice.net/analytics#edgen2689452839026328339> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#label> <http://ogp.me/ns#like> .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#cardinality> "2"^^<http://www.w3.org/2001/XMLSchema#long> .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#source> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#target> <http://vocab.sindice.net/analytics#node9175872694952342699> .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#target> "dummy class: 4841526962763945421" .
+<http://vocab.sindice.net/analytics#edge7535851203409138364> <http://vocab.sindice.net/analytics#publishedIn> <http://sindice.com/dataspace/default/domain/sindice.com> .

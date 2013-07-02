@@ -38,14 +38,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.model.Resource;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.RDFParserFactory;
-import org.openrdf.rio.RDFParserRegistry;
+import org.openrdf.rio.ntriples.NTriplesUtil;
+import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
-import org.sindice.analytics.queryProcessor.DGSException;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
@@ -57,7 +56,6 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.sindice.core.sesame.backend.testHelper.SesameNxParser;
 
 /**
  * 
@@ -80,27 +78,16 @@ public class TestDGSBackend {
   public static void init()
   throws FileNotFoundException, IOException,
          RDFParseException, RepositoryException, SesameBackendException {
-    final BufferedReader dgsInputReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(dgsInput))));
+    final BufferedReader dgsInputReader = new BufferedReader(new InputStreamReader(
+      new GZIPInputStream(new FileInputStream(dgsInput))));
     backend.initConnection();
 
     AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
     DataGraphSummaryVocab.resetToDefaults();
 
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-
-      @Override
-      public RDFFormat getRDFFormat() {
-        return SesameNxParser.nquadsFormat;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new SesameNxParser();
-      }
-
-    });
     try {
-      addNQuads(dgsInputReader);
+      final Resource c = NTriplesUtil.parseURI("<" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ">", new MemValueFactory());
+      backend.getConnection().add(dgsInputReader, "", RDFFormat.NTRIPLES, c);
     } finally {
       dgsInputReader.close();
     }
@@ -206,8 +193,7 @@ public class TestDGSBackend {
   }
 
   private void executeQuery(String query, List<Label> expected)
-  throws DGSException, IllegalArgumentException, IllegalAccessException,
-  SecurityException, NoSuchFieldException, SesameBackendException {
+  throws Exception {
     dgsQProcessor.load(query);
     final QueryIterator<Label, Context> qit = backend.submit(dgsQProcessor.getDGSQuery());
     Field f = qit.getContext().getClass().getDeclaredField("type");
@@ -233,11 +219,6 @@ public class TestDGSBackend {
         }
       }
     }
-  }
-
-  private static void addNQuads(BufferedReader ntriples)
-      throws RDFParseException, RepositoryException, IOException {
-    backend.getConnection().add(ntriples, "", SesameNxParser.nquadsFormat);
   }
 
 }

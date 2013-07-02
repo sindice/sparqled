@@ -32,17 +32,10 @@ public class DataGraphSummaryVocab {
   public static final String  DEFAULT_GSG           = "http://sindice.com/analytics";
   public static String        GRAPH_SUMMARY_GRAPH   = DEFAULT_GSG;
 
-  /*
-   * Data Graph Summary Check mechanism
-   */
-  public static final String  XSD_DATE              = "http://www.w3.org/2001/XMLSchema#date";
-  public static final String  DATE_PREDICATE        = "http://purl.org/dc/elements/1.1/date";
-
   public static final String  DUMMY_CLASS_HASH      = Long
                                                     .toString(Hash.getLong("dummy class"))
                                                     .replace('-', 'n');
-  public static final String  BLANK_NODE_COLLECTION = "dummy class: " +
-                                                      DUMMY_CLASS_HASH;
+  public static final String  BLANK_NODE_COLLECTION = "dummy class: " + DUMMY_CLASS_HASH;
 
   public static DatasetLabel  DATASET_LABEL_DEF     = DatasetLabel.SECOND_LEVEL_DOMAIN;
 
@@ -50,12 +43,8 @@ public class DataGraphSummaryVocab {
    * Vocaulary Terms
    */
   public static final String  DOMAIN_URI            = ANY23_PREFIX + "domain_uri";
-  public static final String  DOMAIN_NAME           = ANY23_PREFIX + "domain";
   public static final String  LABEL                 = DGS_PREFIX + "label";
   public static final String  CARDINALITY           = DGS_PREFIX + "cardinality";
-  public static final String  CLASS_RANK1           = DGS_PREFIX + "rank1";
-  public static final String  CLASS_RANK2           = DGS_PREFIX + "rank2";
-  public static final String  GLOBAL_ID             = DGS_PREFIX + "global_id";
   public static final String  TYPE                  = DGS_PREFIX + "type";
   public static final String  EDGE_SOURCE           = DGS_PREFIX + "source";
   public static final String  EDGE_TARGET           = DGS_PREFIX + "target";
