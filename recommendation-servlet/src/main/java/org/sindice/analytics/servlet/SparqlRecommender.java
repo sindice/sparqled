@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.sindice.analytics.backend.DGSQueryResultProcessor;
-import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
 import org.sindice.analytics.queryProcessor.DGSException;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
@@ -57,7 +55,7 @@ public final class SparqlRecommender {
    * @param limit
    * @return
    */
-  public static <C> C run(SesameBackend<Label, DGSQueryResultProcessor.Context> dgsBackend,
+  public static <C> C run(SesameBackend<Label> dgsBackend,
                           ResponseWriter<C> response,
                           String query,
                           List<LabelsRanking> rankings,
@@ -104,8 +102,7 @@ public final class SparqlRecommender {
          * Get the list of candidates and rank them
          */
         final ArrayList<Label> labels = new ArrayList<Label>();
-        final QueryIterator<Label, Context> qrp = dgsBackend.submit(dgsQuery);
-        qrp.getContext().type = recommendationType;
+        final QueryIterator<Label> qrp = dgsBackend.submit(dgsQuery);
         qrp.setPagination(pagination);
         while (qrp.hasNext()) {
           final Label label = qrp.next();
@@ -121,7 +118,7 @@ public final class SparqlRecommender {
             label.setLabelType(LabelType.QNAME);
           }
 
-          logger.debug("Label={}", label);
+          logger.debug("Label=[{}]", query, label);
           if (label.getCardinality() != -1) {
             labels.add(label);
             if (labels.size() == BATCH) {

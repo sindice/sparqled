@@ -19,7 +19,6 @@ package org.sindice.core.sesame.backend;
 
 import org.openrdf.query.BindingSet;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 
 /**
  * 
@@ -32,41 +31,41 @@ public final class SesameBackendFactory {
 
   private SesameBackendFactory() {}
 
-  public static <VALUE, CONTEXT> SesameBackend<VALUE, CONTEXT> getDgsBackend(BackendType type,
-                                                                             QueryResultProcessor<VALUE, CONTEXT> qrp,
+  public static <VALUE> SesameBackend<VALUE> getDgsBackend(BackendType type,
+                                                                             QueryResultProcessor<VALUE> qrp,
                                                                              String... args) {
     switch (type) {
       case MEMORY:
         if (args.length > 1) {
           throw new IllegalArgumentException("The Memory backend takes zero or one argument: <data-dir>?");
         }
-        return new MemorySesameBackend<VALUE, CONTEXT>(qrp, args.length == 0 ? null : args[0]);
+        return new MemorySesameBackend<VALUE>(qrp, args.length == 0 ? null : args[0]);
       case HTTP:
         if (args.length != 1) {
           throw new IllegalArgumentException("The HTTP backend only takes one argument: <enpoint-url>");
         }
-        return new HTTPSesameBackend<VALUE, CONTEXT>(qrp, args[0]);
+        return new HTTPSesameBackend<VALUE>(qrp, args[0]);
       case VIRTUOSO:
         if (args.length != 3) {
           throw new IllegalArgumentException("The VIRTUOSO backend only takes 3 arguments: <enpoint-url> <user> <password>");
         }
-        return new VirtuosoSesameBackend<VALUE, CONTEXT>(qrp, args[0], args[1], args[2]);
+        return new VirtuosoSesameBackend<VALUE>(qrp, args[0], args[1], args[2]);
       case NATIVE:
         if (args.length != 1) {
           throw new IllegalArgumentException("The Native backend only takes one argument: <data-dir>");
         }
-        return new NativeSesameBackend<VALUE, CONTEXT>(qrp, args[0]);
+        return new NativeSesameBackend<VALUE>(qrp, args[0]);
       case RDBMS:
         if (args.length != 4) {
           throw new IllegalArgumentException("The RDBMS backend only takes 4 argument: <url> <database> <user> <password>");
         }
-        return new RDBMSSesameBackend<VALUE, CONTEXT>(qrp, args[0], args[1], args[2], args[3]);
+        return new RDBMSSesameBackend<VALUE>(qrp, args[0], args[1], args[2], args[3]);
       default:
         throw new EnumConstantNotPresentException(BackendType.class, type.toString());
     }
   }
 
-  public static SesameBackend<BindingSet, Context> getDgsBackend(BackendType type,
+  public static SesameBackend<BindingSet> getDgsBackend(BackendType type,
                                                                  String... args) {
     return getDgsBackend(type, null, args);
   }

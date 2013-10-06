@@ -32,24 +32,17 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
  * Provides access method to Sesame repositories: query, adding data.
  * 
  * @param <VALUE> The type of the query's results
- * @param <CONTEXT> a Context class passed to the {@link QueryResultProcessor}
  */
-public interface SesameBackend<VALUE, CONTEXT> {
+public interface SesameBackend<VALUE> {
 
   public static final int LIMIT = 1000;
 
-  public abstract class QueryIterator<VALUE, CONTEXT>
+  public abstract class QueryIterator<VALUE>
   implements Iterator<VALUE> {
 
-    public interface QueryResultProcessor<VALUE, CONTEXT> {
+    public interface QueryResultProcessor<VALUE> {
 
-      public static class Context {
-        // nothing
-      }
-
-      public VALUE process(Object bs, CONTEXT context);
-
-      public CONTEXT getContext();
+      public VALUE process(Object bs);
 
     }
 
@@ -59,8 +52,6 @@ public interface SesameBackend<VALUE, CONTEXT> {
      * @param l
      */
     public abstract void setPagination(int l);
-
-    public abstract CONTEXT getContext();
 
     /**
      * get the binding names in case of a select Query.
@@ -112,7 +103,7 @@ public interface SesameBackend<VALUE, CONTEXT> {
    * @return
    * @throws SesameBackendException
    */
-  public QueryIterator<VALUE, CONTEXT> submit(String query) throws SesameBackendException;
+  public QueryIterator<VALUE> submit(String query) throws SesameBackendException;
   /**
    * Returns an iterator over the results of the submitted query. Process results using the given {@link QueryResultProcessor}
    * @param qrp
@@ -120,6 +111,6 @@ public interface SesameBackend<VALUE, CONTEXT> {
    * @return
    * @throws SesameBackendException
    */
-  public QueryIterator<VALUE, CONTEXT> submit(QueryResultProcessor<VALUE, CONTEXT> qrp, String query) throws SesameBackendException;
+  public QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query) throws SesameBackendException;
 
 }

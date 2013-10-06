@@ -43,7 +43,6 @@ import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.query.parser.sparql.ast.ASTSelectQuery;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
@@ -62,7 +61,7 @@ extends HttpServlet {
   private static final Logger                       logger           = LoggerFactory
                                                                      .getLogger(SparqlQueryServlet.class);
 
-  private static SesameBackend<BindingSet, Context> _repository;
+  private static SesameBackend<BindingSet> _repository;
   private PreProcessing                             preprocessing    = null;
 
   /**
@@ -180,7 +179,7 @@ extends HttpServlet {
 
     // Process the query
     logger.debug(query);
-    QueryIterator<BindingSet, Context> queryIt;
+    QueryIterator<BindingSet> queryIt;
     try {
       queryIt = _repository.submit(query);
 
@@ -213,7 +212,7 @@ extends HttpServlet {
   }
 
   private void parseSelect(HttpServletResponse response,
-                           final QueryIterator<BindingSet, Context> queryIt)
+                           final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -288,7 +287,7 @@ extends HttpServlet {
   }
 
   private void parseConstruct(HttpServletResponse response,
-                              final QueryIterator<BindingSet, Context> queryIt)
+                              final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -351,7 +350,7 @@ extends HttpServlet {
   }
 
   private void parseDescribe(HttpServletResponse response,
-                             final QueryIterator<BindingSet, Context> queryIt)
+                             final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -414,7 +413,7 @@ extends HttpServlet {
   }
 
   private void parseAsk(HttpServletResponse response,
-                        final QueryIterator<BindingSet, Context> queryIt)
+                        final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
 

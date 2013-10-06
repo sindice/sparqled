@@ -21,8 +21,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.http.HTTPRepository;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
-public class HTTPSesameBackend<VALUE, CONTEXT>
-extends AbstractSesameBackend<VALUE, CONTEXT> {
+public class HTTPSesameBackend<VALUE>
+extends AbstractSesameBackend<VALUE> {
 
   private final String endpointURL;
 
@@ -30,7 +30,7 @@ extends AbstractSesameBackend<VALUE, CONTEXT> {
     this(null, endpoingURL);
   }
 
-  public HTTPSesameBackend(QueryResultProcessor<VALUE, CONTEXT> qit, String endpoingURL) {
+  public HTTPSesameBackend(QueryResultProcessor<VALUE> qit, String endpoingURL) {
     super(qit);
     endpointURL = endpoingURL;
   }

@@ -30,7 +30,6 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.SailException;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 import org.sindice.core.sesame.backend.SesameBackendException;
 
 /**
@@ -39,7 +38,7 @@ import org.sindice.core.sesame.backend.SesameBackendException;
 abstract public class AbstractQuery {
 
   protected String _graphFrom;
-  protected static SesameBackend<BindingSet, Context> _repository;
+  protected static SesameBackend<BindingSet> _repository;
   protected Logger _logger;
   private Dump _dump;
   private String _domain;
@@ -96,7 +95,7 @@ abstract public class AbstractQuery {
       _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" + r);
     }
     _logger.info("LAUNCH QUERY");
-    QueryIterator<BindingSet, Context> queryIt = _repository.submit(query);
+    QueryIterator<BindingSet> queryIt = _repository.submit(query);
     if (_pagination >= 0)
       queryIt.setPagination(_pagination);
     while (queryIt.hasNext()) {
@@ -122,7 +121,7 @@ abstract public class AbstractQuery {
     }
 
     _logger.info("LAUNCH QUERY");
-    QueryIterator<BindingSet, Context> queryIt = _repository.submit(query);
+    QueryIterator<BindingSet> queryIt = _repository.submit(query);
     if (_pagination >= 0)
       queryIt.setPagination(_pagination);
     while (queryIt.hasNext()) {

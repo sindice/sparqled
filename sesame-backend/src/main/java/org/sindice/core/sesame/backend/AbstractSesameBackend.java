@@ -62,21 +62,19 @@ import org.openrdf.rio.trig.TriGParserFactory;
 import org.openrdf.rio.trix.TriXParserFactory;
 import org.openrdf.rio.turtle.TurtleParserFactory;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @param <VALUE>
- * @param <CONTEXT>
  */
-public abstract class AbstractSesameBackend<VALUE, CONTEXT>
-implements SesameBackend<VALUE, CONTEXT> {
+public abstract class AbstractSesameBackend<VALUE>
+implements SesameBackend<VALUE> {
 
   protected static final Logger logger = LoggerFactory
       .getLogger(AbstractSesameBackend.class);
 
-  private final QueryResultProcessor<VALUE, CONTEXT> qrp;
+  private final QueryResultProcessor<VALUE> qrp;
 
   private RepositoryConnection con;
   private Repository repository;
@@ -85,7 +83,7 @@ implements SesameBackend<VALUE, CONTEXT> {
     this(null);
   }
 
-  public AbstractSesameBackend(QueryResultProcessor<VALUE, CONTEXT> qrp) {
+  public AbstractSesameBackend(QueryResultProcessor<VALUE> qrp) {
     this.qrp = qrp;
     initSesameRDFParsers();
   }
@@ -185,14 +183,14 @@ implements SesameBackend<VALUE, CONTEXT> {
   }
 
   @Override
-  public QueryIterator<VALUE, CONTEXT> submit(String query)
+  public QueryIterator<VALUE> submit(String query)
       throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
 
   @Override
-  public QueryIterator<VALUE, CONTEXT> submit(
-      QueryResultProcessor<VALUE, CONTEXT> qrp, String query)
+  public QueryIterator<VALUE> submit(
+      QueryResultProcessor<VALUE> qrp, String query)
       throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
@@ -306,7 +304,7 @@ implements SesameBackend<VALUE, CONTEXT> {
     }
   }
 
-  private class SesameQueryIterator extends QueryIterator<VALUE, CONTEXT> {
+  private class SesameQueryIterator extends QueryIterator<VALUE> {
 
     private int pagination = LIMIT;
     private long limit = 0; // user defined limit: by default get everything
@@ -316,7 +314,6 @@ implements SesameBackend<VALUE, CONTEXT> {
     private int resultCounter; // count the number of returned result
     private String query;
     private SesameQRHandler<?> results = null;
-    private final CONTEXT context;
 
     private final Set<String> bindingNames = new LinkedHashSet<String>();
 
@@ -329,9 +326,9 @@ implements SesameBackend<VALUE, CONTEXT> {
     private final Matcher rmOffset = Pattern.compile("offset\\s?\\d+",
         Pattern.CASE_INSENSITIVE).matcher("");
 
-    private final QueryResultProcessor<VALUE, CONTEXT> qrp;
+    private final QueryResultProcessor<VALUE> qrp;
 
-    public SesameQueryIterator(QueryResultProcessor<VALUE, CONTEXT> qrp,
+    public SesameQueryIterator(QueryResultProcessor<VALUE> qrp,
         String query) throws SesameBackendException {
       this.qrp = qrp;
       this.query = query;
@@ -346,11 +343,6 @@ implements SesameBackend<VALUE, CONTEXT> {
       // SELECT QUERY - get the binding names
       if (ast.getQuery() instanceof ASTSelectQuery) {
         doGetBindingNames();
-      }
-      if (qrp == null) {
-        context = (CONTEXT) new Context();
-      } else {
-        context = this.qrp.getContext();
       }
       this.resultCounter = 0;
     }
@@ -550,7 +542,7 @@ implements SesameBackend<VALUE, CONTEXT> {
         if (qrp == null) {
           value = (VALUE) results.next();
         } else {
-          value = qrp.process(results.next(), getContext());
+          value = qrp.process(results.next());
         }
         resultCounter += 1;
         return value;
@@ -558,11 +550,6 @@ implements SesameBackend<VALUE, CONTEXT> {
         logger.error("", e);
         throw new RuntimeException(e);
       }
-    }
-
-    @Override
-    public CONTEXT getContext() {
-      return context;
     }
 
   }

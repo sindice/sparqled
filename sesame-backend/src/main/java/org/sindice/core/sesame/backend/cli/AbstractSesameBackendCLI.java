@@ -39,7 +39,6 @@ import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
@@ -60,7 +59,7 @@ public abstract class AbstractSesameBackendCLI {
   private static final String                QUERY    = "query";
 
   private final OptionParser                 parser;
-  private SesameBackend<BindingSet, Context> backend;
+  private SesameBackend<BindingSet> backend;
 
   public AbstractSesameBackendCLI() {
     parser = initializeOptionParser();
@@ -192,7 +191,7 @@ public abstract class AbstractSesameBackendCLI {
     }
 
     backend.initConnection();
-    QueryIterator<BindingSet, Context> qit = backend.submit(query.toString());
+    QueryIterator<BindingSet> qit = backend.submit(query.toString());
     try {
       while (qit.hasNext()) {
         BindingSet bs = qit.next();

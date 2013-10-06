@@ -108,13 +108,13 @@ public class SummaryRest {
   public String update(@FormParam("graph") String graph) {
     final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
-    SesameBackend<?, ?> backend = null;
+    SesameBackend<?> backend = null;
 
     final ArrayList<String> sources = new ArrayList<String>();
     try {
       backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
       backend.initConnection();
-      final QueryIterator<?, ?> it = backend.submit(
+      final QueryIterator<?> it = backend.submit(
         "SELECT ?source FROM <" + SUMMARIES_GRAPH + "> {" +
         "  ?node " + TITLE_URI + " <" + graph + "> ." +
         "  ?node " + SOURCE_URI + " ?source ." +
@@ -163,12 +163,12 @@ public class SummaryRest {
   public String getSummaries() {
     final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
-    SesameBackend<?, ?> backend = null;
+    SesameBackend<?> backend = null;
 
     try {
       backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
       backend.initConnection();
-      final QueryIterator<?, ?> it = backend.submit(
+      final QueryIterator<?> it = backend.submit(
         "SELECT ?summary FROM <" + SUMMARIES_GRAPH + "> {" +
         "  ?node " + TITLE_URI + " ?summary ." +
         "}"
@@ -204,7 +204,7 @@ public class SummaryRest {
   public String deleteSummary(@QueryParam("graph") String graph) {
     final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
-    SesameBackend<?, ?> backend = null;
+    SesameBackend<?> backend = null;
 
     if (graph == null || graph.isEmpty()) {
       response = getJson(Status.ERROR, "You need to specify the graph summary to delete");
@@ -243,13 +243,13 @@ public class SummaryRest {
    * Delete the summary record from the graph {@value #SUMMARIES_GRAPH}
    * @throws SesameBackendException 
    */
-  private void unRegisterSummary(final SesameBackend<?, ?> backend,
+  private void unRegisterSummary(final SesameBackend<?> backend,
                                  final String graph,
                                  final ValueFactoryImpl factory)
   throws RepositoryException, SesameBackendException {
     final URI context = NTriplesUtil.parseURI("<" + SUMMARIES_GRAPH  + ">", factory);
 
-    final QueryIterator<?, ?> it = backend.submit(
+    final QueryIterator<?> it = backend.submit(
       "SELECT ?node FROM <" + SUMMARIES_GRAPH + "> {" +
       "  ?node " + TITLE_URI + " <" + graph + "> ." +
       "}"
@@ -372,12 +372,12 @@ public class SummaryRest {
                             @QueryParam("limit") String limit) {
     final BackendType type = getRecommenderType();
     String response = getJson(Status.ERROR, "");
-    SesameBackend<?, ?> backend = null;
+    SesameBackend<?> backend = null;
 
     try {
       backend = SesameBackendFactory.getDgsBackend(type, getRecommenderArgs());
       backend.initConnection();
-      final QueryIterator<?, ?> it;
+      final QueryIterator<?> it;
       if (inputGraph == null || inputGraph.isEmpty()) {
         it = backend.submit(
           "SELECT * {" +

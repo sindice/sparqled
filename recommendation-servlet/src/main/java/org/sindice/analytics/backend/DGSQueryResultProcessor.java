@@ -25,7 +25,6 @@ import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
@@ -33,21 +32,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DGSQueryResultProcessor
-implements QueryResultProcessor<Label, DGSQueryResultProcessor.Context> {
+implements QueryResultProcessor<Label> {
 
   protected static final Logger logger = LoggerFactory.getLogger(DGSQueryResultProcessor.class);
 
-  public class Context {
-    public RecommendationType type;
-  }
-
   @Override
-  public Context getContext() {
-    return new Context();
-  }
-
-  @Override
-  public Label process(Object o, Context c) {
+  public Label process(Object o) {
     final Label label;
     final BindingSet set = (BindingSet) o; // The DGS query is a SELECT query
     final Iterator<Binding> it = set.iterator();

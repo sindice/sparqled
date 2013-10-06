@@ -22,28 +22,27 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
 
 import virtuoso.sesame2.driver.VirtuosoRepository;
 
-public class VirtuosoSesameBackend<VALUE, CONTEXT> extends
-        AbstractSesameBackend<VALUE, CONTEXT> {
+public class VirtuosoSesameBackend<VALUE>
+extends AbstractSesameBackend<VALUE> {
 
-	private final String url;
-	private final String user;
-	private final String password;
+  private final String url;
+  private final String user;
+  private final String password;
 
-	public VirtuosoSesameBackend(String url, String user, String password) {
-		this(null, url, user, password);
-	}
+  public VirtuosoSesameBackend(String url, String user, String password) {
+    this(null, url, user, password);
+  }
 
-	public VirtuosoSesameBackend(QueryResultProcessor<VALUE, CONTEXT> qit,
-	        String url, String user, String password) {
-		super(qit);
-		this.password = password;
-		this.user = user;
-		this.url = url;
-	}
+  public VirtuosoSesameBackend(QueryResultProcessor<VALUE> qit, String url, String user, String password) {
+    super(qit);
+    this.password = password;
+    this.user = user;
+    this.url = url;
+  }
 
-	@Override
-	protected Repository getRepository() {
-		return new VirtuosoRepository(url, user, password);
-	}
+  @Override
+  protected Repository getRepository() {
+    return new VirtuosoRepository(url, user, password);
+  }
 
 }

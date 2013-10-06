@@ -67,7 +67,7 @@ extends JerseyTest {
   throws IOException, SesameBackendException {
     WebResource webResource = resource();
     webResource.path("summaries/create").post(String.class);
-    final SesameBackend<?, ?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
+    final SesameBackend<?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
     checkSummary(backend, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
   }
 
@@ -87,7 +87,7 @@ extends JerseyTest {
     final String responseMsg = webResource.path("summaries/update").post(String.class, form);
 
     assertTrue(responseMsg.contains(Status.SUCCESS.toString()));
-    final SesameBackend<?, ?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
+    final SesameBackend<?> backend = SesameBackendFactory.getDgsBackend(BackendType.NATIVE, RECOMMENDER_REPO);
     checkSummary(backend, graph);
   }
 
@@ -128,11 +128,11 @@ extends JerseyTest {
     assertFalse(responseMsg.contains(graph));
   }
 
-  private void checkSummary(SesameBackend<?, ?> backend, String graphName)
+  private void checkSummary(SesameBackend<?> backend, String graphName)
   throws SesameBackendException {
     backend.initConnection();
 
-    QueryIterator<?, ?> it = backend.submit(
+    QueryIterator<?> it = backend.submit(
       "PREFIX an: <" + DataGraphSummaryVocab.DGS_PREFIX + ">\n" +
       "SELECT DISTINCT ?Label ?pLabel\n" +
       "FROM <" + graphName + "> {\n" +

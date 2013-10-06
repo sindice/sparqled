@@ -42,7 +42,7 @@ public class Label {
    */
   private final Map<String, List<Object>> context = new HashMap<String, List<Object>>();
   private String                          label;
-  private final long                      cardinality;
+  private final long                     cardinality;
   private LabelType                       type;
 
   public Label(LabelType labelType, String label, long cardinality) {
@@ -93,7 +93,7 @@ public class Label {
 
   @Override
   public String toString() {
-    return "Label [ label=[" + label + "], cardinality=" + cardinality + ", context=" + context + " ]\n";
+    return "Label [ label=[" + label + "], cardinality=" + cardinality + ", context=" + context + " ]";
   }
 
   @Override
@@ -109,7 +109,9 @@ public class Label {
 
   @Override
   public int hashCode() {
-    return super.hashCode();
+    int hash = 31 + (int) (cardinality ^ (cardinality >>> 32));
+    hash = 31 * hash + label.hashCode();
+    return hash * 31 + type.hashCode();
   }
 
 }

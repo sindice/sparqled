@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +43,6 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
@@ -62,7 +60,7 @@ import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
  */
 public class TestDGSBackend {
 
-  private static final SesameBackend<Label, Context> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
+  private static final SesameBackend<Label> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
   private static final String dgsInput = "./src/test/resources/DGSBackend/test-data-graph-summary_cascade.nt.gz";
   private final DGSQueryProcessor dgsQProcessor = new DGSQueryProcessor();
   private final List<Label> actualLabels = new ArrayList<Label>();
@@ -195,10 +193,7 @@ public class TestDGSBackend {
   private void executeQuery(String query, List<Label> expected)
   throws Exception {
     dgsQProcessor.load(query);
-    final QueryIterator<Label, Context> qit = backend.submit(dgsQProcessor.getDGSQuery());
-    Field f = qit.getContext().getClass().getDeclaredField("type");
-    f.setAccessible(true);
-    f.set(qit.getContext(), dgsQProcessor.getRecommendationType());
+    final QueryIterator<Label> qit = backend.submit(dgsQProcessor.getDGSQuery());
     while (qit.hasNext()) {
       actualLabels.add(qit.next());
     }

@@ -35,11 +35,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.http.protocol.Protocol;
 import org.sindice.analytics.backend.DGSQueryResultProcessor;
-import org.sindice.analytics.backend.DGSQueryResultProcessor.Context;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.LabelsRanking;
 import org.sindice.analytics.ranking.LabelsRankingYAMLoader;
-import org.sindice.analytics.servlet.ResponseWriterFactory.ResponseType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
@@ -56,19 +54,16 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorServlet
 extends HttpServlet {
 
-  private static final long             serialVersionUID     = 4137296200305461786L;
+  private static final long    serialVersionUID = 4137296200305461786L;
 
-  private static final Logger           logger               = LoggerFactory
-                                                             .getLogger(AssistedSparqlEditorServlet.class);
+  private static final Logger  logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String            DGS_GRAPH            = "dg";
-  public static final String            DATA_REQUEST         = "data";
-  private static final String           DEFAULT_DATA_REQUEST = "DEFAULT";
+  public static final String   DGS_GRAPH        = "dg";
 
-  private final List<LabelsRanking>     labelsRankings       = new ArrayList<LabelsRanking>();
-  private SesameBackend<Label, Context> dgsBackend           = null;
-  private int                           pagination;
-  private int                           limit;
+  private List<LabelsRanking>  labelsRankings;
+  private SesameBackend<Label> dgsBackend       = null;
+  private int                  pagination;
+  private int                  limit;
 
   @Override
   public void init(ServletConfig config)
@@ -101,7 +96,7 @@ extends HttpServlet {
       final LabelsRankingYAMLoader loader = new LabelsRankingYAMLoader(r);
 
       loader.load();
-      labelsRankings.addAll(loader.getConfigurations());
+      labelsRankings = loader.getConfigurations();
 
       final DGSQueryResultProcessor qrp = new DGSQueryResultProcessor();
       dgsBackend = SesameBackendFactory.getDgsBackend(backend, qrp, backendArgs);
@@ -184,30 +179,22 @@ extends HttpServlet {
 
     response.setContentType("application/json");
 
-    String res = computeResponse(request);
-
-    out.print(res);
+    out.print(computeResponse(request));
     out.flush();
     out.close();
   }
 
   private String computeResponse(HttpServletRequest request)
   throws IOException {
-    String response = "";
+    String response = "{}";
 
-    String queryType = DEFAULT_DATA_REQUEST;
-    if (request.getParameter(DATA_REQUEST) != null) {
-      queryType = request.getParameter(DATA_REQUEST);
-    }
-    final ResponseWriter<?> responseWriter = ResponseWriterFactory.getResponseWriter(ResponseType.JSON);
-
-    if (queryType.equalsIgnoreCase("autocomplete")) {
-      // Check if user wants a context aware recommendation
-      if (request.getParameter(Protocol.QUERY_PARAM_NAME) != null) {
-        final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
-        // Get recommendation
-        response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, this.labelsRankings, pagination, limit);
-      }
+    // Check if user wants a context aware recommendation
+    if (request.getParameter(Protocol.QUERY_PARAM_NAME) != null) {
+      final ResponseWriter<String> responseWriter = new JsonResponseWriter();
+      final List<LabelsRanking> labelsRankings = new ArrayList<LabelsRanking>(this.labelsRankings);
+      final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
+      // Get recommendation
+      response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, labelsRankings, pagination, limit);
     }
     return response;
   }

@@ -52,7 +52,6 @@ import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor.Context;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 
 @RunWith(value = Parameterized.class)
@@ -86,17 +85,13 @@ public class TestSesameBackend {
     FileUtil.deleteDir(memoryDataDir);
   }
 
-  public static class MyContext {
-    public final String data = "DATA";
-  }
-
   @Parameters
   public static Collection<Object[]> data() {
     nativeDataDir = new File("/tmp", "sesameBackend" + Math.random());
     nativeDataDir.mkdir();
     memoryDataDir = new File("/tmp/sesameMemBackend" + Math.random());
 
-    Object[][] data = new Object[5][];
+    Object[][] data = new Object[4][];
 
     // In Memory Backend
     data[0] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY) };
@@ -104,12 +99,12 @@ public class TestSesameBackend {
     data[1] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.MEMORY, memoryDataDir.getAbsolutePath()) };
     // In Memory Backend with custom result processing
     data[2] = new Object[] { SesameBackendFactory
-    .getDgsBackend(BackendType.MEMORY, new QueryResultProcessor<String, Context>() {
+    .getDgsBackend(BackendType.MEMORY, new QueryResultProcessor<String>() {
 
       private final StringBuilder sb = new StringBuilder();
 
       @Override
-      public String process(Object bs, Context context) {
+      public String process(Object bs) {
         sb.setLength(0);
         if (bs instanceof BindingSet) {
           final Iterator<Binding> it = ((BindingSet) bs).iterator();
@@ -127,46 +122,9 @@ public class TestSesameBackend {
         return sb.toString();
       }
 
-      @Override
-      public Context getContext() {
-        return null;
-      }
-
-    }) };
-    // In Memory Backend with custom result processing and a Context object
-    data[3] = new Object[] { SesameBackendFactory
-    .getDgsBackend(BackendType.MEMORY, new QueryResultProcessor<String[], MyContext>() {
-
-      private final ArrayList<String> sb = new ArrayList<String>();
-
-      @Override
-      public String[] process(Object bs, MyContext c) {
-        sb.clear();
-        if (bs instanceof BindingSet) {
-          final Iterator<Binding> it = ((BindingSet) bs).iterator();
-
-          while (it.hasNext()) {
-            final Binding b = it.next();
-            sb.add(c.data + b.getName() + " = " + b.getValue());
-          }
-        } else if (bs instanceof Boolean) {
-          sb.add(c.data + ASK_BINDING + " = " + Boolean.toString((Boolean) bs));
-        } else if (bs instanceof Statement) {
-          sb.add(c.data + CD_BINDING + " = " + ((Statement) bs).toString());
-        } else {
-          fail("Unknown Value class: " + bs);
-        }
-        return sb.toArray(new String[0]);
-      }
-
-      @Override
-      public MyContext getContext() {
-        return new MyContext();
-      }
-
     }) };
     // Native Backend
-    data[4] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.NATIVE, nativeDataDir.getAbsolutePath()) };
+    data[3] = new Object[] { SesameBackendFactory.getDgsBackend(BackendType.NATIVE, nativeDataDir.getAbsolutePath()) };
     return Arrays.asList(data);
   }
 
@@ -197,7 +155,7 @@ public class TestSesameBackend {
       "http://www.semanlink.net/tag/tim_berners_lee",
       "http://www.semanlink.net/tag/httprange_14"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     assertFalse(qit.getBindingNames().isEmpty());
     assertArrayEquals(new String[] { "o" }, qit.getBindingNames().toArray(new String[0]));
     evaluateQuery(qit, expected, 1); // an additional iteration to check there are no more results
@@ -233,7 +191,7 @@ public class TestSesameBackend {
       "http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html",
       "http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     assertFalse(qit.getBindingNames().isEmpty());
     assertArrayEquals(new String[] { "p", "a" }, qit.getBindingNames().toArray(new String[0]));
     evaluateQuery(qit, expected, 1);
@@ -265,7 +223,7 @@ public class TestSesameBackend {
       "http://www.semanlink.net/tag/tim_berners_lee",
       "http://www.semanlink.net/tag/httprange_14"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     qit.setPagination(0);
     evaluateQuery(qit, expected, 0);
     // LIMIT only
@@ -304,7 +262,7 @@ public class TestSesameBackend {
       "http://www.semanlink.net/2001/00/semanlink-schema#creationDate",
       "http://purl.org/dc/elements/1.1/title"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     evaluateQuery(qit, expected, 1);
 
     // limit inferior to the default pagination
@@ -349,7 +307,7 @@ public class TestSesameBackend {
       "http://www.semanlink.net/2001/00/semanlink-schema#creationDate",
       "http://purl.org/dc/elements/1.1/title"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     qit.setPagination(1);
     evaluateQuery(qit, expected, 4);
     // Limit only
@@ -380,7 +338,7 @@ public class TestSesameBackend {
     // has pattern
     final String query1 = "ASK { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
     expected.put(ASK_BINDING, Arrays.asList("true"));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     qit.setPagination(1); // the pagination is disabled by default for ASKQuery
     assertTrue(qit.getBindingNames().isEmpty());
     evaluateQuery(qit, expected, 0);
@@ -398,7 +356,7 @@ public class TestSesameBackend {
 
     // has pattern
     final String query1 = "ASK { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o } Offset 10";
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     evaluateQuery(qit, expected, 0);
   }
 
@@ -413,7 +371,7 @@ public class TestSesameBackend {
       + "http://www.semanlink.net/2001/00/semanlink-schema#tag, "
       + "http://www.semanlink.net/tag/tim_berners_lee)"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     qit.setPagination(0);
     evaluateQuery(qit, expected, 0);
   }
@@ -430,7 +388,7 @@ public class TestSesameBackend {
       "(http://acme.org/tbl, http://acme.org/tbl/pred, http://www.semanlink.net/2001/00/semanlink-schema#creationDate)",
       "(http://acme.org/tbl, http://acme.org/tbl/pred, http://purl.org/dc/elements/1.1/title)"
     ));
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     qit.setPagination(0);
     evaluateQuery(qit, expected, 0);
   }
@@ -449,12 +407,12 @@ public class TestSesameBackend {
       "http://purl.org/dc/elements/1.1/title"
     ));
 
-    QueryIterator<?, ?> qit = backend.submit(query1);
+    QueryIterator<?> qit = backend.submit(query1);
     evaluateQuery(qit, expected, 1); // 1 iteration, stop because we don't have enough results
 
     // pagination = 1
     final String query2 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
-    QueryIterator<?, ?> qit2 = backend.submit(query2);
+    QueryIterator<?> qit2 = backend.submit(query2);
     qit2.setPagination(1);
     expected.put("p", Arrays.asList(
       "http://www.semanlink.net/2001/00/semanlink-schema#tag",
@@ -466,7 +424,7 @@ public class TestSesameBackend {
 
     // pagination = 2
     final String query3 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
-    QueryIterator<?, ?> qit3 = backend.submit(query3);
+    QueryIterator<?> qit3 = backend.submit(query3);
     qit3.setPagination(2);
     expected.put("p", Arrays.asList(
       "http://www.semanlink.net/2001/00/semanlink-schema#tag",
@@ -478,7 +436,7 @@ public class TestSesameBackend {
 
     // pagination = 3
     final String query4 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
-    QueryIterator<?, ?> qit4 = backend.submit(query4);
+    QueryIterator<?> qit4 = backend.submit(query4);
     qit4.setPagination(3);
     expected.put("p", Arrays.asList(
       "http://www.semanlink.net/2001/00/semanlink-schema#tag",
@@ -490,7 +448,7 @@ public class TestSesameBackend {
 
     // pagination = 4
     final String query5 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
-    QueryIterator<?, ?> qit5 = backend.submit(query5);
+    QueryIterator<?> qit5 = backend.submit(query5);
     qit5.setPagination(4);
     expected.put("p", Arrays.asList(
       "http://www.semanlink.net/2001/00/semanlink-schema#tag",
@@ -502,7 +460,7 @@ public class TestSesameBackend {
 
     // pagination = 5
     final String query6 = "SELECT distinct ?p { <http://lists.w3.org/Archives/Public/www-tag/2007Dec/0024.html> ?p ?o }";
-    QueryIterator<?, ?> qit6 = backend.submit(query6);
+    QueryIterator<?> qit6 = backend.submit(query6);
     qit4.setPagination(5);
     expected.put("p", Arrays.asList(
       "http://www.semanlink.net/2001/00/semanlink-schema#tag",
@@ -513,7 +471,7 @@ public class TestSesameBackend {
     evaluateQuery(qit6, expected, 1);// 1 iteration, stop because we don't have enough results
   }
 
-  private void evaluateQuery(final QueryIterator<?, ?> qit,
+  private void evaluateQuery(final QueryIterator<?> qit,
                              final Map<String, List<String>> expected,
                              final int expectedNPagination)
   throws Exception {
