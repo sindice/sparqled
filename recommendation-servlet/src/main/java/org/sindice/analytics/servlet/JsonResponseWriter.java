@@ -17,15 +17,13 @@
  */
 package org.sindice.analytics.servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTIRI;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQName;
@@ -34,9 +32,9 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
 import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.ranking.CardinalityRanking.Recommendation;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.LabelsRanking;
-import org.sindice.analytics.ranking.ScoreLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +47,7 @@ implements ResponseWriter<String> {
   @Override
   public String createSuccessAnswer(RecommendationType type,
                                     POFMetadata pofMetadata,
-                                    List<LabelsRanking> recommendations) {
+                                    LabelsRanking recommendations) {
     final Map<String, Object> jsonStructure = new HashMap<String, Object>();
     final String json;
 
@@ -59,34 +57,23 @@ implements ResponseWriter<String> {
       jsonStructure.put(ResponseStructure.STATUS, ResponseStructure.SUCCESS);
       jsonStructure.put(ResponseStructure.RESULTS, new HashMap<String, Map>());
 
-      // Add bindings to the results
-      final ArrayList<Map> lrList = new ArrayList<Map>();
-      ((HashMap<String, List<Map>>) jsonStructure.get(ResponseStructure.RESULTS)).put(ResponseStructure.RANKINGS, lrList);
+      ((Map<String, Object>) jsonStructure.get(ResponseStructure.RESULTS)).put(ResponseStructure.COUNT, recommendations.size());
 
-      for (LabelsRanking lr : recommendations) {
+      final List<Map<String, Object>> bindings = new ArrayList<Map<String, Object>>();
 
-        // the total number of recommendations
-        ((HashMap<String, Object>) jsonStructure.get(ResponseStructure.RESULTS)).put(ResponseStructure.COUNT, lr.getLabelList().size());
+      ((Map<String, Object>) jsonStructure.get(ResponseStructure.RESULTS)).put(ResponseStructure.BINDINGS, bindings);
+      for (Recommendation sug : recommendations.getLabels()) {
+        // Add the recommendations, the value and number of occurrences
+        final Map<String, Object> rec = new HashMap<String, Object>();
+        rec.put(ResponseStructure.VALUE, sug.getLabel().getLabel());
+        rec.put(ResponseStructure.COUNT, sug.getCardinality());
+        rec.put(ResponseStructure.STATUS, sug.getLabel().getType());
 
-        final HashMap<String, Object> lrJson = new HashMap<String, Object>();
-        final ArrayList<Map<String, Object>> bindings = new ArrayList<Map<String, Object>>();
-
-        lrList.add(lrJson);
-        lrJson.put(ResponseStructure.NAME, lr.getName());
-        lrJson.put(ResponseStructure.BINDINGS, bindings);
-        for (ScoreLabel sug : lr.getLabelList()) {
-          // Add the recommendations, the value and number of occurrences
-          final Map<String, Object> rec = new HashMap<String, Object>();
-          rec.put(ResponseStructure.VALUE, sug.getRecommendation());
-          rec.put(ResponseStructure.COUNT, sug.getScore());
-          rec.put(ResponseStructure.STATUS, sug.getRecommendationType());
-
-          if (isClass) {
-            // For classes, the predicates that define them and their counts
-            addClassAttributes(sug, rec);
-          }
-          bindings.add(rec);
+        if (isClass) {
+          // For classes, the predicates that define them and their counts
+          addClassAttributes(sug.getLabel(), rec);
         }
+        bindings.add(rec);
       }
 
       // by default, substitutions are disabled
@@ -100,13 +87,7 @@ implements ResponseWriter<String> {
       addRecSubstitution(pofMetadata, jsonStructure);
 
       json = mapper.writeValueAsString(jsonStructure);
-    } catch (JsonGenerationException e) {
-      logger.error("Unable to create JSON response: {}", e);
-      return createErrorAnswer(type, e);
-    } catch (JsonMappingException e) {
-      logger.error("Unable to create JSON response: {}", e);
-      return createErrorAnswer(type, e);
-    } catch (IOException e) {
+    } catch (Exception e) {
       logger.error("Unable to create JSON response: {}", e);
       return createErrorAnswer(type, e);
     }
@@ -124,41 +105,38 @@ implements ResponseWriter<String> {
 
   private void addRecSubstitution(final POFMetadata pofMetadata,
                                   final Map<String, Object> jsonStructure) {
-    final List<Object> keyword = pofMetadata.pofNode.getMetadata() == null ? null : pofMetadata.pofNode
-    .getMetadata(SyntaxTreeBuilder.Keyword);
-    final List<Object> prefix = pofMetadata.pofNode.getMetadata() == null ? null : pofMetadata.pofNode
-    .getMetadata(SyntaxTreeBuilder.Prefix);
-    final ArrayList<Object> lineStart = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginLine);
-    final ArrayList<Object> lineEnd = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndLine);
-    final ArrayList<Object> columnStart = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginColumn);
-    final ArrayList<Object> columnEnd = pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndColumn);
+    final String keyword = (String) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.Keyword);
+    final String prefix = (String) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.Prefix);
     final String value;
 
-    if ((keyword != null || prefix != null) &&
-        (lineStart == null || lineEnd == null ||
-        columnStart == null || columnEnd == null)) {
+    if (keyword != null) {
+      value = keyword;
+    } else if (prefix != null) {
+      value = prefix;
+    } else {
+      return;
+    }
+    final Integer lineStart = (Integer) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginLine);
+    final Integer lineEnd = (Integer) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndLine);
+    final Integer columnStart = (Integer) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.BeginColumn);
+    final Integer columnEnd = (Integer) pofMetadata.pofNode.getMetadata(SyntaxTreeBuilder.EndColumn);
+
+    if ((keyword != null || prefix != null) && (lineStart == null || lineEnd == null ||
+         columnStart == null || columnEnd == null)) {
       logger.error("Unable to get recommendation position. Disabling substitution");
     }
-    if (keyword != null) {
-      value = (String) keyword.get(0);
-      jsonStructure.put(ResponseStructure.REC_REPLACE, true);
-      jsonStructure.put(ResponseStructure.REC_SUBSTITUTION, getSubstitutionData(value, (Integer) lineStart
-      .get(0), (Integer) lineEnd.get(0), (Integer) columnStart.get(0), (Integer) columnEnd.get(0)));
-    } else if (prefix != null) {
-      value = (String) prefix.get(0);
-      jsonStructure.put(ResponseStructure.REC_REPLACE, true);
-      jsonStructure.put(ResponseStructure.REC_SUBSTITUTION, getSubstitutionData(value, (Integer) lineStart
-      .get(0), (Integer) lineEnd.get(0), (Integer) columnStart.get(0), (Integer) columnEnd.get(0)));
-    }
+    jsonStructure.put(ResponseStructure.REC_REPLACE, true);
+    jsonStructure.put(ResponseStructure.REC_SUBSTITUTION, getSubstitutionData(value, lineStart, lineEnd,
+      columnStart, columnEnd));
   }
 
   private void addClassAttributeSubstitution(final POFMetadata pofMetadata,
                                              final Map<String, Object> jsonStructure) {
     final String value = getValue(pofMetadata.pofClassAttribute);
-    final ArrayList<Object> lineStart = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginLine);
-    final ArrayList<Object> lineEnd = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndLine);
-    final ArrayList<Object> columnStart = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginColumn);
-    final ArrayList<Object> columnEnd = pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndColumn);
+    final Integer lineStart = (Integer) pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginLine);
+    final Integer lineEnd = (Integer) pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndLine);
+    final Integer columnStart = (Integer) pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.BeginColumn);
+    final Integer columnEnd = (Integer) pofMetadata.pofClassAttribute.getMetadata(SyntaxTreeBuilder.EndColumn);
 
     if (lineStart == null || lineEnd == null ||
         columnStart == null || columnEnd == null) {
@@ -166,13 +144,10 @@ implements ResponseWriter<String> {
     } else if (value == null) {
       logger.error("Unable to get the class attribute value. Disabling substitution");
     } else {
-      final int ls = (Integer) lineStart.get(0);
-      final int le = (Integer) lineEnd.get(0);
-      final int cs = (Integer) columnStart.get(0);
-      final int ce = (Integer) columnEnd.get(0);
       jsonStructure.put(ResponseStructure.CA_REPLACE, true);
       // "a" has been expanded
-      jsonStructure.put(ResponseStructure.CA_SUBSTITUTION, getSubstitutionData(cs == ce ? "a" : value, ls, le, cs, ce));
+      jsonStructure.put(ResponseStructure.CA_SUBSTITUTION,
+        getSubstitutionData(columnStart == columnEnd ? "a" : value, lineStart, lineEnd, columnStart, columnEnd));
     }
   }
 
@@ -192,13 +167,13 @@ implements ResponseWriter<String> {
     return data;
   }
 
-  private void addClassAttributes(final ScoreLabel sug,
-                                final Map<String, Object> rec) {
+  private void addClassAttributes(final Label sug, final Map<String, Object> rec) {
     final ArrayList<Map<String, Object>> contexts = new ArrayList<Map<String, Object>>();
+    final Map<String, Long> classAttributes = (Map<String, Long>) sug.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_MAP);
 
-    for (Label label : sug.getLabels()) {
-      final String value = (String) label.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR).get(0);
-      final int count = Integer.valueOf(label.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_CARD_VAR).get(0).toString());
+    for (Entry<String, Long> ca : classAttributes.entrySet()) {
+      final String value = ca.getKey();
+      final long count = ca.getValue();
       if (contexts.isEmpty()) { // init
         final Map<String, Object> types = new HashMap<String, Object>();
         types.put(ResponseStructure.VALUE, value);

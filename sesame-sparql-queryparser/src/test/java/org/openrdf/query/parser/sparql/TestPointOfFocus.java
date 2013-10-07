@@ -1,4 +1,4 @@
-/*******************************************************************************
+/**
  * Copyright (c) 2012 National University of Ireland, Galway. All Rights Reserved.
  *
  *
@@ -14,11 +14,6 @@
  *
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
-/**
- * @project sesame-sparql-queryparser
- * @author Campinas Stephane [ 16 Mar 2012 ]
- * @link stephane.campinas@deri.org
  */
 package org.openrdf.query.parser.sparql;
 
@@ -26,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.openrdf.model.vocabulary.RDF;
@@ -96,15 +92,14 @@ public class TestPointOfFocus {
     assertEquals(1, pofFinder.nodes.size());
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTGraphGraphPattern.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
-    final ArrayList<Object> meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
+    final Object meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
     assertTrue(meta != null);
-    assertEquals(1, meta.size());
-    assertEquals("ctd", meta.get(0)); // lower cased
+    assertEquals("ctd", meta); // lower cased
 
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine).get(0));
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine).get(0));
-    assertEquals(9, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn).get(0));
-    assertEquals(11, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn).get(0));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine));
+    assertEquals(9, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn));
+    assertEquals(11, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn));
   }
 
   /**
@@ -131,10 +126,9 @@ public class TestPointOfFocus {
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
 
-    final ArrayList<Object> qname = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Qname);
+    final Object qname = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Qname);
     assertTrue(qname != null);
-    assertEquals(1, qname.size());
-    assertEquals("foaf", qname.get(0));
+    assertEquals("foaf", qname);
   }
 
   @Test
@@ -157,15 +151,14 @@ public class TestPointOfFocus {
     assertEquals(1, pofFinder.nodes.size());
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
-    final ArrayList<Object> meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
+    final Object meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
     assertTrue(meta != null);
-    assertEquals(1, meta.size());
-    assertEquals("compound", meta.get(0)); // lower cased
+    assertEquals("compound", meta); // lower cased
 
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine).get(0));
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine).get(0));
-    assertEquals(6, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn).get(0));
-    assertEquals(13, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn).get(0));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine));
+    assertEquals(6, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn));
+    assertEquals(13, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn));
   }
 
   /**
@@ -191,15 +184,14 @@ public class TestPointOfFocus {
     assertEquals(1, pofFinder.nodes.size());
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
-    final ArrayList<Object> meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
+    final Object meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Keyword);
     assertTrue(meta != null);
-    assertEquals(1, meta.size());
-    assertEquals("compound", meta.get(0)); // lower cased
+    assertEquals("compound", meta); // lower cased
 
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine).get(0));
-    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine).get(0));
-    assertEquals(6, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn).get(0));
-    assertEquals(13, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn).get(0));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine));
+    assertEquals(2, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine));
+    assertEquals(6, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn));
+    assertEquals(13, ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn));
   }
 
   @Test(expected=TokenMgrError.class)
@@ -238,10 +230,9 @@ public class TestPointOfFocus {
     assertEquals(1, pofFinder.nodes.size());
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
-    final ArrayList<Object> meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Qname);
+    final Object meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Qname);
     assertTrue(meta != null);
-    assertEquals(1, meta.size());
-    assertEquals("foaf", meta.get(0));
+    assertEquals("foaf", meta);
   }
 
   /**
@@ -290,10 +281,9 @@ public class TestPointOfFocus {
     assertEquals(1, pofFinder.nodes.size());
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
     assertTrue(pofFinder.nodes.get(0) instanceof ASTVar);
-    final ArrayList<Object> meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Prefix);
+    final Object meta = ((SimpleNode) pofFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.Prefix);
     assertTrue(meta != null);
-    assertEquals(1, meta.size());
-    assertEquals("<http://acme.org/foaf", meta.get(0));
+    assertEquals("<http://acme.org/foaf", meta);
   }
 
   /**
@@ -411,10 +401,10 @@ public class TestPointOfFocus {
     assertTrue(checkParent(pofFinder.nodes.get(0), ASTTriplesSameSubjectPath.class));
 
     assertEquals(1, aFinder.nodes.size());
-    assertEquals(2, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine).get(0));
-    assertEquals(2, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine).get(0));
-    assertEquals(4, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn).get(0));
-    assertEquals(4, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn).get(0));
+    assertEquals(2, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginLine));
+    assertEquals(2, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndLine));
+    assertEquals(4, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.BeginColumn));
+    assertEquals(4, ((SimpleNode) aFinder.nodes.get(0)).getMetadata(SyntaxTreeBuilder.EndColumn));
   }
 
   @Test
@@ -466,7 +456,7 @@ public class TestPointOfFocus {
 
   private class NodeFinder extends ASTVisitorBase {
 
-    private final ArrayList<Node> nodes = new ArrayList<Node>();
+    private final List<Node> nodes = new ArrayList<Node>();
     private final String name;
 
     public NodeFinder(String name) {

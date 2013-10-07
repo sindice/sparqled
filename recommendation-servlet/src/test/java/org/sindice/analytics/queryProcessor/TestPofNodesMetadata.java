@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
+import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.openrdf.sindice.query.parser.sparql.ast.TokenMgrError;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
@@ -54,22 +55,7 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(0, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(0, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(15, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(15, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertCursor(meta.pofClassAttribute, 0, 0, 15, 15);
   }
 
   @Test
@@ -80,22 +66,7 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(0, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(0, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(54, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(61, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertCursor(meta.pofClassAttribute, 0, 0, 54, 61);
   }
 
   @Test
@@ -106,22 +77,7 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(10, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(17, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertCursor(meta.pofClassAttribute, 1, 1, 10, 17);
   }
 
   @Test
@@ -132,22 +88,7 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(10, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(17, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertCursor(meta.pofClassAttribute, 1, 1, 10, 17);
   }
 
   @Test
@@ -169,11 +110,7 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofNode != null);
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Qname));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Qname).size());
-    assertEquals("http://type.com/", meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Qname).get(0));
-
+    assertMetadata(meta.pofNode, SyntaxTreeBuilder.Qname, "http://type.com/");
     assertFalse(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
   }
 
@@ -185,27 +122,8 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofNode != null);
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Qname));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Qname).size());
-    assertEquals("http://type.com/", meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Qname).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(5, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(5, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertMetadata(meta.pofNode, SyntaxTreeBuilder.Qname, "http://type.com/");
+    assertCursor(meta.pofClassAttribute, 1, 1, 5, 5);
   }
 
   @Test
@@ -216,46 +134,9 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofNode != null);
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Keyword));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).size());
-    assertEquals("rdf", meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(7, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(9, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
-
-
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(5, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(5, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertMetadata(meta.pofNode, SyntaxTreeBuilder.Keyword, "rdf");
+    assertCursor(meta.pofNode, 1, 1, 7, 9);
+    assertCursor(meta.pofClassAttribute, 1, 1, 5, 5);
   }
 
   @Test
@@ -266,46 +147,9 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofNode != null);
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Keyword));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).size());
-    assertEquals("rdf", meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(16, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(18, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
-
-
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(9, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(14, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertMetadata(meta.pofNode, SyntaxTreeBuilder.Keyword, "rdf");
+    assertCursor(meta.pofNode, 1, 1, 16, 18);
+    assertCursor(meta.pofClassAttribute, 1, 1, 9, 14);
   }
 
   @Test
@@ -316,46 +160,45 @@ public class TestPofNodesMetadata {
     ast = SyntaxTreeBuilder.parseQuery(q);
     POFMetadata meta = PofNodesMetadata.retrieve(ast);
 
-    assertTrue(meta.pofNode != null);
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Keyword));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).size());
-    assertEquals("rdf", meta.pofNode.getMetadata().get(SyntaxTreeBuilder.Keyword).get(0));
+    assertMetadata(meta.pofNode, SyntaxTreeBuilder.Keyword, "rdf");
+    assertCursor(meta.pofNode, 1, 1, 25, 27);
+    assertCursor(meta.pofClassAttribute, 1, 1, 18, 23);
+  }
 
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
+  /**
+   * Asserts the {@link SimpleNode#getMetadata() metadata} of the {@link SimpleNode} contains the given field and
+   * associated value.
+   * @param node the {@link SimpleNode}
+   * @param field the field
+   * @param value the associated value
+   */
+  private void assertMetadata(SimpleNode node, String field, Object value) {
+    assertTrue(node != null);
+    assertTrue(node.getMetadata().containsKey(field));
+    assertEquals(value, node.getMetadata().get(field));
+  }
 
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
+  /**
+   * Asserts the cursor metadata that is associated with a {@link SyntaxTreeBuilder#PointOfFocus}
+   * @param node the {@link SimpleNode}
+   * @param beginLine the start of the line
+   * @param endLine the end of the line
+   * @param beginColumn the start of the column
+   * @param endColumn the end of the column
+   */
+  private void assertCursor(final SimpleNode node, int beginLine, int endLine, int beginColumn, int endColumn) {
+    assertTrue(node != null);
+    assertTrue(node.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
+    assertEquals(beginLine, node.getMetadata().get(SyntaxTreeBuilder.BeginLine));
 
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(25, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
+    assertTrue(node.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
+    assertEquals(endLine, node.getMetadata().get(SyntaxTreeBuilder.EndLine));
 
-    assertTrue(meta.pofNode.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(27, meta.pofNode.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertTrue(node.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
+    assertEquals(beginColumn, node.getMetadata().get(SyntaxTreeBuilder.BeginColumn));
 
-
-    assertTrue(meta.pofClassAttribute != null);
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndLine));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).size());
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndLine).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.BeginColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).size());
-    assertEquals(18, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.BeginColumn).get(0));
-
-    assertTrue(meta.pofClassAttribute.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
-    assertEquals(1, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).size());
-    assertEquals(23, meta.pofClassAttribute.getMetadata().get(SyntaxTreeBuilder.EndColumn).get(0));
+    assertTrue(node.getMetadata().containsKey(SyntaxTreeBuilder.EndColumn));
+    assertEquals(endColumn, node.getMetadata().get(SyntaxTreeBuilder.EndColumn));
   }
 
 }

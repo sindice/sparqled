@@ -18,8 +18,6 @@
 package org.sindice.analytics.servlet;
 
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
@@ -37,7 +35,6 @@ import org.openrdf.http.protocol.Protocol;
 import org.sindice.analytics.backend.DGSQueryResultProcessor;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.LabelsRanking;
-import org.sindice.analytics.ranking.LabelsRankingYAMLoader;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
@@ -60,7 +57,6 @@ extends HttpServlet {
 
   public static final String   DGS_GRAPH        = "dg";
 
-  private List<LabelsRanking>  labelsRankings;
   private SesameBackend<Label> dgsBackend       = null;
   private int                  pagination;
   private int                  limit;
@@ -75,8 +71,6 @@ extends HttpServlet {
     // SPARQL endpoint with graph summary
     final BackendType backend = BackendType.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND));
     final String[] backendArgs = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND_ARGS);
-    // The path to the ranking configuration
-    final String rankingConfigPath = (String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.RANKING_CONFIGURATION);
     // The pagination value
     pagination = (Integer) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION);
     // The Limit of results to be retrieved
@@ -92,18 +86,12 @@ extends HttpServlet {
 
     AnalyticsClassAttributes.initClassAttributes(classAttributes);
     try {
-      final BufferedInputStream r = new BufferedInputStream(new FileInputStream(rankingConfigPath));
-      final LabelsRankingYAMLoader loader = new LabelsRankingYAMLoader(r);
-
-      loader.load();
-      labelsRankings = loader.getConfigurations();
-
       final DGSQueryResultProcessor qrp = new DGSQueryResultProcessor();
       dgsBackend = SesameBackendFactory.getDgsBackend(backend, qrp, backendArgs);
       dgsBackend.initConnection();
 
-      logger.info("RankingConfiguration={} Backend={} BackendArgs={} ClassAttributes={} Pagination={} DomainUriPrefix={} DatasetLabelDef={} GraphSummaryGraph={} LIMIT={}",
-        new Object[] { rankingConfigPath, backend, Arrays.toString(backendArgs), Arrays.toString(classAttributes),
+      logger.info("Backend={} BackendArgs={} ClassAttributes={} Pagination={} DomainUriPrefix={} DatasetLabelDef={} GraphSummaryGraph={} LIMIT={}",
+        new Object[] { backend, Arrays.toString(backendArgs), Arrays.toString(classAttributes),
       pagination, DataGraphSummaryVocab.DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DATASET_LABEL_DEF, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH, limit});
     } catch (Exception e) {
       logger.error("Failed to start the DGS backend", e);
@@ -114,21 +102,14 @@ extends HttpServlet {
   public void destroy() {
     logger.info("Destroy ASE Servlet");
     try {
-      for (LabelsRanking lr : labelsRankings) {
-        lr.close();
-      }
-    } catch (IOException e) {
-      logger.error("Failed to release resources kept by the rankings: {}", e);
-    } finally {
       if (dgsBackend != null) {
-        try {
-          dgsBackend.closeConnection();
-        } catch (SesameBackendException e) {
-          logger.error("", e);
-        }
+        dgsBackend.closeConnection();
       }
+    } catch (SesameBackendException e) {
+      logger.error("", e);
+    } finally {
+      super.destroy();
     }
-    super.destroy();
   }
 
   /**
@@ -171,14 +152,12 @@ extends HttpServlet {
    * @param response
    * @throws IOException
    */
-  private void getRecommendationAsJson(HttpServletRequest request,
-                                       HttpServletResponse response)
+  private void getRecommendationAsJson(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
     logger.info("\nBegin processing request");
     final PrintWriter out = response.getWriter();
 
     response.setContentType("application/json");
-
     out.print(computeResponse(request));
     out.flush();
     out.close();
@@ -191,10 +170,9 @@ extends HttpServlet {
     // Check if user wants a context aware recommendation
     if (request.getParameter(Protocol.QUERY_PARAM_NAME) != null) {
       final ResponseWriter<String> responseWriter = new JsonResponseWriter();
-      final List<LabelsRanking> labelsRankings = new ArrayList<LabelsRanking>(this.labelsRankings);
       final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
       // Get recommendation
-      response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, labelsRankings, pagination, limit);
+      response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, pagination, limit);
     }
     return response;
   }

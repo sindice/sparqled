@@ -961,26 +961,10 @@ function FlintEditor(container, imagesPath, config) {
 					statusArea.updateStatus();
 					//outputss = data;
 					
-					if (data.status.toUpperCase().indexOf("SUCCESS") == 0){
-					    var bindings;
+					if (data.status.toUpperCase().indexOf("SUCCESS") == 0) {
 					    // get the bindings from rankings list
 					    var rankingFound = false;
-					    if (isArray(data.results.rankings)) {
-						
-						for (var j = 0; j < data.results.rankings.length;  j++) {
-						    if (data.results.rankings[j].name === "DEFAULT") {
-							rankingFound = true;
-							bindings = data.results.rankings[j].bindings;
-						    }
-						}
-					    } else {
-						if (data.results.rankings.name === "DEFAULT") {
-							rankingFound = true;
-						    bindings = data.results.rankings.bindings;
-						}
-					    }
-
-					    if (rankingFound) {
+					    var bindings = data.results.bindings;
 						for (var j = 0; j < bindings.length;  j++) {
 						    if ((typeof bindings[j].status !== "undefined")
 							&& (bindings[j].status === "URI")) {
@@ -1006,11 +990,7 @@ function FlintEditor(container, imagesPath, config) {
 								   data.ca_substitution);
 						    }
 						}
-						
 						startFunction2(found);
-					    } else {
-						    editor.getErrorBox().show("Ranking name invalid.");
-					    }
 					} else {
 					    // Error
 					    resultsArea.showLoading(false);

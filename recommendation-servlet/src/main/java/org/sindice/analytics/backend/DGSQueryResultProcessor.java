@@ -19,14 +19,12 @@ package org.sindice.analytics.backend;
 
 import java.util.Iterator;
 
-import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
-import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +45,7 @@ implements QueryResultProcessor<Label> {
     final Value pofResource = set.getValue(QueryProcessor.POF_RESOURCE);
 
     if (pof != null && pofCard != null && pofResource != null) {
-      final LabelType type = (pof instanceof URI) ? LabelType.URI : LabelType.LITERAL;
-      label = new Label(type, pof.stringValue(), Long.valueOf(pofCard.stringValue()));
+      label = new Label(pof, Long.valueOf(pofCard.stringValue()));
       while (it.hasNext()) {
         final Binding binding = it.next();
 
@@ -59,7 +56,7 @@ implements QueryResultProcessor<Label> {
       }
       return label;
     }
-    return new Label(LabelType.NONE, "", -1);
+    return null;
   }
 
 }

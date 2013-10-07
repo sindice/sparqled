@@ -27,7 +27,6 @@ public class ResponseStructure {
 
   public static final String RESULTS          = "results";
   public static final String BINDINGS         = "bindings";
-  public static final String RANKINGS         = "rankings";
   public static final String COUNT            = "count";
   public static final String NAME             = "name";
   public static final String VALUE            = "value";

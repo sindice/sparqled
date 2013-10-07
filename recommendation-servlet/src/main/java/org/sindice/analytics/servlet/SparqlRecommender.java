@@ -17,15 +17,13 @@
  */
 package org.sindice.analytics.servlet;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.DGSException;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
 import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
+import org.sindice.analytics.ranking.CardinalityRanking;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.analytics.ranking.LabelsRanking;
@@ -41,9 +39,6 @@ public final class SparqlRecommender {
 
   private static final Logger logger  = LoggerFactory.getLogger(SparqlRecommender.class);
 
-  /** Rank by batch of labels */
-  private static final int    BATCH   = 2000;
-
   private SparqlRecommender() {}
 
   /**
@@ -58,7 +53,6 @@ public final class SparqlRecommender {
   public static <C> C run(SesameBackend<Label> dgsBackend,
                           ResponseWriter<C> response,
                           String query,
-                          List<LabelsRanking> rankings,
                           int pagination,
                           int limit) {
     // TODO: Support queries with multiple FROM clauses
@@ -69,12 +63,9 @@ public final class SparqlRecommender {
     }
 
     logger.debug("Input query: [{}]\n", query);
+    final LabelsRanking lr = new CardinalityRanking();
     final POFMetadata meta;
     try {
-      // initialize
-      for (LabelsRanking lr: rankings) {
-        lr.reset();
-      }
       /*
        * Get the DataGraphSummary query
        */
@@ -82,12 +73,9 @@ public final class SparqlRecommender {
       qp.load(query);
 
       meta = qp.getPofASTMetadata();
-      final List<Object> keyword = meta.pofNode.getMetadata() == null ? null : meta.pofNode
-      .getMetadata(SyntaxTreeBuilder.Keyword);
-      final List<Object> prefix = meta.pofNode.getMetadata() == null ? null : meta.pofNode
-      .getMetadata(SyntaxTreeBuilder.Prefix);
-      final List<Object> qname = meta.pofNode.getMetadata() == null ? null : meta.pofNode
-      .getMetadata(SyntaxTreeBuilder.Qname);
+      final String keyword = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Keyword);
+      final String prefix = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Prefix);
+      final String qname = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Qname);
       recommendationType = qp.getRecommendationType();
 
       final String dgsQuery;
@@ -101,50 +89,29 @@ public final class SparqlRecommender {
         /*
          * Get the list of candidates and rank them
          */
-        final ArrayList<Label> labels = new ArrayList<Label>();
         final QueryIterator<Label> qrp = dgsBackend.submit(dgsQuery);
         qrp.setPagination(pagination);
         while (qrp.hasNext()) {
           final Label label = qrp.next();
 
+          if (label == null) {
+            logger.debug("No Recommendation for the label: {}", label);
+            continue;
+          }
           // QName filtering
           if (qname != null) {
-            final String value = qname.get(0).toString();
-            if (!label.getLabel().startsWith(value)) {
+            if (!label.getLabel().startsWith(qname)) {
               continue;
             }
             // recommend only the localname
-            label.setLabel(label.getLabel().replaceFirst(value, ""));
-            label.setLabelType(LabelType.QNAME);
+            label.setType(LabelType.QNAME);
+            label.setLabel(label.getLabel().replaceFirst(qname, ""));
           }
-
           logger.debug("Label=[{}]", query, label);
-          if (label.getCardinality() != -1) {
-            labels.add(label);
-            if (labels.size() == BATCH) {
-              for (LabelsRanking lr: rankings) {
-                lr.rank(labels);
-              }
-              labels.clear();
-            }
-          } else {
-            logger.debug("No Recommendation for the label: {}", label);
-          }
+          lr.addLabel(label);
         }
-        // Rank the rest of the labels
-        for (LabelsRanking lr: rankings) {
-          lr.rank(labels);
-        }
-        labels.clear();
         // Check if there are some recommendations
-        boolean isEmpty = true;
-        for (LabelsRanking lr: rankings) {
-          if (lr.getLabelList().size() != 0) {
-            isEmpty = false;
-            break;
-          }
-        }
-        if (isEmpty) {
+        if (lr.size() == 0) {
           return response.createEmptyAnswer("No recommendation from the given position");
         }
       } else {
@@ -157,7 +124,7 @@ public final class SparqlRecommender {
       logger.info("Unable to compute recommendations", e);
       return response.createErrorAnswer(recommendationType, e);
     }
-    return response.createSuccessAnswer(recommendationType, meta, rankings);
+    return response.createSuccessAnswer(recommendationType, meta, lr);
   }
 
 }

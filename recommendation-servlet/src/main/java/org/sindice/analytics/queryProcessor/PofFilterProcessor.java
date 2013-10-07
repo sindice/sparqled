@@ -17,8 +17,6 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
-
 import org.openrdf.sindice.query.parser.sparql.ast.ASTBasicGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphPatternGroup;
@@ -40,21 +38,21 @@ public class PofFilterProcessor {
   public static void process(ASTQueryContainer ast, POFMetadata meta) {
     final ASTGraphPatternGroup gpg = ast.getQuery().getWhereClause().getGraphPatternGroup();
 
-    final List<Object> keyword = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+    final Object keyword = meta.pofNode.getMetadata() == null ? null : meta.pofNode
     .getMetadata(SyntaxTreeBuilder.Keyword);
-    final List<Object> prefix = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+    final Object prefix = meta.pofNode.getMetadata() == null ? null : meta.pofNode
     .getMetadata(SyntaxTreeBuilder.Prefix);
-    final List<Object> qname = meta.pofNode.getMetadata() == null ? null : meta.pofNode
+    final Object qname = meta.pofNode.getMetadata() == null ? null : meta.pofNode
     .getMetadata(SyntaxTreeBuilder.Qname);
 
     if (keyword != null) {
-      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, keyword.get(0).toString(), true);
+      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, keyword.toString(), true);
       gpg.jjtAppendChild(bgp);
     } else if (prefix != null) {
-      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, "^" + prefix.get(0).toString().substring(1), true);
+      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, "^" + prefix.toString().substring(1), true);
       gpg.jjtAppendChild(bgp);
     } else if (qname != null) {
-      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, "^" + qname.get(0).toString(), true);
+      final ASTBasicGraphPattern bgp = addRegexFilter(meta.pofNode, "^" + qname.toString(), true);
       gpg.jjtAppendChild(bgp);
     }
   }

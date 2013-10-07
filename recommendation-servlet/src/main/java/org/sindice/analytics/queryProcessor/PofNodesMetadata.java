@@ -17,7 +17,6 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,18 +87,14 @@ public final class PofNodesMetadata {
         if (pofNode != null && pofNode.getMetadata().containsKey(SyntaxTreeBuilder.Qname)) {
           Map<String, String> prefixes = (Map<String, String>) data;
           if (prefixes != null) {
-            final ArrayList<Object> array = pofNode.getMetadata(SyntaxTreeBuilder.Qname);
-            final ArrayList<Object> newArray = new ArrayList<Object>();
-
-            for (Object o : array) {
-              String prefix = (String) o;
-              if (prefixes.containsKey(prefix)) {
-                newArray.add(prefixes.get(prefix));
-              } else {
-                newArray.add(prefix);
-              }
+            final String value = pofNode.getMetadata(SyntaxTreeBuilder.Qname).toString();
+            final String prefix;
+            if (prefixes.containsKey(value)) {
+              prefix = prefixes.get(value);
+            } else {
+              prefix = value;
             }
-            pofNode.getMetadata().put(SyntaxTreeBuilder.Qname, newArray);
+            pofNode.getMetadata().put(SyntaxTreeBuilder.Qname, prefix);
           }
         }
 

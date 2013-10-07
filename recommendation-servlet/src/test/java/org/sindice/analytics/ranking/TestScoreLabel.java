@@ -17,32 +17,34 @@
  */
 package org.sindice.analytics.ranking;
 
-import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
+import static org.junit.Assert.fail;
+import static org.sindice.analytics.RDFTestHelper.literal;
+import static org.sindice.analytics.RDFTestHelper.uri;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.ranking.Label.LabelType;
+import org.sindice.analytics.ranking.CardinalityRanking.Recommendation;
 
 public class TestScoreLabel {
 
   public List<Label> getFakeData() {
     final List<Label> results = new ArrayList<Label>() {
       {
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 618090937));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 612638304));
-        add(new Label(LabelType.URI, "http://xmlns.com/foaf/0.1/Person", 1039644372));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Address", 141735369));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Organization", 63809166));
-        add(new Label(LabelType.LITERAL, "article", 40179723));
-        add(new Label(LabelType.LITERAL, "website", 8915647));
-        add(new Label(LabelType.URI, "http://www.w3.org/2003/01/geo/wgs84_pos#Point", 23771266));
-        add(new Label(LabelType.LITERAL, "blog", 1463395));
-        add(new Label(LabelType.URI, "http://www.w3.org/2002/12/cal/icaltzd#Vevent", 17853076));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Location", 16653076));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 618090937));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 612638304));
+        add(new Label(uri("http://xmlns.com/foaf/0.1/Person"), 1039644372));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Address"), 141735369));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Organization"), 63809166));
+        add(new Label(literal("article"), 40179723));
+        add(new Label(literal("website"), 8915647));
+        add(new Label(uri("http://www.w3.org/2003/01/geo/wgs84_pos#Point"), 23771266));
+        add(new Label(literal("blog"), 1463395));
+        add(new Label(uri("http://www.w3.org/2002/12/cal/icaltzd#Vevent"), 17853076));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Location"), 16653076));
       }
     };
     addRandomPOFresourceURI(results);
@@ -50,52 +52,43 @@ public class TestScoreLabel {
   }
 
   public List<Label> getFakeData2() {
-    // location 7
-    // point 6
-    // name 6
-    // vcard 5
-    // person 3
-    // event 3
-    // website 3
-    // address 2
-
     List<Label> results = new ArrayList<Label>() {
       {
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
-        add(new Label(LabelType.URI, "http://xmlns.com/foaf/0.1/Person", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
+        add(new Label(uri("http://xmlns.com/foaf/0.1/Person"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
-        add(new Label(LabelType.URI, "http://xmlns.com/foaf/0.1/Person", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Address", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
+        add(new Label(uri("http://xmlns.com/foaf/0.1/Person"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Address"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
-        add(new Label(LabelType.URI, "http://xmlns.com/foaf/0.1/Person", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
+        add(new Label(uri("http://xmlns.com/foaf/0.1/Person"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Address", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Address"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#VCard", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
-        add(new Label(LabelType.LITERAL, "website", 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#VCard"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
+        add(new Label(literal("website"), 1));
 
-        add(new Label(LabelType.LITERAL, "website", 1));
+        add(new Label(literal("website"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2003/01/geo/wgs84_pos#Point", 2));
+        add(new Label(uri("http://www.w3.org/2003/01/geo/wgs84_pos#Point"), 2));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2003/01/geo/wgs84_pos#Point", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Name", 1));
-        add(new Label(LabelType.LITERAL, "website", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Location", 1));
+        add(new Label(uri("http://www.w3.org/2003/01/geo/wgs84_pos#Point"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Name"), 1));
+        add(new Label(literal("website"), 1));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Location"), 1));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2003/01/geo/wgs84_pos#Point", 1));
-        add(new Label(LabelType.URI, "http://www.w3.org/2002/12/cal/icaltzd#Vevent", 3));
+        add(new Label(uri("http://www.w3.org/2003/01/geo/wgs84_pos#Point"), 1));
+        add(new Label(uri("http://www.w3.org/2002/12/cal/icaltzd#Vevent"), 3));
 
-        add(new Label(LabelType.URI, "http://www.w3.org/2006/vcard/ns#Location", 6));
+        add(new Label(uri("http://www.w3.org/2006/vcard/ns#Location"), 6));
       }
     };
     addRandomPOFresourceURI(results);
@@ -103,38 +96,38 @@ public class TestScoreLabel {
   }
 
   @Test
-  public void testCardinalityScorer()
+  public void testCardinalityRanking()
   throws Exception {
-    final BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
+    final CardinalityRanking ranker = new CardinalityRanking();
 
-    try {
-      ranker.rank(getFakeData());
-      final LabelList labels = ranker.getLabelList();
+    for (Label data : getFakeData()) {
+      ranker.addLabel(data);
+    }
 
-      assertEquals("http://xmlns.com/foaf/0.1/Person", labels.get(0).getRecommendation());
-      assertEquals("blog", labels.get(labels.size() - 1).getRecommendation());
-      assertEquals(40179723, labels.getScore("article"), 0.01);
-    } finally {
-      ranker.close();
+    Long prevCard = null;
+    for (Recommendation data : ranker.getLabels()) {
+      if (prevCard != null && data.getCardinality() > prevCard) {
+        fail("Received labels out of order");
+      }
+      prevCard = data.getCardinality();
     }
   }
 
   @Test
-  public void testCardinalityScorer2()
+  public void testCardinalityRanking2()
   throws Exception {
-    final BaseLabelRanking ranker = new BaseLabelRanking("", new CardinalityScorer(), null);
+    final CardinalityRanking ranker = new CardinalityRanking();
 
-    try {
-      ranker.rank(getFakeData2());
-      final LabelList labels = ranker.getLabelList();
-  
-      assertEquals("http://www.w3.org/2006/vcard/ns#Location", labels.get(0).getRecommendation());
-      assertEquals(7, labels.getScore("http://www.w3.org/2006/vcard/ns#Location"), 0.01);
-      assertEquals("http://www.w3.org/2006/vcard/ns#Address", labels.get(labels.size() - 1).getRecommendation());
-      assertEquals(2, labels.getScore("http://www.w3.org/2006/vcard/ns#Address"), 0.01);
-      assertEquals(6, labels.getScore("http://www.w3.org/2006/vcard/ns#Name"), 0.01);
-    } finally {
-      ranker.close();
+    for (Label data : getFakeData2()) {
+      ranker.addLabel(data);
+    }
+
+    Long prevCard = null;
+    for (Recommendation data : ranker.getLabels()) {
+      if (prevCard != null && data.getCardinality() > prevCard) {
+        fail("Received labels out of order");
+      }
+      prevCard = data.getCardinality();
     }
   }
 

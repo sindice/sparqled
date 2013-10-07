@@ -32,10 +32,11 @@ import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
  */
 public interface QueryProcessor {
 
-  public static final String POF_RESOURCE              = "POFresource";
+  public static final String POF_RESOURCE              = SyntaxTreeBuilder.PointOfFocus + "resource";
   public static final String CARDINALITY_VAR           = SyntaxTreeBuilder.PointOfFocus + "cardinality";
   public static final String CLASS_ATTRIBUTE_CARD_VAR  = "CAcardinality";
   public static final String CLASS_ATTRIBUTE_LABEL_VAR = "CAlabel";
+  public static final String CLASS_ATTRIBUTE_MAP       = "CA";
 
   public static enum RecommendationType {
     NONE, PREDICATE, CLASS, GRAPH

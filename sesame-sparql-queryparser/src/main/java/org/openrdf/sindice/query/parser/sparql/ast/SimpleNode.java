@@ -20,15 +20,15 @@ import java.util.Map;
 public class SimpleNode
 implements Node {
 
-  private static final String                  LINE_SEPARATOR = System.getProperty("line.separator");
+  private static final String   LINE_SEPARATOR = System.getProperty("line.separator");
 
-  protected Node                               parent;
-  protected List<Node>                         children;
-  protected int                                id;
-  protected SyntaxTreeBuilder                  parser;
-  private boolean                              withinRecScope = false;
+  protected Node                parent;
+  protected List<Node>          children;
+  protected int                 id;
+  protected SyntaxTreeBuilder   parser;
+  private boolean               withinRecScope = false;
   /** Add metadata about a node */
-  protected HashMap<String, ArrayList<Object>> metadata       = new HashMap<String, ArrayList<Object>>();
+  protected Map<String, Object> metadata       = new HashMap<String, Object>();
 
   public SimpleNode(int id) {
     this.id = id;
@@ -40,19 +40,19 @@ implements Node {
     this.parser = parser;
   }
 
-  public Map<String, ArrayList<Object>> getMetadata() {
+  public Map<String, Object> getMetadata() {
     return metadata;
   }
 
-  public ArrayList<Object> getMetadata(String field) {
+  public Object getMetadata(String field) {
     return metadata.get(field);
   }
 
   public void addMetadata(String field, Object value) {
-    if (!metadata.containsKey(field)) {
-      metadata.put(field, new ArrayList<Object>());
+    if (metadata.containsKey(field)) {
+      throw new IllegalArgumentException("Metadata field=[" + field + "] already exists for the node: " + this);
     }
-    metadata.get(field).add(value);
+    metadata.put(field, value);
   }
 
   public void jjtOpen() {}

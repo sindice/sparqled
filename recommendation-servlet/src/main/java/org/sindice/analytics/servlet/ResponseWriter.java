@@ -17,8 +17,6 @@
  */
 package org.sindice.analytics.servlet;
 
-import java.util.List;
-
 import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
 import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
 import org.sindice.analytics.ranking.LabelsRanking;
@@ -33,7 +31,7 @@ public interface ResponseWriter<C> {
    * @param rankingName
    * @return
    */
-  public C createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, List<LabelsRanking> recommendations);
+  public C createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, LabelsRanking recommendations);
 
   /**
    * Returns an object with an explanation of the failure

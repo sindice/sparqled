@@ -17,10 +17,7 @@
  */
 package org.sindice.analytics.servlet;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -59,9 +56,6 @@ extends ServletConfigurationContextListener {
   public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
   public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
 
-  public static final String     RANKING_CONFIGURATION = "rankingConfig";
-  private static final String    DEFAULT_RANKING       = "default-ranking.yaml";
-
   private MemcachedClientWrapper wrapper;
 
   @Override
@@ -72,8 +66,6 @@ extends ServletConfigurationContextListener {
 
     logger.info("initializing ASE context");
     XMLConfiguration config = (XMLConfiguration) sce.getServletContext().getAttribute("config");
-
-    context.setAttribute(RECOMMENDER_WRAPPER + RANKING_CONFIGURATION, createRankingConfigFile());
 
     final String datasetLabelDef = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DATASET_LABEL_DEF, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
     context.setAttribute(RECOMMENDER_WRAPPER + DATASET_LABEL_DEF, datasetLabelDef);
@@ -111,50 +103,6 @@ extends ServletConfigurationContextListener {
         logger.error("Could not initialize memcached !!!", e);
       }
     }
-  }
-
-  /**
-   * Opens the ranking configuration file ranking.yaml. If that doesn't exist try
-   * to create it by copying default-ranking.yaml which should be provided in the
-   * classes folder with the application.
-   * 
-   * @return the path to the ranking configuration file
-   */
-  private String createRankingConfigFile() {
-    File rankingConfigFile = null;
-    try {
-      final String rankingConfigFilename = configFolder.getAbsolutePath() + File.separatorChar + "ranking.yaml";
-      rankingConfigFile = new File(rankingConfigFilename);
-
-      if (!rankingConfigFile.exists()) {
-        // use the default ranking configuration file
-        final InputStream in = ServletConfigurationContextListener.class.getClassLoader().getResourceAsStream(DEFAULT_RANKING);
-        if (in == null) {
-          logger.warn("missing default-ranking.yaml from classpath");
-        } else {
-          try {
-            rankingConfigFile.getParentFile().mkdirs();
-            FileOutputStream out = new FileOutputStream(rankingConfigFile);
-            try {
-              byte[] buff = new byte[1024];
-              int read = 0;
-              while ((read = in.read(buff)) > 0) {
-                out.write(buff, 0, read);
-              }
-            }
-            finally {
-              out.close();
-            }
-          }
-          finally {
-            in.close();
-          }
-        }
-      }
-    } catch (IOException e) {
-      logger.warn("couldn't write rankingConfigFile {}", rankingConfigFile, e);
-    }
-    return rankingConfigFile == null ? "" : rankingConfigFile.toString();
   }
 
   @Override

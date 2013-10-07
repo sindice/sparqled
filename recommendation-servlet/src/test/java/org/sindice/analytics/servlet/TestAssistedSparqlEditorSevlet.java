@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
@@ -135,7 +134,6 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND, BackendType.HTTP.toString());
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND_ARGS, new String[] { dgsRepoServletUrl });
     aseTester.addServlet(AssistedSparqlEditorServlet.class, "/SparqlEditorServlet");
-    aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.RANKING_CONFIGURATION, "src/main/resources/default-ranking.yaml");
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION, 1000);
     aseTester.setAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN.toString());
@@ -149,10 +147,6 @@ public class TestAssistedSparqlEditorSevlet {
 //    aseTester.setEventListeners(new EventListener[] { new AssistedSparqlEditorListener() });
 
     aseBaseUrl = url + "/SparqlEditorServlet";
-
-    System.out.println("dgsRepoURL: [" + dgsRepoServletUrl + "]");
-    System.out.println("aseURL: [" + aseBaseUrl + "]");
-
     aseTester.start();
   }
 
@@ -180,8 +174,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.di.unipi.it/#produce"));
         add(new Results(1, "http://www.di.unipi.it/#livein"));
       }};
@@ -207,7 +201,7 @@ public class TestAssistedSparqlEditorSevlet {
     final String json = post.getResponseBodyAsString();
     final ObjectMapper mapper = new ObjectMapper();
 
-    final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+    final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
     assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
     assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
   }
@@ -224,8 +218,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(1, "http://www.di.unipi.it/#produce"));
       }};
       checkResponse(jsonMap, expectedResults, false, false);
@@ -247,7 +241,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.ERROR, jsonMap.get(ResponseStructure.STATUS));
       assertEquals("Recommendations on the object are only possible if the predicate is a class attribute",
@@ -270,7 +264,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.ERROR, jsonMap.get(ResponseStructure.STATUS));
     } else {
@@ -291,8 +285,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.countries.eu/beer"));
         add(new Results(2, "http://www.countries.eu/drink"));
         add(new Results(1, "http://www.countries.eu/person"));
@@ -325,8 +319,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "produce"));
         add(new Results(1, "livein"));
       }};
@@ -357,8 +351,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "drink"));
         add(new Results(2, "beer"));
         add(new Results(1, "person"));
@@ -390,8 +384,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.countries.eu/drink"));
         add(new Results(2, "http://www.countries.eu/beer"));
         add(new Results(1, "http://www.countries.eu/person"));
@@ -416,7 +410,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
     } else {
@@ -437,7 +431,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
     } else {
@@ -458,7 +452,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
 
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
     } else {
@@ -478,8 +472,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.di.unipi.it/#produce"));
       }};
       checkResponse(jsonMap, expectedResults, false, true);
@@ -508,8 +502,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.di.unipi.it/#produce"));
         add(new Results(1, "http://www.di.unipi.it/#livein"));
       }};
@@ -539,8 +533,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.di.unipi.it/#produce"));
         add(new Results(1, "http://www.di.unipi.it/#livein"));
       }};
@@ -574,8 +568,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, "http://www.di.unipi.it/#produce"));
         add(new Results(1, "http://www.di.unipi.it/#livein"));
       }};
@@ -601,8 +595,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(2, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu"));
         add(new Results(4, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it"));
       }};
@@ -627,8 +621,8 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
-      final ArrayList<Results> expectedResults = new ArrayList<Results>() {{
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
+      final List<Results> expectedResults = new ArrayList<Results>() {{
         add(new Results(1, "http://www.di.unipi.it/#produce"));
       }};
       checkResponse(jsonMap, expectedResults, false, false);
@@ -652,7 +646,7 @@ public class TestAssistedSparqlEditorSevlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
-      final HashMap<String, Object> jsonMap = mapper.readValue(json, HashMap.class);
+      final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
       assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
       assertEquals(ResponseStructure.NONE, jsonMap.get(ResponseStructure.STATUS));
     } else {
@@ -660,8 +654,8 @@ public class TestAssistedSparqlEditorSevlet {
     }
   }
 
-  private void checkResponse(final HashMap<String, Object> jsonMap,
-                             final ArrayList<Results> expectedResults,
+  private void checkResponse(final Map<String, Object> jsonMap,
+                             final List<Results> expectedResults,
                              final boolean isCAsubsEnabled,
                              final boolean isRecSubsEnabled) {
     assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
@@ -685,19 +679,7 @@ public class TestAssistedSparqlEditorSevlet {
     assertEquals(isRecSubsEnabled, jsonMap.get(ResponseStructure.REC_REPLACE));
 
     // Check the ranking results
-    assertTrue(results.containsKey(ResponseStructure.RANKINGS) &&
-               results.get(ResponseStructure.RANKINGS) instanceof List);
-    assertEquals(1, ((List<Map>) results.get(ResponseStructure.RANKINGS)).size()); // only one ranking, the default one
-    assertTrue(((List<Map>) results.get(ResponseStructure.RANKINGS)).get(0)
-    .containsKey(ResponseStructure.NAME));
-    assertEquals("DEFAULT", ((List<Map>) results.get(ResponseStructure.RANKINGS))
-    .get(0).get(ResponseStructure.NAME)); // only one ranking, the default one
-    assertTrue(((List<Map>) results.get(ResponseStructure.RANKINGS)).get(0)
-    .containsKey(ResponseStructure.BINDINGS));
-    assertTrue(((List<Map>) results.get(ResponseStructure.RANKINGS)).get(0)
-    .get(ResponseStructure.BINDINGS) instanceof List);
-    final List<Map<String, Object>> bindings = (List<Map<String, Object>>) ((List<Map>) results
-    .get(ResponseStructure.RANKINGS)).get(0).get(ResponseStructure.BINDINGS);
+    final List<Map<String, Object>> bindings = (List<Map<String, Object>>) results.get(ResponseStructure.BINDINGS);
 
     if (limit == 0) { // No Limit: all results are returned
       assertEquals(expectedResults.size(), bindings.size());
@@ -705,7 +687,7 @@ public class TestAssistedSparqlEditorSevlet {
       assertEquals(limit > expectedResults.size() ? expectedResults.size() : limit, bindings.size());
     }
 
-    final ArrayList<Results> actualResults = new ArrayList<Results>();
+    final List<Results> actualResults = new ArrayList<Results>();
     for (Map<String, Object> r : bindings) {
       actualResults.add(new Results(Float.valueOf(r.get(ResponseStructure.COUNT).toString())
       .intValue(), r.get(ResponseStructure.VALUE).toString()));

@@ -17,10 +17,12 @@
  */
 package org.sindice.analytics.ranking;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import org.openrdf.model.Literal;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 
 /**
  * Holds the label of an element which is a solution to the DGS query, and other
@@ -28,9 +30,13 @@ import java.util.Map;
  */
 public class Label {
 
-  public static enum LabelType {
-    LITERAL, URI, QNAME,
-    NONE // only when there is an error getting the value
+  public enum LabelType {
+    /** a {@link URI} */
+    URI,
+    /** a {@link Literal} */
+    LITERAL,
+    /** A qualified {@link URI} */
+    QNAME
   }
 
   /**
@@ -40,45 +46,48 @@ public class Label {
    * The key is the name of the variable in the DGSquery, the array contains
    * the list of values the variable maps to.
    */
-  private final Map<String, List<Object>> context = new HashMap<String, List<Object>>();
-  private String                          label;
-  private final long                     cardinality;
-  private LabelType                       type;
+  private final Map<String, Object> context = new HashMap<String, Object>();
+  private String                    label;
+  private final long                cardinality;
+  private LabelType type;
 
-  public Label(LabelType labelType, String label, long cardinality) {
+  public Label(Value label, long cardinality) {
     this.cardinality = cardinality;
-    this.label = label;
-    this.type = labelType;
+    this.label = label.stringValue();
+    type = (label instanceof Literal) ? LabelType.LITERAL : LabelType.URI;
   }
 
   public void addContext(String field, Object o) {
-    if (!context.containsKey(field)) {
-      context.put(field, new ArrayList<Object>());
-    }
-    context.get(field).add(o);
-  }
-
-  public LabelType getLabelType() {
-    return type;
-  }
-
-  public void setLabelType(LabelType type) {
-    this.type = type;
-  }
-
-  public void setLabel(String label) {
-    this.label = label;
+    context.put(field, o);
   }
 
   /**
    * @return the context
    */
-  public Map<String, List<Object>> getContext() {
+  public Map<String, Object> getContext() {
     return context;
   }
 
+  public LabelType getType() {
+    return type;
+  }
+
   /**
-   * @return the labels
+   * @param type the type to set
+   */
+  public void setType(LabelType type) {
+    this.type = type;
+  }
+
+  /**
+   * @param label the label to set
+   */
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  /**
+   * @return the label
    */
   public String getLabel() {
     return label;
@@ -93,24 +102,19 @@ public class Label {
 
   @Override
   public String toString() {
-    return "Label [ label=[" + label + "], cardinality=" + cardinality + ", context=" + context + " ]";
+    return "label=[" + label + "]";
   }
 
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Label) {
-      final Label lbl = (Label) obj;
-      if (lbl.cardinality == cardinality && lbl.label.equals(label) && lbl.type.equals(type)) {
-        return true;
-      }
+      return ((Label) obj).label.equals(label);
     }
     return false;
   }
 
-  @Override
   public int hashCode() {
-    int hash = 31 + (int) (cardinality ^ (cardinality >>> 32));
-    hash = 31 * hash + label.hashCode();
+    int hash = 31 + label.hashCode();
     return hash * 31 + type.hashCode();
   }
 

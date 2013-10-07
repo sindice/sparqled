@@ -17,46 +17,30 @@
  */
 package org.sindice.analytics.ranking;
 
-import java.io.Closeable;
-import java.util.List;
+import org.sindice.analytics.ranking.CardinalityRanking.Recommendation;
 
-import org.sindice.analytics.ranking.LabelsRankingFactory.RankingType;
+
 
 /**
- * Interface for ranking the labels provided by the Backend
+ * Interface for ranking {@link Label}s.
  */
-public interface LabelsRanking extends Closeable {
-
-  public static final int TOPK = 50;
-
-  /**
-   * Reset the ranking to prepare for a new incoming list of labels
-   */
-  public void reset();
-
-  /**
-   * Rank the list of candidates.
-   * It is ordered in descending order of the score.
-   * @param elements
-   * @return
-   */
-  public void rank(List<Label> elements);
-
-  /**
-   * 
-   * @return
-   */
-  public RankingType getRankingType();
+public interface LabelsRanking {
 
   /**
    * The name of the ranking implementation
-   * @return
    */
   public String getName();
+
+  public void addLabel(Label label);
 
   /**
    * The ordered List of recommendations.
    */
-  public LabelList getLabelList();
+  public Iterable<Recommendation> getLabels();
+
+  /**
+   * Returns the number of {@link Label}s.
+   */
+  public int size();
 
 }

@@ -19,6 +19,8 @@ package org.sindice.analytics.backend;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.sindice.analytics.RDFTestHelper.literal;
+import static org.sindice.analytics.RDFTestHelper.uri;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -46,7 +48,6 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
-import org.sindice.analytics.ranking.Label.LabelType;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
@@ -68,7 +69,11 @@ public class TestDGSBackend {
   private final Comparator<Label> cmpLabels = new Comparator<Label>() {
     @Override
     public int compare(Label l0, Label l1) {
-      return l0.toString().compareTo(l1.toString());
+      final int c = l0.getLabel().compareTo(l1.getLabel());
+      if (c == 0) {
+        return l0.getContext().toString().compareTo(l1.getContext().toString());
+      }
+      return c;
     }
   };
 
@@ -108,9 +113,9 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { ?s < ?o }";
     final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#produce", 1));
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#produce", 1));
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#livein", 1));
+      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
+      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
+      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -120,21 +125,21 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { ?s a < }";
     final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(LabelType.LITERAL, "country", 1));
+      add(new Label(literal("country"), 1));
       // it appears in two nodes and one has two class attributes definition
-      final Label l1 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
+      final Label l1 = new Label(uri("http://www.countries.eu/drink"), 1);
       l1.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
       add(l1);
-      final Label l2 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
+      final Label l2 = new Label(uri("http://www.countries.eu/drink"), 1);
       l2.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
       add(l2);
-      final Label l3 = new Label(LabelType.URI, "http://www.countries.eu/drink" , 1);
+      final Label l3 = new Label(uri("http://www.countries.eu/drink"), 1);
       l3.addContext(QueryProcessor.CLASS_ATTRIBUTE_LABEL_VAR, "http://ogp.me/ns#type");
       add(l3);
       // it appears in two nodes
-      add(new Label(LabelType.URI, "http://www.countries.eu/beer", 1));
-      add(new Label(LabelType.URI, "http://www.countries.eu/beer", 1));
-      add(new Label(LabelType.URI, "http://www.countries.eu/person", 1));
+      add(new Label(uri("http://www.countries.eu/beer"), 1));
+      add(new Label(uri("http://www.countries.eu/beer"), 1));
+      add(new Label(uri("http://www.countries.eu/person"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -144,7 +149,7 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { GRAPH < { ?s a <http://www.countries.eu/person> ; ?p ?o } }";
     final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(LabelType.URI, "http://sindice.com/dataspace/default/domain/unipi.it", 1));
+      add(new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -154,8 +159,8 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; ?p ?o } GRAPH < { ?o a ?c } }";
     final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(LabelType.URI, "http://sindice.com/dataspace/default/domain/countries.eu", 1));
-      add(new Label(LabelType.URI, "http://sindice.com/dataspace/default/domain/unipi.it", 1));
+      add(new Label(uri("http://sindice.com/dataspace/default/domain/countries.eu"), 1));
+      add(new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -165,7 +170,7 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o } GRAPH <countries.eu> { ?o a ?c } }";
     final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#livein", 1));
+      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -175,7 +180,7 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o . ?o a ?c } }";
     final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#produce", 1));
+      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -185,7 +190,7 @@ public class TestDGSBackend {
   throws Exception {
     final String query = "SELECT * FROM <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o . ?o a ?c }";
     final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(LabelType.URI, "http://www.di.unipi.it/#produce", 1));
+      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
     }};
     executeQuery(query, expected);
   }
@@ -206,12 +211,10 @@ public class TestDGSBackend {
     }
     // Check that the expected context elements are present
     for (int i = 0; i < expected.size(); i++) {
-      final Map<String, List<Object>> actualContext = actualLabels.get(i).getContext();
-      for (Entry<String, List<Object>> c : expected.get(i).getContext().entrySet()) {
+      final Map<String, Object> actualContext = actualLabels.get(i).getContext();
+      for (Entry<String, Object> c : expected.get(i).getContext().entrySet()) {
         assertTrue(actualContext.containsKey(c.getKey()));
-        for (Object o : c.getValue()) {
-          assertTrue(actualContext.get(c.getKey()).contains(o));
-        }
+        assertEquals(c.getValue(), actualContext.get(c.getKey()));
       }
     }
   }
