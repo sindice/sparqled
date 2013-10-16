@@ -16,9 +16,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <module>recommendation-servlet</module>
   </modules>
   <scm>
-    <connection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/sindicetech/sparqled.git</developerConnection>
-    <url>git:ssh://git@github.com/sindicetech/sparqled.git</url>
+    <connection>scm:git:ssh://git@github.com/sindice/sparqled.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/sindice/sparqled.git</developerConnection>
+    <url>git:ssh://git@github.com/sindice/sparqled.git</url>
   </scm>
   <properties>
     <sesame.version>2.6.6</sesame.version>
