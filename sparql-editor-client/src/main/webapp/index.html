@@ -1,27 +1,31 @@
-<html>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <style type="text/css">
-      body {
-        background: none repeat scroll 0 0 #F5F6F7;
-        color: black;
-        margin: 10px;
-      }
+    <title>Sindice SPARQL Editor Demo</title>
+        <script type="text/javascript" src="sparql/jquery-1.5.2.min.js">
+      //
+    </script>
+    <script type="text/javascript" src="sparql/lib/codemirror.js">
+      //
+    </script>
+    <script type="text/javascript" src="sparql/sparqlmode_ll1.js">
+      //
+    </script>
+    <script type="text/javascript" src="sparql/init-local.js">
+      //
+    </script>
+    <script type="text/javascript" src="sparql/flint-editor.js">
+      //
+    </script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.min.js">
+      //
+    </script>
 
-      iframe {
-        width: 960px;
-        margin: 0px auto;
-        height: 1000px;
-        overflow: hidden;
-      }
-      div {
-        width: 960;
-        margin: 30px auto;
-      }
-    </style>
+    <link rel="stylesheet" href="sparql/lib/codemirror.css"/>
+    <link rel="stylesheet" href="sparql/css/sparqlcolors.css"/>
+    <link rel="stylesheet" href="sparql/css/docs.css"/>
   </head>
   <body>
-    <div>
-      <iframe src="sindice-editor" frameBorder="0" align="center"></iframe>
-    </div>
+    <div id="flint-test"></div>
   </body>
 </html>

@@ -107,7 +107,7 @@ $(document).ready(function() {
     },
     "endpoints" : [{
       "name" : "servlet",
-      "uri" : "../AssistedSparqlEditorServlet",
+      "uri" : "AssistedSparqlEditorServlet",
       queries : [{
         "name" : sampleName1_1,
         "description" : sampleDescription1_1,
@@ -117,7 +117,7 @@ $(document).ready(function() {
     //{"name": "graph-summary", "uri": "http://sparql.sindice.com/sparql"},
     {
       "name" : "submit-endpoint",
-      "uri" : "../SparqlQueryServlet"
+      "uri" : "SparqlQueryServlet"
     }],
 
   }
