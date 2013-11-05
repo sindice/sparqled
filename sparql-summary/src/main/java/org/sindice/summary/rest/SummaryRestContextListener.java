@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.commons.configuration.XMLConfiguration;
-import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
+import org.sindice.core.analytics.commons.webapps.SparqledContextListener;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *         ROOT_xxx in not will use ROOT as contextPath
  */
 public class SummaryRestContextListener
-extends ServletConfigurationContextListener {
+extends SparqledContextListener {
 
   private static final Logger logger = LoggerFactory
                                      .getLogger(SummaryRestContextListener.class);

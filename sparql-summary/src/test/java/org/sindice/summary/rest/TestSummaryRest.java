@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.query.BindingSet;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
+import org.sindice.core.analytics.commons.webapps.SparqledContextListener;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
@@ -36,14 +37,13 @@ extends JerseyTest {
   public TestSummaryRest() throws Exception {
     super(new WebAppDescriptor.Builder("org.sindice.summary.rest")
     .contextListenerClass(SummaryRestContextListener.class)
+    .contextParam(SparqledContextListener.SPARQLED_HOME, "./src/test/resources/sindice.home")
     .build());
   }
 
   @BeforeClass
   public static void beforeClass()
   throws SesameBackendException {
-    System.setProperty("sindice_home", "./src/test/resources/sindice.home");
-
     String[] input;
     input = ("--feed --type NATIVE --repository " + PROXY_REPO
              + " --add ./src/test/resources/rest/data.nt"

@@ -26,13 +26,9 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DGSQueryResultProcessor
 implements QueryResultProcessor<Label> {
-
-  protected static final Logger logger = LoggerFactory.getLogger(DGSQueryResultProcessor.class);
 
   @Override
   public Label process(Object o) {
@@ -50,7 +46,7 @@ implements QueryResultProcessor<Label> {
         final Binding binding = it.next();
 
         if (!binding.getName().equals(SyntaxTreeBuilder.PointOfFocus) &&
-            !binding.getName().equals(QueryProcessor.CARDINALITY_VAR)) {
+             !binding.getName().equals(QueryProcessor.CARDINALITY_VAR)) {
           label.addContext(binding.getName(), binding.getValue().stringValue());
         }
       }

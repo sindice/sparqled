@@ -30,7 +30,7 @@ import net.spy.memcached.MemcachedClient;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.sindice.core.analytics.commons.webapps.MemcachedClientWrapper;
-import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
+import org.sindice.core.analytics.commons.webapps.SparqledContextListener;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class SparqlQueryServletListener
-extends ServletConfigurationContextListener {
+extends SparqledContextListener {
 
   private static final Logger    logger             = LoggerFactory
                                                     .getLogger(SparqlQueryServletListener.class);

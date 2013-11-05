@@ -31,7 +31,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.webapps.MemcachedClientWrapper;
-import org.sindice.core.analytics.commons.webapps.ServletConfigurationContextListener;
+import org.sindice.core.analytics.commons.webapps.SparqledContextListener;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class AssistedSparqlEditorListener
-extends ServletConfigurationContextListener {
+extends SparqledContextListener {
 
   private static final Logger    logger                = LoggerFactory.getLogger(AssistedSparqlEditorListener.class);
 
