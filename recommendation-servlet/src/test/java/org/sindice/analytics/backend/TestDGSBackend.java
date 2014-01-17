@@ -17,6 +17,7 @@
  */
 package org.sindice.analytics.backend;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.sindice.analytics.RDFTestHelper.literal;
@@ -195,20 +196,34 @@ public class TestDGSBackend {
     executeQuery(query, expected);
   }
 
+  @Test
+  public void testLimitWithKeyword()
+  throws Exception {
+    final String query = "SELECT * { ?s produce< ?o }";
+    final List<Label> expected = new ArrayList<Label>(){{
+      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
+    }};
+    executeQuery(query, expected, 1, 20);
+  }
+
   private void executeQuery(String query, List<Label> expected)
   throws Exception {
+    executeQuery(query, expected, 0, 0);
+  }
+
+  private void executeQuery(String query, List<Label> expected, int limit, int pagination)
+  throws Exception {
     dgsQProcessor.load(query);
-    final QueryIterator<Label> qit = backend.submit(dgsQProcessor.getDGSQuery());
+    final String dgsQuery = limit == 0 ? dgsQProcessor.getDGSQuery() : dgsQProcessor.getDGSQueryWithLimit(limit);
+    final QueryIterator<Label> qit = backend.submit(dgsQuery);
+    qit.setPagination(pagination);
     while (qit.hasNext()) {
       actualLabels.add(qit.next());
     }
     Collections.sort(actualLabels, cmpLabels);
     Collections.sort(expected, cmpLabels);
 
-    assertEquals(expected.size(), actualLabels.size());
-    for (int i = 0; i < expected.size(); i++) {
-      assertEquals(expected.get(i), actualLabels.get(i));
-    }
+    assertArrayEquals(actualLabels.toString(), expected.toArray(), actualLabels.toArray());
     // Check that the expected context elements are present
     for (int i = 0; i < expected.size(); i++) {
       final Map<String, Object> actualContext = actualLabels.get(i).getContext();
