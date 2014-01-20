@@ -71,13 +71,12 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractSesameBackend<VALUE>
 implements SesameBackend<VALUE> {
 
-  protected static final Logger logger = LoggerFactory
-      .getLogger(AbstractSesameBackend.class);
+  protected static final Logger             logger = LoggerFactory.getLogger(AbstractSesameBackend.class);
 
   private final QueryResultProcessor<VALUE> qrp;
 
-  private RepositoryConnection con;
-  private Repository repository;
+  private RepositoryConnection              con;
+  private Repository                        repository;
 
   public AbstractSesameBackend() {
     this(null);
@@ -456,13 +455,15 @@ implements SesameBackend<VALUE> {
       }
 
       try {
+        if (limit != 0 && resultCounter >= limit) { // the limit has been reached
+          close();
+          return false;
+        }
         if (!results.hasNext()) {
           if (pagination == 0
-              || // all results were received with the
-                 // previous query
+              || // all results were received with the previous query
               (limit != 0 && pagination * paginatedOffset + offset >= limit)
-              || (resultCounter < pagination * paginatedOffset + offset - 1)) { // the limit has been
-            // reached
+              || (resultCounter < pagination * paginatedOffset + offset - 1)) { // the limit has been reached
             close();
             return false;
           }
@@ -544,7 +545,7 @@ implements SesameBackend<VALUE> {
         } else {
           value = qrp.process(results.next());
         }
-        resultCounter += 1;
+        resultCounter++;
         return value;
       } catch (QueryEvaluationException e) {
         logger.error("", e);

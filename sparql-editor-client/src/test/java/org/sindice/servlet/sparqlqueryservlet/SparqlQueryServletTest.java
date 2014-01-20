@@ -519,22 +519,12 @@ public class SparqlQueryServletTest {
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\",\"ordered\":\"true\","
-              + "\"bindings\":["
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Richard\\\"\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Thing\\\"\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/like\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/c\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/e\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"}}]},"
-              + "\"head\":{\"link\":[],\"vars\":[\"s\",\"p\",\"o\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
+      String ref = "{\"results\":{\"distinct\":\"false\",\"ordered\":\"true\",\"bindings\":" +
+          "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"}," +
+          "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}," +
+          "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Richard\\\"\"}}}," +
+          "\"head\":{\"link\":[],\"vars\":[\"s\",\"p\",\"o\"]}," +
+          "\"status\":\"SUCCESS\",\"message\":\"\"}";
       assertEquals(ref, json.toString());
     } else {
       fail("code=" + code);

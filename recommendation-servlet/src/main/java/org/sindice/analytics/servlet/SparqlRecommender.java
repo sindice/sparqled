@@ -73,13 +73,11 @@ public final class SparqlRecommender {
       qp.load(query);
 
       meta = qp.getPofASTMetadata();
-      final String keyword = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Keyword);
-      final String prefix = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Prefix);
       final String qname = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Qname);
       recommendationType = qp.getRecommendationType();
 
       final String dgsQuery;
-      if (keyword != null || prefix != null | qname != null) {
+      if (limit == 0) {
         dgsQuery = qp.getDGSQuery();
       } else {
         dgsQuery = qp.getDGSQueryWithLimit(limit);
@@ -107,7 +105,7 @@ public final class SparqlRecommender {
             label.setType(LabelType.QNAME);
             label.setLabel(label.getLabel().replaceFirst(qname, ""));
           }
-          logger.debug("Label=[{}]", query, label);
+          logger.debug("Label=[{}]", label);
           lr.addLabel(label);
         }
         // Check if there are some recommendations

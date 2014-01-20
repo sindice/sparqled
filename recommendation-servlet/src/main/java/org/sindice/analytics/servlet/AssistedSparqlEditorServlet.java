@@ -21,9 +21,7 @@ package org.sindice.analytics.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.openrdf.http.protocol.Protocol;
 import org.sindice.analytics.backend.DGSQueryResultProcessor;
 import org.sindice.analytics.ranking.Label;
-import org.sindice.analytics.ranking.LabelsRanking;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
