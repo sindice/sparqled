@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Random;
@@ -51,7 +52,7 @@ public class Dump {
   protected static final Logger _logger      = Logger.getLogger(Dump.class);
 
   private final ValueFactory    vFactory     = new MemValueFactory();
-  private BufferedWriter        _output;
+  private Writer                _output;
   private int                   _nodeCounter = 0;
   private String                _domain      = "";
   private String                _sndDomain   = "";
@@ -63,7 +64,7 @@ public class Dump {
    * @param o the object {@link Value}
    * @throws IOException if an error occurred while writing the statement
    */
-  private void dumpTriple(Value s, Value p, Value o) throws IOException {
+  protected void dumpTriple(Value s, Value p, Value o) throws IOException {
     _output.write(NTriplesUtil.toNTriplesString(s));
     _output.write(" ");
     _output.write(NTriplesUtil.toNTriplesString(p));
@@ -295,6 +296,10 @@ public class Dump {
 
   }
 
+  public void setWriter(Writer w) {
+    _output = w;
+  }
+
   /**
    * Open a file in order to create a RDF output.
    * 
@@ -309,8 +314,10 @@ public class Dump {
       final File parent = new File(outputFile).getParentFile();
       parent.mkdirs();
       // Create file
-      _output = new BufferedWriter(new OutputStreamWriter(
+      if (_output == null) {
+        _output = new BufferedWriter(new OutputStreamWriter(
           new GZIPOutputStream(new FileOutputStream(outputFile))));
+      }
       _domain = domain;
       if (domain.equals("sindice.com")) {
         _sndDomain = domain;

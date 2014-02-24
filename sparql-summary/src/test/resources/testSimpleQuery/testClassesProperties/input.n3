@@ -1,0 +1,3 @@
+@prefix : <http://example.org/> .
+
+:a a :Person; :likes :b; :name "Jean"; :age "42" .

@@ -1,0 +1,5 @@
+@prefix : <http://example.org/> .
+
+:a a :Person; :likes :b .
+:b a :Person; :author :c .
+:c a :Document .

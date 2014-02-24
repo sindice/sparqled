@@ -44,7 +44,7 @@ abstract public class AbstractQuery {
   private String _domain;
   private boolean _setGraph;
   private boolean _initDump;
-  private int _pagination;
+  protected int _pagination;
 
   public static enum SummaryAlgorithm {
     SINGLE_LABELLED, MULTI_LABELLED
@@ -166,17 +166,17 @@ abstract public class AbstractQuery {
    */
 
   public void setGraph(String domain) {
-    if (domain.equals("")) {
+    if (domain.isEmpty()) {
       _domain = "";
     } else {
       _domain = domain;
+      if (domain.startsWith("<") && domain.endsWith(">")) {
+        _graphFrom = "FROM " + domain + " ";
+      } else {
+        _graphFrom = "FROM <" + domain + "> ";
+      }
     }
     _setGraph = true;
-    if (domain.startsWith("<") && domain.endsWith(">")) {
-      _graphFrom = "FROM " + domain + " ";
-    } else {
-      _graphFrom = "FROM <" + domain + "> ";
-    }
   }
 
   /**
@@ -196,7 +196,7 @@ abstract public class AbstractQuery {
    * @throws Exception
    */
   public void initDump(String output) throws Exception {
-    if (!_setGraph || _domain.equals("")) {
+    if (!_setGraph || _domain.isEmpty()) {
       _logger.error("Dump initialization without a graph initialised.");
       _domain = "sindice.com";
     }
