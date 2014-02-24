@@ -19,12 +19,15 @@ package org.sindice.summary.simple;
 
 import java.util.Iterator;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
+import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.summary.AbstractQuery;
 import org.sindice.summary.Dump;
 
@@ -130,7 +133,12 @@ implements Iterable<AbstractSimpleQuery.Structure> {
 
   @Override
   public Iterator<Structure> iterator() {
-    final QueryIterator<BindingSet> queryIt = _repository.submit(getQuery());
+    final QueryIterator<BindingSet> queryIt;
+    try {
+      queryIt = _repository.submit(getQuery());
+    } catch (SesameBackendException e) {
+      throw new RuntimeException("Failed to run query", e);
+    }
 
     if (_pagination >= 0)
       queryIt.setPagination(_pagination);

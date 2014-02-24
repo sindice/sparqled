@@ -18,7 +18,7 @@
 package org.sindice.core.sesame.backend;
 
 public class SesameBackendException
-extends RuntimeException {
+extends Exception {
 
   private static final long serialVersionUID = -8813306750515755266L;
 
