@@ -33,7 +33,7 @@ public class AnalyticsClassAttributes {
 
   public static final String DEFAULT_CLASS_ATTRIBUTE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
-  public static List<String> CLASS_ATTRIBUTES;
+  public static List<String> CLASS_ATTRIBUTES        = Collections.unmodifiableList(Arrays.asList(DEFAULT_CLASS_ATTRIBUTE));
 
   public static final void initClassAttributes(String[] attributes) {
     initClassAttributes(Arrays.asList(attributes));

@@ -32,6 +32,12 @@ public abstract class AbstractSimpleQuery
 extends AbstractQuery
 implements Iterable<AbstractSimpleQuery.Structure> {
 
+  /**
+   * This class contains a statement about the structure of a SPARQL endpoint.
+   * {@link #getDomain()} returns a class that appears on the subject position.
+   * {@link #getRange()} returns a class that appears on the object position, associated
+   * to the former class via the {@link #getPredicate() predicate}.
+   */
   public static class Structure {
     private String domain;
     private String predicate;
