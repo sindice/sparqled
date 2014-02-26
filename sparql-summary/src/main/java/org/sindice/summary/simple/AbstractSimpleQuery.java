@@ -19,8 +19,6 @@ package org.sindice.summary.simple;
 
 import java.util.Iterator;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
@@ -46,19 +44,19 @@ implements Iterable<AbstractSimpleQuery.Structure> {
     private String predicate;
     private String range;
     /**
-     * @return the domain
+     * @return the domain in the N-Triple format
      */
     public String getDomain() {
       return domain;
     }
     /**
-     * @return the predicate
+     * @return the predicate in the N-Triple format
      */
     public String getPredicate() {
       return predicate;
     }
     /**
-     * @return the range
+     * @return the range in the N-Triple format, or <code>null</code> if there is no class.
      */
     public String getRange() {
       return range;
@@ -169,7 +167,7 @@ implements Iterable<AbstractSimpleQuery.Structure> {
           }
           st.domain = NTriplesUtil.toNTriplesString(s);
           st.predicate = NTriplesUtil.toNTriplesString(p);
-          st.range = o == null ? "\"\"" : NTriplesUtil.toNTriplesString(o);
+          st.range = o == null ? null : NTriplesUtil.toNTriplesString(o);
           return true;
         }
         return false;
