@@ -154,7 +154,8 @@ public class TestSimpleQuery {
 
     final List<String> actual2 = new ArrayList<String>();
     for (Structure st : q) {
-      actual2.add(st.getDomain() + " " + st.getPredicate() + " " + st.getRange() + " .");
+      final String range = st.getRange() == null ? "\"\"" : st.getRange();
+      actual2.add(st.getDomain() + " " + st.getPredicate() + " " + range + " .");
     }
     Collections.sort(actual2);
     assertEquals(ref, actual2);
