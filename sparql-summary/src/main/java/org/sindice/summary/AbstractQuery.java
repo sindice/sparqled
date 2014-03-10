@@ -37,14 +37,14 @@ import org.sindice.core.sesame.backend.SesameBackendException;
  */
 abstract public class AbstractQuery {
 
-  protected String _graphFrom;
+  protected String                           _graphFrom;
   protected static SesameBackend<BindingSet> _repository;
-  protected Logger _logger;
-  private Dump _dump;
-  private String _domain;
-  private boolean _setGraph;
-  private boolean _initDump;
-  protected int _pagination;
+  protected final static Logger              _logger = Logger.getLogger("org.sindice.summary.query");
+  private Dump                               _dump;
+  private String                             _domain;
+  private boolean                            _setGraph;
+  private boolean                            _initDump;
+  protected int                              _pagination;
 
   public static enum SummaryAlgorithm {
     SINGLE_LABELLED, MULTI_LABELLED
@@ -57,7 +57,6 @@ abstract public class AbstractQuery {
    *          The Dump object, allows the use to modify the output easily.
    */
   public AbstractQuery(Dump d) {
-    _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = d;
     _domain = "";
@@ -70,7 +69,6 @@ abstract public class AbstractQuery {
    * Initialize the queries launcher.
    */
   public AbstractQuery() {
-    _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = new Dump();
     _domain = "";
@@ -229,9 +227,11 @@ abstract public class AbstractQuery {
     try {
       _repository.closeConnection();
     } catch (SesameBackendException e) {
-      _logger.error(e.getMessage());
+      _logger.error("Failed to close backend", e);
+      throw new RuntimeException(e);
+    } finally {
+      _dump.closeRDF();
     }
-    _dump.closeRDF();
   }
 
 }

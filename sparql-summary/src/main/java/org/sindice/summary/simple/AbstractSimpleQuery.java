@@ -157,18 +157,22 @@ implements Iterable<AbstractSimpleQuery.Structure> {
 
       @Override
       public boolean hasNext() {
-        if (queryIt.hasNext()) {
-          final BindingSet bs = queryIt.next();
-          final Value s = bs.getValue("source");
-          final Value p = bs.getValue("predicate");
-          final Value o = bs.hasBinding("target") ? bs.getValue("target") : null;
-          if (AnalyticsClassAttributes.isClass(p.stringValue())) {
-            return hasNext();
+        try {
+          if (queryIt.hasNext()) {
+            final BindingSet bs = queryIt.next();
+            final Value s = bs.getValue("source");
+            final Value p = bs.getValue("predicate");
+            final Value o = bs.hasBinding("target") ? bs.getValue("target") : null;
+            if (AnalyticsClassAttributes.isClass(p.stringValue())) {
+              return hasNext();
+            }
+            st.domain = NTriplesUtil.toNTriplesString(s);
+            st.predicate = NTriplesUtil.toNTriplesString(p);
+            st.range = o == null ? null : NTriplesUtil.toNTriplesString(o);
+            return true;
           }
-          st.domain = NTriplesUtil.toNTriplesString(s);
-          st.predicate = NTriplesUtil.toNTriplesString(p);
-          st.range = o == null ? null : NTriplesUtil.toNTriplesString(o);
-          return true;
+        } catch(Exception e) {
+          throw new RuntimeException("Failed to evaluate query", e);
         }
         return false;
       }
