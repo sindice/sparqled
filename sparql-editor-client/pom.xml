@@ -33,6 +33,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.sindice.core</groupId>
             <artifactId>sesame-backend</artifactId>
             <version>${project.version}</version>

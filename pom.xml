@@ -21,7 +21,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <url>git:ssh://git@github.com/sindice/sparqled.git</url>
   </scm>
   <properties>
-    <sesame.version>2.6.6</sesame.version>
+    <sesame.version>2.8.0-beta1</sesame.version>
     <project.source.charset>UTF-8</project.source.charset>
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version.source>1.6</java.version.source>

@@ -17,6 +17,7 @@
  */
 package org.sindice.core.sesame.backend;
 
+import org.openrdf.http.client.SesameSession;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.http.HTTPRepository;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
@@ -35,9 +36,24 @@ extends AbstractSesameBackend<VALUE> {
     endpointURL = endpoingURL;
   }
 
+  private class TimeoutHttpRepository extends HTTPRepository {
+
+    public TimeoutHttpRepository(String repositoryURL) {
+      super(repositoryURL);
+    }
+
+    @Override
+    protected SesameSession createHTTPClient() {
+      SesameSession session = super.createHTTPClient();
+      session.setConnectionTimeout(300000);
+      return session;
+    }
+
+  }
+
   @Override
   protected Repository getRepository() {
-    return new HTTPRepository(endpointURL);
+    return new TimeoutHttpRepository(endpointURL);
   }
 
 }

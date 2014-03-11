@@ -55,8 +55,7 @@ public class HTTPSimpleQuery extends AbstractSimpleQuery {
   public HTTPSimpleQuery(String websiteURL)
       throws RepositoryException, SesameBackendException {
     super();
-    _repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP,
-        websiteURL);
+    _repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP, websiteURL);
     _repository.initConnection();
   }
 

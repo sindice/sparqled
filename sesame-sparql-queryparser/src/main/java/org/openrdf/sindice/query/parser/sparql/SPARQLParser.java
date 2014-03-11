@@ -85,7 +85,8 @@ public class SPARQLParser implements QueryParser {
 				// Handle dataset declaration
 				Dataset dataset = DatasetDeclProcessor.process(uc);
 				if (dataset != null) {
-					update.setDataset(dataset);
+				  // Commented when moved from 2.6.6 to 2.8.0-beta1
+//					update.setDataset(dataset);
 				}
 
 				ASTUpdate updateNode = uc.getUpdate();
