@@ -30,3 +30,6 @@ This distribution includes 6 modules:
 This software is based upon works supported by the European FP7 project [LOD2](http://lod2.eu/Welcome.html) (257943).
 
 The SparQLed User Interface is based on the [Flint SPARQL Editor](https://github.com/TSO-Openup/FlintSparqlEditor).
+
+========
+_Copyright 2014, National University of Ireland, Galway._
