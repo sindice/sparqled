@@ -1,0 +1,3 @@
+[submodule "hadoop-summary"]
+	path = hadoop-summary
+	url = https://github.com/sindice/summary
