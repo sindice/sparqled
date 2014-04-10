@@ -17,9 +17,9 @@
  */
 package org.sindice.core.sesame.backend;
 
-import org.openrdf.http.client.SesameSession;
+import org.openrdf.http.client.SparqlSession;
 import org.openrdf.repository.Repository;
-import org.openrdf.repository.http.HTTPRepository;
+import org.openrdf.repository.sparql.SPARQLRepository;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
 public class HTTPSesameBackend<VALUE>
@@ -36,15 +36,15 @@ extends AbstractSesameBackend<VALUE> {
     endpointURL = endpoingURL;
   }
 
-  private class TimeoutHttpRepository extends HTTPRepository {
+  private class TimeoutHttpRepository extends SPARQLRepository {
 
     public TimeoutHttpRepository(String repositoryURL) {
       super(repositoryURL);
     }
 
     @Override
-    protected SesameSession createHTTPClient() {
-      SesameSession session = super.createHTTPClient();
+    protected SparqlSession createHTTPClient() {
+      SparqlSession session = super.createHTTPClient();
       session.setConnectionTimeout(300000);
       return session;
     }
