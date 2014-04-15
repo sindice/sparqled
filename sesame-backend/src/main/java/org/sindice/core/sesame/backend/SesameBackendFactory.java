@@ -26,7 +26,7 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
 public final class SesameBackendFactory {
 
   public static enum BackendType {
-    HTTP, MEMORY, RDBMS, NATIVE, VIRTUOSO
+    HTTP, MEMORY, RDBMS, NATIVE, VIRTUOSO, STARDOG
   }
 
   private SesameBackendFactory() {}
@@ -60,13 +60,17 @@ public final class SesameBackendFactory {
           throw new IllegalArgumentException("The RDBMS backend only takes 4 argument: <url> <database> <user> <password>");
         }
         return new RDBMSSesameBackend<VALUE>(qrp, args[0], args[1], args[2], args[3]);
+      case STARDOG:
+        if (args.length != 3) {
+          throw new IllegalArgumentException("The Stardog backend takes 3 argument: <database> <user> <password>");
+        }
+        return new StardogSesameBackend<VALUE>(qrp, args[0], args[1], args[2]);
       default:
         throw new EnumConstantNotPresentException(BackendType.class, type.toString());
     }
   }
 
-  public static SesameBackend<BindingSet> getDgsBackend(BackendType type,
-                                                                 String... args) {
+  public static SesameBackend<BindingSet> getDgsBackend(BackendType type, String... args) {
     return getDgsBackend(type, null, args);
   }
 
