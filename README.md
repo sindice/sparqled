@@ -1,4 +1,4 @@
-SparQLed
+SPARQLed
 ========
 Assisted SPARQL Editor
 ----------------------
