@@ -83,10 +83,10 @@ public class SPARQLParser implements QueryParser {
 				UpdateExprBuilder updateExprBuilder = new UpdateExprBuilder(new ValueFactoryImpl());
 
 				// Handle dataset declaration
-				Dataset dataset = DatasetDeclProcessor.process(uc);
-				if (dataset != null) {
-					update.setDataset(dataset);
-				}
+//				Dataset dataset = DatasetDeclProcessor.process(uc);
+//				if (dataset != null) {
+//					update.setDataset(dataset);
+//				}
 
 				ASTUpdate updateNode = uc.getUpdate();
 				update.addUpdateExpr((UpdateExpr)updateNode.jjtAccept(updateExprBuilder, null));
