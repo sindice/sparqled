@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.Resource;
 import org.openrdf.query.BindingSet;
 import org.openrdf.repository.RepositoryException;
@@ -31,6 +30,8 @@ import org.openrdf.sail.SailException;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.sindice.core.sesame.backend.SesameBackendException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -39,7 +40,7 @@ abstract public class AbstractQuery {
 
   protected String _graphFrom;
   protected static SesameBackend<BindingSet> _repository;
-  protected Logger _logger;
+  protected final static Logger _logger = LoggerFactory.getLogger(AbstractQuery.class);
   private Dump _dump;
   private String _domain;
   private boolean _setGraph;
@@ -57,7 +58,6 @@ abstract public class AbstractQuery {
    *          The Dump object, allows the use to modify the output easily.
    */
   public AbstractQuery(Dump d) {
-    _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = d;
     _domain = "";
@@ -70,7 +70,6 @@ abstract public class AbstractQuery {
    * Initialize the queries launcher.
    */
   public AbstractQuery() {
-    _logger = Logger.getLogger("org.sindice.summary.query");
     _graphFrom = "";
     _dump = new Dump();
     _domain = "";

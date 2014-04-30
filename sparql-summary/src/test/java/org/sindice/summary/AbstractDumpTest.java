@@ -31,17 +31,18 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class for testing {@link Dump}
  */
 public abstract class AbstractDumpTest {
 
-  protected final static Logger _logger = Logger.getLogger(AbstractDumpTest.class);
+  protected final static Logger _logger = LoggerFactory.getLogger(AbstractDumpTest.class);
   protected File testOutput;
 
   @Before

@@ -3,12 +3,10 @@ package org.sindice.summary.multilabelled;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
 import org.sindice.summary.Dump;
-import org.sindice.summary.multilabelled.AbstractMultiLabelledQuery;
-import org.sindice.summary.multilabelled.HTTPVirtuosoMultiLabelledQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
@@ -31,12 +29,8 @@ import org.sindice.summary.multilabelled.HTTPVirtuosoMultiLabelledQuery;
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
 public class HTTPVirtuosoMultiLabelledTest {
-  protected Logger _logger;
 
-  @Before
-  public void initLogger() {
-    _logger = Logger.getLogger(HTTPVirtuosoMultiLabelledTest.class);
-  }
+  protected Logger _logger = LoggerFactory.getLogger(HTTPVirtuosoMultiLabelledTest.class);
 
   @Test
   public void testMakeGroupConcat() {

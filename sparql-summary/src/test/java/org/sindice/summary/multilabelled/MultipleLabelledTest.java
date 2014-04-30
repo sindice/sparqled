@@ -19,13 +19,13 @@ package org.sindice.summary.multilabelled;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import info.aduna.io.FileUtil;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class MultipleLabelledTest {
     try {
       q.stopConnexion();
     } finally {
-      FileUtils.deleteQuietly(new File("/tmp/test/"));
+      FileUtil.deleteDir(new File("/tmp/test/"));
     }
   }
 
