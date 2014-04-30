@@ -32,5 +32,5 @@ This software is based upon works supported by :
 The SparQLed User Interface is based on the [Flint SPARQL Editor](https://github.com/TSO-Openup/FlintSparqlEditor).
 
 ========
-Supported by IRCSET EMPOWER 2012 Government of Ireland Postdoctoral Fellowship (Renaud Delbru).
+
 _Copyright 2014, National University of Ireland, Galway._
