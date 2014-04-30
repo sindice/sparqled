@@ -1,3 +1,0 @@
-This software is based upon works supported by the European FP7 project LOD2 (257943).
-Supported by IRCSET EMPOWER 2012 Government of Ireland Postdoctoral Fellowship (Renaud Delbru).
-Copyright 2014, National University of Ireland, Galway.
