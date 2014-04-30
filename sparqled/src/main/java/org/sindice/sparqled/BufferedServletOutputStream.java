@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.core.analytics.commons.webapps;
+package org.sindice.sparqled;
 
 import java.io.ByteArrayOutputStream;
 

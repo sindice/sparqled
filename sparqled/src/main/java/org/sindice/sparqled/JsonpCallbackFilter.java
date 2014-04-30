@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.core.analytics.commons.webapps;
+package org.sindice.sparqled;
 
 
 import java.io.IOException;
@@ -37,15 +37,13 @@ import org.slf4j.LoggerFactory;
 public class JsonpCallbackFilter
 implements Filter {
 
-  private static Logger log = LoggerFactory
-                            .getLogger(JsonpCallbackFilter.class);
+  private static Logger log = LoggerFactory.getLogger(JsonpCallbackFilter.class);
 
-  public void init(FilterConfig fConfig)
-  throws ServletException {}
+  @Override
+  public void init(FilterConfig fConfig) {}
 
-  public void doFilter(ServletRequest request,
-                       ServletResponse response,
-                       FilterChain chain)
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
   throws IOException, ServletException {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -65,18 +63,21 @@ implements Filter {
       wrapper.flushBuffer();
 
       OutputStream out = response.getOutputStream();
-      out.write(new String(parms.get("callback")[0] + "(").getBytes());
-      out.write(wrapper.getBuffer());
-      out.write(new String(");").getBytes());
+      try {
+        out.write((parms.get("callback")[0] + "(").getBytes());
+        out.write(wrapper.getBuffer());
+        out.write(");".getBytes());
 
-      wrapper.setContentType("text/javascript;charset=UTF-8");
-
-      out.close();
+        wrapper.setContentType("text/javascript;charset=UTF-8");
+      } finally {
+        out.close();
+      }
     } else {
       chain.doFilter(request, response);
     }
   }
 
+  @Override
   public void destroy() {}
 
 }

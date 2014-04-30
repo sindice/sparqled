@@ -3,11 +3,24 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
 http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-    <display-name>sesame-proxy</display-name>
+    <display-name>sparqled</display-name>
 
+    <!-- Recommender Servlet -->
+    <servlet>
+        <servlet-name>AssistedSparqlEditorServlet</servlet-name>
+        <servlet-class>org.sindice.sparqled.assist.AssistedSparqlEditorServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AssistedSparqlEditorServlet</servlet-name>
+        <url-pattern>/AssistedSparqlEditorServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Query servlet -->
     <servlet>
         <servlet-name>SparqlQueryServlet</servlet-name>
-        <servlet-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServlet</servlet-class>
+        <servlet-class>org.sindice.sparqled.sparql.SparqlQueryServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -17,7 +30,22 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </servlet-mapping>
 
     <listener>
-        <listener-class>org.sindice.servlet.sparqlqueryservlet.SparqlQueryServletListener</listener-class>
+        <listener-class>org.sindice.sparqled.assist.AssistedSparqlEditorListener</listener-class>
     </listener>
+
+    <listener>
+        <listener-class>org.sindice.sparqled.sparql.SparqlQueryServletListener</listener-class>
+    </listener>
+
+    <!-- JSON wrapping -->
+    <filter>
+        <filter-name>jsonpCallbackFilter</filter-name>
+        <filter-class>org.sindice.core.analytics.commons.webapps.JsonpCallbackFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>jsonpCallbackFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 </web-app>

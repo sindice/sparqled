@@ -29,9 +29,9 @@ import net.spy.memcached.AddrUtil;
 import net.spy.memcached.MemcachedClient;
 
 import org.apache.commons.configuration.XMLConfiguration;
-import org.sindice.core.analytics.commons.webapps.MemcachedClientWrapper;
-import org.sindice.core.analytics.commons.webapps.SparqledContextListener;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.MemcachedClientWrapper;
+import org.sindice.sparqled.SparqledContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

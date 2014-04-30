@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.http.protocol.Protocol;
+import org.sindice.analytics.ranking.DGSQueryResultProcessor;
 import org.sindice.analytics.ranking.Label;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.sparqled.assist;
+package org.sindice.analytics.ranking;
 
 import java.util.Iterator;
 

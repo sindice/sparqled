@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.core.analytics.commons.webapps;
+package org.sindice.sparqled;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,10 +67,10 @@ implements ServletContextListener {
     final String home = (String) context.getInitParameter(SPARQLED_HOME);
     final File sparqledHome = home == null ? null : new File(home);
 
-    if (sparqledHome == null || !sparqledHome.exists()) {
-      throw new RuntimeException("Missing sparqled home");
-    }
     logger.info("Looking for configuration in [{}]", sparqledHome);
+    if (sparqledHome == null || !sparqledHome.exists()) {
+      throw new RuntimeException("Missing sparqled home: " + sparqledHome);
+    }
 
     configureLogging(context, sparqledHome);
     final XMLConfiguration config = createXMLConfiguration(context);
