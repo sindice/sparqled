@@ -102,14 +102,23 @@ public abstract class AbstractDumpTest {
       Collections.sort(expectedResults);
 
       assertArrayEquals(expectedResults.toArray(new String[0]), actualResults.toArray(new String[0]));
-    } finally {
-      if (expected != null) {
-        expected.close();
+    }
+    finally {
+      try {
+        if (expected != null) {
+          expected.close();
+        }
       }
-      if (actual != null) {
-        actual.close();
+      finally {
+        try {
+          if (actual != null) {
+            actual.close();
+          }
+        }
+        finally {
+          q.stopConnexion();
+        }
       }
-      q.stopConnexion();
     }
   }
 
