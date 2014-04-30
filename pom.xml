@@ -11,10 +11,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   <modules>
     <module>sparqled-commons</module>
     <module>sesame-backend</module>
-    <module>sparql-summary</module>
-    <module>sparql-editor-client</module>
     <module>sesame-queryparser-sparql/core/queryparser/sparql</module>
     <module>recommendation-servlet</module>
+    <module>sparqled</module>
+    <module>sparql-summary</module>
   </modules>
 
   <scm>
