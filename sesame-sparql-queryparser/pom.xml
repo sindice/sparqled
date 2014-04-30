@@ -14,26 +14,6 @@
 
     <description>Query language parser implementation for SPARQL, based on sesame. Modified for the EASE use case</description>
 
-    <repositories>
-        <!-- To get sesame -->
-        <repository>
-            <id>thirdparty-releases</id>
-            <name>JBoss Thirdparty Releases</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-        </repository>
-        <repository>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>aduna-opensource.releases</id>
-            <name>Aduna Open Source - Maven releases</name>
-            <url>http://repo.aduna-software.org/maven2/releases</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>commons-lang</groupId>

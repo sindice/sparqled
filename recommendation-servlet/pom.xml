@@ -13,15 +13,6 @@
     <packaging>war</packaging>
     <name>recommendation-servlet</name>
 
-    <repositories>
-        <!-- To get sesame -->
-        <repository>
-            <id>thirdparty-releases</id>
-            <name>JBoss Thirdparty Releases</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-        </repository>
-    </repositories>
-
     <build>
         <finalName>sparqled</finalName>
         <plugins>
@@ -113,7 +104,7 @@
 
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>sesame-sparql-queryparser</artifactId>
+            <artifactId>sesame-queryparser-sparql</artifactId>
             <version>${project.version}</version>
         </dependency>
 

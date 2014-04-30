@@ -226,33 +226,32 @@ extends HttpServlet {
     results.put("ordered", "true");
 
     try {
-      if (queryIt.hasNext()) {
-        while (queryIt.hasNext()) {
-          // Find the correct format of the return value.
-          Object result = queryIt.next();
-          Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
+      while (queryIt.hasNext()) {
+        // Find the correct format of the return value.
+        Object result = queryIt.next();
+        Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
 
-          BindingSet bindingSet = (BindingSet) result;
-          for (String name : queryIt.getBindingNames()) {
-            if (preprocessing != null &&
-                name.startsWith(preprocessing.getVarPrefix()) &&
-                name.endsWith(preprocessing.getVarSuffix())) {
-              /*
-               * Filter additional SPARQL variables produced by
-               * the preprocessing class
-               */
-              continue;
-            }
-            if (bindingSet.hasBinding(name)) {
-              JSONObject node = new JSONObject();
-              node.put("type", "uri");
-              node.put("value", bindingSet.getValue(name).toString());
-              bindings.put(name, node);
-            }
+        BindingSet bindingSet = (BindingSet) result;
+        for (String name : queryIt.getBindingNames()) {
+          if (preprocessing != null &&
+              name.startsWith(preprocessing.getVarPrefix()) &&
+              name.endsWith(preprocessing.getVarSuffix())) {
+            /*
+             * Filter additional SPARQL variables produced by
+             * the preprocessing class
+             */
+            continue;
           }
-          results.accumulate("bindings", bindings);
+          if (bindingSet.hasBinding(name)) {
+            JSONObject node = new JSONObject();
+            node.put("type", "uri");
+            node.put("value", bindingSet.getValue(name).toString());
+            bindings.put(name, node);
+          }
         }
-      } else {
+        results.accumulate("bindings", bindings);
+      }
+      if (!results.containsKey("bindings")) {
         // handle empty select result
         results.put("bindings", "[]");
       }
@@ -301,31 +300,30 @@ extends HttpServlet {
     results.put("ordered", "true");
 
     try {
-      if (queryIt.hasNext()) {
-        while (queryIt.hasNext()) {
-          // Find the correct format of the return value.
-          Object result = queryIt.next();
-          Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
-          StatementImpl constructResult = (StatementImpl) result;
-          JSONObject node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getSubject().toString());
-          bindings.put("s", node);
-          node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getPredicate().toString());
-          bindings.put("p", node);
-          node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getObject().toString());
-          bindings.put("o", node);
-          results.accumulate("bindings", bindings);
-          logger.debug(constructResult.getSubject().toString() +
-                       constructResult.getPredicate().toString() +
-                       constructResult.getObject().toString());
-        }
-      } else {
-
+      while (queryIt.hasNext()) {
+        // Find the correct format of the return value.
+        Object result = queryIt.next();
+        Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
+        StatementImpl constructResult = (StatementImpl) result;
+        JSONObject node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getSubject().toString());
+        bindings.put("s", node);
+        node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getPredicate().toString());
+        bindings.put("p", node);
+        node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getObject().toString());
+        bindings.put("o", node);
+        results.accumulate("bindings", bindings);
+        logger.debug(constructResult.getSubject().toString() +
+                     constructResult.getPredicate().toString() +
+                     constructResult.getObject().toString());
+      }
+      if (!results.containsKey("bindings")) {
+        // handle empty select result
         results.put("bindings", "[]");
       }
 
@@ -364,32 +362,30 @@ extends HttpServlet {
     results.put("ordered", "true");
 
     try {
-      if (queryIt.hasNext()) {
-        while (queryIt.hasNext()) {
-          // Find the correct format of the return value.
-          Object result = queryIt.next();
-          Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
-          StatementImpl constructResult = (StatementImpl) result;
-          JSONObject node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getSubject().toString());
-          bindings.put("s", node);
-          node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getPredicate().toString());
-          bindings.put("p", node);
-          node = new JSONObject();
-          node.put("type", "uri");
-          node.put("value", constructResult.getObject().toString());
-          bindings.put("o", node);
-          results.accumulate("bindings", bindings);
-          logger.debug(constructResult.getSubject().toString() +
-                       constructResult.getPredicate().toString() +
-                       constructResult.getObject().toString());
-
-        }
-      } else {
-
+      while (queryIt.hasNext()) {
+        // Find the correct format of the return value.
+        Object result = queryIt.next();
+        Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
+        StatementImpl constructResult = (StatementImpl) result;
+        JSONObject node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getSubject().toString());
+        bindings.put("s", node);
+        node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getPredicate().toString());
+        bindings.put("p", node);
+        node = new JSONObject();
+        node.put("type", "uri");
+        node.put("value", constructResult.getObject().toString());
+        bindings.put("o", node);
+        results.accumulate("bindings", bindings);
+        logger.debug(constructResult.getSubject().toString() +
+                     constructResult.getPredicate().toString() +
+                     constructResult.getObject().toString());
+      }
+      if (!results.containsKey("bindings")) {
+        // handle empty select result
         results.put("bindings", "[]");
       }
 
