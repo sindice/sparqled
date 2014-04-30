@@ -18,6 +18,7 @@
 package org.sindice.summary;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryEvaluationException;
@@ -30,7 +31,8 @@ public class DumpString extends Dump {
 
   private String _outputstr;
 
-  public DumpString() {
+  public void clear() {
+    _outputstr = "";
   }
 
   /**
@@ -115,12 +117,12 @@ public class DumpString extends Dump {
   }
 
   /**
-   * Get the result string.
-   * 
-   * @return result string
+   * Get the result as an array of bindings.
    */
-  public String getResult() {
-    return _outputstr;
+  public String[] getResult() {
+    String[] ar = _outputstr.split("\n");
+    Arrays.sort(ar);
+    return ar;
   }
 
 }

@@ -28,7 +28,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
-import org.apache.log4j.Logger;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -41,6 +40,8 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.util.Hash;
 import org.sindice.core.analytics.commons.util.URIUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -48,7 +49,7 @@ import org.sindice.core.analytics.commons.util.URIUtil;
  */
 public class Dump {
 
-  protected static final Logger _logger      = Logger.getLogger(Dump.class);
+  protected static final Logger _logger      = LoggerFactory.getLogger(Dump.class);
 
   private final ValueFactory    vFactory     = new MemValueFactory();
   private BufferedWriter        _output;

@@ -5,7 +5,7 @@ QueryContainer
    GraphPatternGroup
     BasicGraphPattern
      TriplesSameSubjectPath
-      Var (_anon_1)
+      Var (nanonn1)
       PropertyListPath
        PathAlternative
         PathSequence
@@ -14,7 +14,7 @@ QueryContainer
        ObjectList
         IRI (Person)
      TriplesSameSubjectPath
-      Var (_anon_2)
+      Var (nanonn2)
       PropertyListPath
        PathAlternative
         PathSequence
@@ -26,22 +26,22 @@ QueryContainer
      GraphPatternGroup
       BasicGraphPattern
        TriplesSameSubjectPath
-        Var (_anon_1)
+        Var (nanonn1)
         PropertyListPath
          PathAlternative
           PathSequence
            PathElt
             IRI (writes)
          ObjectList
-          Var (_anon_2)
+          Var (nanonn2)
      GraphPatternGroup
       BasicGraphPattern
        TriplesSameSubjectPath
-        Var (_anon_1)
+        Var (nanonn1)
         PropertyListPath
          PathAlternative
           PathSequence
            PathElt
             IRI (author)
          ObjectList
-          Var (_anon_2)
+          Var (nanonn2)

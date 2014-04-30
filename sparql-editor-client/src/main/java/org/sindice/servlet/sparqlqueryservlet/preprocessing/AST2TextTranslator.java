@@ -380,6 +380,31 @@ public class AST2TextTranslator {
     }
 
     @Override
+    public Object visit(ASTPropertyListPath node, Object data)
+    throws VisitorException {
+      final StringBuilder sb = (StringBuilder) data;
+
+      while (true) {
+        node.jjtGetChild(0).jjtAccept(this, data); // predicate
+        // objects
+        final List<Node> objects = node.getObjectList().jjtGetChildren();
+        for (int i = 0; i < objects.size(); i++) {
+          objects.get(i).jjtAccept(this, data);
+          if (i + 1 != objects.size()) {
+            sb.append(',');
+          }
+        }
+        node = node.getNextPropertyList();
+        if (node != null) {
+          sb.append(';');
+        } else {
+          break;
+        }
+      }
+      return data;
+    }
+
+    @Override
     public Object visit(ASTPropertyList node, Object data)
     throws VisitorException {
       final StringBuilder sb = (StringBuilder) data;

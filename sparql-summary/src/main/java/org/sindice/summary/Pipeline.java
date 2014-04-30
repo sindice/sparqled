@@ -25,7 +25,6 @@ import java.util.Arrays;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
-import org.apache.log4j.Logger;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
@@ -45,13 +44,15 @@ import org.sindice.summary.singlelabelled.HTTPVirtuosoSingleLabelledQuery;
 import org.sindice.summary.singlelabelled.MemorySingleLabelledQuery;
 import org.sindice.summary.singlelabelled.NativeSingleLabelledQuery;
 import org.sindice.summary.singlelabelled.RDBMSSingleLabelledQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class Pipeline {
 
-  private final static Logger logger            = Logger.getLogger(Pipeline.class);
+  private final static Logger logger            = LoggerFactory.getLogger(Pipeline.class);
 
   private static final String HELP              = "help";
   private static final String CLASS_ATTRIBUTE   = "class-attribute";

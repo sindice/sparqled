@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>org.sindice.core</groupId>
-            <artifactId>sesame-sparql-queryparser</artifactId>
+            <artifactId>sesame-queryparser-sparql</artifactId>
             <version>${project.version}</version>
         </dependency>
 
