@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <recommender>
+        <backend>NATIVE</backend>
+        <backendArgs>src/test/resources/sparqled/summary-native</backendArgs>
+        <graphSummaryGraph>http://acme.org/summary</graphSummaryGraph>
+    </recommender>
+
+    <proxy>
+        <backend>NATIVE</backend>
+        <backendArgs>src/test/resources/sparqled/data-native</backendArgs>
+    </proxy>
+
+</configuration>

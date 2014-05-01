@@ -330,7 +330,9 @@ public class Dump {
    */
   public void closeRDF() {
     try {
-      _output.close();
+      if (_output != null) {
+        _output.close();
+      }
     } catch (Exception e) {// Catch exception if any
       _logger.debug("", e);
     }
