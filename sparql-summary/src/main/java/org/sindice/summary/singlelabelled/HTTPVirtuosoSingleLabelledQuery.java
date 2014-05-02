@@ -17,13 +17,7 @@
  */
 package org.sindice.summary.singlelabelled;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.openrdf.model.Resource;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
@@ -33,31 +27,8 @@ import org.sindice.summary.Dump;
 /**
  * 
  */
-public class HTTPVirtuosoSingleLabelledQuery extends
-    AbstractSingleLabelledQuery {
-
-  boolean _identified;
-
-  /**
-   * This constructor make a connection with a virtuoso SPARQL repository.
-   * 
-   * @param d
-   *          The dump object.
-   * @param websiteURL
-   *          URL of the web SPARQL repository
-   * @throws RepositoryException
-   * @throws SesameBackendException
-   */
-  public HTTPVirtuosoSingleLabelledQuery(Dump d, String websiteURL,
-      String user, String password) throws RepositoryException,
-      SesameBackendException {
-    super(d);
-    _repository = SesameBackendFactory.getDgsBackend(BackendType.VIRTUOSO,
-        websiteURL, user, password);
-    _repository.initConnection();
-    _identified = true;
-
-  }
+public class HTTPVirtuosoSingleLabelledQuery
+extends AbstractSingleLabelledQuery {
 
   /**
    * This constructor make a connection with a virtuoso SPARQL repository with
@@ -76,24 +47,6 @@ public class HTTPVirtuosoSingleLabelledQuery extends
     _repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP,
         websiteURL);
     _repository.initConnection();
-    _identified = false;
-
-  }
-
-  /**
-   * This constructor make a connection with a virtuoso SPARQL repository.
-   * 
-   * @param websiteURL
-   *          URL of the web SPARQL repository
-   * @throws RepositoryException
-   * @throws SesameBackendException
-   */
-  public HTTPVirtuosoSingleLabelledQuery(String websiteURL, String user,
-      String password) throws RepositoryException, SesameBackendException {
-    _repository = SesameBackendFactory.getDgsBackend(BackendType.VIRTUOSO,
-        websiteURL, user, password);
-    _repository.initConnection();
-    _identified = true;
   }
 
   /**
@@ -110,7 +63,6 @@ public class HTTPVirtuosoSingleLabelledQuery extends
     _repository = SesameBackendFactory.getDgsBackend(BackendType.HTTP,
         websiteURL);
     _repository.initConnection();
-    _identified = false;
   }
 
   /**
@@ -127,38 +79,14 @@ public class HTTPVirtuosoSingleLabelledQuery extends
   }
 
   /**
-   * Add an RDF file to the local repository.
-   * 
-   * @param RDFFile
-   *          The path of the new RDF file
-   * @param Ressource
-   *          Optional argument for the file (example : The domain).
-   * @throws RDFParseException
-   * @throws RepositoryException
-   * @throws IOException
-   * @throws SesameBackendException
-   */
-  @Override
-  public void addFileToRepository(String RDFFile, RDFFormat format,
-      Resource... contexts) throws RDFParseException, RepositoryException,
-      IOException, SesameBackendException {
-    if (_identified) {
-      _repository.addToRepository(new File(RDFFile), format, contexts);
-    } else {
-      _logger
-          .error("You should identify yourself to the database before adding triples inside.");
-      _logger.error("OPTION : user, password");
-    }
-  }
-
-  /**
    * Get the name and the cardinality of the nodes, with a valid Virtuoso
    * GROUP_CONCAT.
    * 
    * @throws Exception
    */
   @Override
-  public void computeName() throws Exception {
+  public void computeName()
+  throws Exception {
     String query = "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
         + "WHERE {\n{\n" + "SELECT ?s (IF(isURI(?type),\n";
 

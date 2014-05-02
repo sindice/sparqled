@@ -35,14 +35,6 @@
     </plugins>
   </build>
 
-  <repositories>
-    <!-- To get virtuoso sesame plugin -->
-    <repository>
-      <id>virtuoso</id>
-      <url>file://${basedir}/../lib/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
 
     <dependency>
@@ -126,18 +118,6 @@
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-model</artifactId>
       <version>${sesame.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>virtuoso.sesame2.driver</groupId>
-      <artifactId>virt_sesame2</artifactId>
-      <version>1.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>virtuoso.jdbc3</groupId>
-      <artifactId>virtjdbc3</artifactId>
-      <version>1.0</version>
     </dependency>
 
   </dependencies>

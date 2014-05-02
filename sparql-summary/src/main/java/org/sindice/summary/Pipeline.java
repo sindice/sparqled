@@ -208,31 +208,14 @@ public class Pipeline {
         logger.error("You need to select a database");
         throw new SesameBackendException("You need to select a database");
       }
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.NATIVE)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.NATIVE)) {
       q = new NativeMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.MEMORY)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.MEMORY)) {
       q = new MemoryMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.HTTP)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.HTTP)) {
       q = new HTTPMultiLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.VIRTUOSO)) {
-      if (options.has("user") && options.hasArgument("user")) {
-        if (options.has("pass") && options.hasArgument("pass")) {
-          q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository,
-              options.valueOf("user").toString(), options.valueOf("pass")
-                  .toString());
-        } else {
-          logger.error("You need to define a password "
-              + "to connect to a virtuoso repository.");
-          throw new SesameBackendException("You need to define a password "
-          + "to connect to a virtuoso repository.");
-        }
-      } else {
-        q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository);
-      }
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.VIRTUOSO)) {
+      q = new HTTPVirtuosoMultiLabelledQuery(new Dump(), repository);
     }
     return q;
   }
@@ -274,31 +257,14 @@ public class Pipeline {
         logger.error("You need to select a database");
         throw new SesameBackendException("You need to select a database");
       }
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.NATIVE)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.NATIVE)) {
       q = new NativeSingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.MEMORY)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.MEMORY)) {
       q = new MemorySingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.HTTP)) {
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.HTTP)) {
       q = new HTTPSingleLabelledQuery(repository);
-    } else if (options.valueOf(TYPE).equals(
-        SesameBackendFactory.BackendType.VIRTUOSO)) {
-      if (options.has("user") && options.hasArgument("user")) {
-        if (options.has("pass") && options.hasArgument("pass")) {
-          q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository,
-              options.valueOf("user").toString(), options.valueOf("pass")
-                  .toString());
-        } else {
-          logger.error("You need to define a password "
-              + "to connect to a virtuoso repository.");
-          throw new SesameBackendException("You need to define a password "
-          + "to connect to a virtuoso repository.");
-        }
-      } else {
-        q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository);
-      }
+    } else if (options.valueOf(TYPE).equals(SesameBackendFactory.BackendType.VIRTUOSO)) {
+      q = new HTTPVirtuosoSingleLabelledQuery(new Dump(), repository);
     }
     return q;
   }
