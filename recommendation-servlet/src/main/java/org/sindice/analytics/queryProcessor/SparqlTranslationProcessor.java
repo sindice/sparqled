@@ -277,8 +277,8 @@ public final class SparqlTranslationProcessor {
           case PLAIN:
             return label;
           default:
-            EnumConstantNotPresentException dl = new EnumConstantNotPresentException(DatasetLabel.class, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
-            throw new DGSException(dl);
+            throw new DGSException(new EnumConstantNotPresentException(DatasetLabel.class,
+              DataGraphSummaryVocab.DATASET_LABEL_DEF.toString()));
         }
       }
       return label;
