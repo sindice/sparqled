@@ -40,16 +40,12 @@ public final class SesameBackendFactory {
           throw new IllegalArgumentException("The Memory backend takes zero or one argument: <data-dir>?");
         }
         return new MemorySesameBackend<VALUE>(qrp, args.length == 0 ? null : args[0]);
+      case VIRTUOSO:
       case HTTP:
         if (args.length != 1) {
           throw new IllegalArgumentException("The HTTP backend only takes one argument: <enpoint-url>");
         }
         return new HTTPSesameBackend<VALUE>(qrp, args[0]);
-      case VIRTUOSO:
-        if (args.length != 3) {
-          throw new IllegalArgumentException("The VIRTUOSO backend only takes 3 arguments: <enpoint-url> <user> <password>");
-        }
-        return new VirtuosoSesameBackend<VALUE>(qrp, args[0], args[1], args[2]);
       case NATIVE:
         if (args.length != 1) {
           throw new IllegalArgumentException("The Native backend only takes one argument: <data-dir>");
