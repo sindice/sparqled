@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.sindice.core</groupId>
             <artifactId>sesame-queryparser-sparql</artifactId>
-            <version>${project.version}</version>
+            <version>${pof.version}</version>
         </dependency>
 
         <dependency>
