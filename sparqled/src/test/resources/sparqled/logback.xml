@@ -1,31 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <File>${sparqled.home}/log/sparqled.log</File>
-    <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%date{ISO8601} [%thread] %-5level %logger{2} - %message%n</Pattern>
-    </layout>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${sparqled.home}/sparqled.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <maxFileSize>200MB</maxFileSize>
-      </timeBasedFileNamingAndTriggeringPolicy>
-      <MaxHistory>7</MaxHistory>
-    </rollingPolicy>
-  </appender>
-
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
       <Pattern>%date{ISO8601} [%thread] %-5level %logger{2} - %message%n</Pattern>
     </layout>
   </appender>
-
-  <logger name="httpclient.wire.content" level="INFO"/>
-  <logger name="httpclient.wire.header" level="INFO"/>
-  <logger name="org.apache.commons.httpclient" level="INFO"/>
-  <logger name="org.sindice.core.analytics.util" level="INFO"/>
-
   <root level="DEBUG">
     <appender-ref ref="STDOUT"/>
   </root>
