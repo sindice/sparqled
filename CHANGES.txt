@@ -16,3 +16,4 @@ Tasks
 
 * [GL-27] Clean the code
 * [GH-37] Remove Virtuoso sesame plugin
+* [GH-40] Clean sesame backend cli
