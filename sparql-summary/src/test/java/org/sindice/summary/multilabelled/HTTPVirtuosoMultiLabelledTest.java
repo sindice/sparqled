@@ -1,13 +1,3 @@
-package org.sindice.summary.multilabelled;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import org.junit.Test;
-import org.sindice.summary.Dump;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Copyright (c) 2009-2012 National University of Ireland, Galway. All Rights Reserved.
  *
@@ -25,6 +15,16 @@ import org.slf4j.LoggerFactory;
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.sindice.summary.multilabelled;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+import org.sindice.summary.Dump;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Pierre Bailly <pierre.bailly@deri.org>
  */
