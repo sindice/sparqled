@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.core.sesame.backend.cli;
+package org.sindice.core.sesame.backend;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,40 +37,29 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
-import org.sindice.core.sesame.backend.SesameBackendException;
-import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSesameBackendCLI {
+public class SesameBackendCLI {
 
-  private static final Logger                logger   = LoggerFactory.getLogger(AbstractSesameBackendCLI.class);
+  private static final Logger       logger   = LoggerFactory.getLogger(SesameBackendCLI.class);
 
-  private static final String                HELP     = "help";
-  private static final String                TYPE     = "type";
-  private static final String                ARGS     = "args";
+  private static final String       HELP     = "help";
+  private static final String       TYPE     = "type";
+  private static final String       ARGS     = "args";
 
-  private static final String                ADD_RDF  = "add-rdf";
-  private static final String                FORMAT   = "format";
-  private static final String                CONTEXTS = "contexts";
-  private static final String                QUERY    = "query";
+  private static final String       ADD_RDF  = "add-rdf";
+  private static final String       FORMAT   = "format";
+  private static final String       CONTEXTS = "contexts";
+  private static final String       QUERY    = "query";
 
-  private final OptionParser                 parser;
+  private final OptionParser        parser;
   private SesameBackend<BindingSet> backend;
 
-  public AbstractSesameBackendCLI() {
-    parser = initializeOptionParser();
-    initializeOptionParser(parser);
-  }
-
-  protected abstract void initializeOptionParser(OptionParser parser);
-  protected abstract void execute(final OptionSet options);
-
-  private OptionParser initializeOptionParser() {
-    final OptionParser parser = new OptionParser() {
+  public SesameBackendCLI() {
+    parser = new OptionParser() {
       {
         accepts(HELP, "Shows this help message");
         accepts(TYPE, "The Sesame backend type: " + Arrays.toString(BackendType.values())).withRequiredArg().ofType(BackendType.class);
@@ -99,59 +88,6 @@ public abstract class AbstractSesameBackendCLI {
         });
       }
     };
-    return parser;
-  }
-
-  private OptionSet parseArgs(final String[] args, final OptionParser parser)
-  throws SesameBackendException, IOException {
-    OptionSet options = null;
-
-    try {
-      options = parser.parse(args);
-    } catch (final OptionException e) {
-      logger.error("", e);
-      parser.printHelpOn(System.err);
-      System.exit(1);
-    }
-
-    if (options.has(HELP)) {
-      parser.printHelpOn(System.out);
-      System.exit(0);
-    }
-    if (options.has(TYPE)) {
-      BackendType type = (BackendType) options.valueOf(TYPE);
-      if (options.has(ARGS)) {
-        String[] backendArgs = ((List<String>) options.valuesOf(ARGS)).toArray(new String[0]);
-        backend = SesameBackendFactory.getDgsBackend(type, backendArgs);
-      } else {
-        backend = SesameBackendFactory.getDgsBackend(type);
-      }
-    } else {
-      logger.error("Missing type option");
-      parser.printHelpOn(System.out);
-      System.exit(1);
-    }
-    if (options.has(ADD_RDF)) {
-      addRDF(options);
-    }
-    if (options.has(QUERY)) {
-      runQuery(options);
-    }
-    return options;
-  }
-
-  private void execute(final String[] args, final OptionParser parser)
-  throws IOException, SesameBackendException {
-    final OptionSet options = parseArgs(args, parser);
-
-    try {
-      this.execute(options);
-    } catch (final IllegalArgumentException e) {
-      logger.error("", e);
-      parser.printHelpOn(System.err);
-      System.exit(1);
-    }
-    System.exit(0);
   }
 
   private void addRDF(OptionSet options)
@@ -211,7 +147,45 @@ public abstract class AbstractSesameBackendCLI {
 
   public void run(final String args[])
   throws IOException, SesameBackendException {
-    this.execute(args, parser);
+    OptionSet options = null;
+
+    try {
+      options = parser.parse(args);
+    } catch (final OptionException e) {
+      logger.error("", e);
+      parser.printHelpOn(System.err);
+      System.exit(1);
+    }
+
+    if (options.has(HELP)) {
+      parser.printHelpOn(System.out);
+      System.exit(0);
+    }
+    if (options.has(TYPE)) {
+      BackendType type = (BackendType) options.valueOf(TYPE);
+      if (options.has(ARGS)) {
+        String[] backendArgs = ((List<String>) options.valuesOf(ARGS)).toArray(new String[0]);
+        backend = SesameBackendFactory.getDgsBackend(type, backendArgs);
+      } else {
+        backend = SesameBackendFactory.getDgsBackend(type);
+      }
+    } else {
+      logger.error("Missing type option");
+      parser.printHelpOn(System.out);
+      System.exit(1);
+    }
+    if (options.has(ADD_RDF)) {
+      addRDF(options);
+    }
+    if (options.has(QUERY)) {
+      runQuery(options);
+    }
+  }
+
+  public static void main(String[] args)
+  throws IOException, SesameBackendException {
+    SesameBackendCLI cli = new SesameBackendCLI();
+    cli.run(args);
   }
 
 }
