@@ -151,7 +151,6 @@ extends HttpServlet {
    */
   private void getRecommendationAsJson(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
-    logger.info("\nBegin processing request");
     final PrintWriter out = response.getWriter();
 
     response.setContentType("application/json");

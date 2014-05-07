@@ -1,0 +1,3 @@
+<Context docBase="/path/to/sparqled.war">
+    <Parameter name="sparqled/home" value="BASEDIR/demo/bio2rdf" override="false" />
+</Context>
