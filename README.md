@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sindice/sparqled.svg)](https://travis-ci.org/sindice/sparqled)
+
 # SPARQLed
 
 Assisted SPARQL Editor
