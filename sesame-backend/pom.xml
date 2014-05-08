@@ -13,12 +13,26 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration combine.self="override">
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/org.openrdf.rio.RDFParserFactory</resource>
+                </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/org.openrdf.rio.RDFWriterFactory</resource>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -54,11 +68,6 @@
     </dependency>
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
-      <artifactId>sesame-rio-nquads</artifactId>
-      <version>${sesame.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-rio-ntriples</artifactId>
       <version>${sesame.version}</version>
     </dependency>
@@ -85,6 +94,11 @@
     <dependency>
       <groupId>org.openrdf.sesame</groupId>
       <artifactId>sesame-rio-trig</artifactId>
+      <version>${sesame.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openrdf.sesame</groupId>
+      <artifactId>sesame-rio-nquads</artifactId>
       <version>${sesame.version}</version>
     </dependency>
 

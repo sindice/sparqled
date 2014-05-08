@@ -61,27 +61,23 @@ import org.slf4j.LoggerFactory;
 @RunWith(value = Parameterized.class)
 public class SparqlQueryServletTest {
 
-  private static final Logger logger   = LoggerFactory.getLogger(SparqlQueryServletTest.class);
-  private static final String dgsInput = "./src/test/resources/QueryBackend/test.nt";
+  private static final Logger        logger    = LoggerFactory.getLogger(SparqlQueryServletTest.class);
+  private static final String        dgsInput  = "./src/test/resources/QueryBackend/test.nt";
 
-  private final ServletTester aseTester;
+  private final ServletTester aseTester = new ServletTester();
   private final String        aseBaseUrl;
-  private final HttpClient    client;
+  private final HttpClient    client    = new HttpClient();
 
   @Parameters
   public static Collection<Object[]> data() {
-    Object[][] data = new Object[][] {
-            { BackendType.NATIVE, "/tmp/test-unit-native/" },
-            { BackendType.MEMORY, "/tmp/test-unit-memory/" }
-    };
-    return Arrays.asList(data);
+    return Arrays.asList(
+      new Object[] { BackendType.NATIVE, "/tmp/test-unit-native/" },
+      new Object[] { BackendType.MEMORY, "/tmp/test-unit-memory/" }
+    );
   }
 
   public SparqlQueryServletTest(BackendType backend, String backendArgs)
   throws Exception {
-    client = new HttpClient();
-
-    aseTester = new ServletTester();
     aseTester.setContextPath("/");
     String url = aseTester.createSocketConnector(true);
     aseTester.setAttribute(SparqlQueryServletListener.SQS_WRAPPER

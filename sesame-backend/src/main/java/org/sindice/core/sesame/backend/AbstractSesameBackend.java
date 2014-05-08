@@ -17,17 +17,11 @@
  */
 package org.sindice.core.sesame.backend;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 import org.openrdf.model.Resource;
 import org.openrdf.query.BooleanQuery;
@@ -51,16 +45,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.RDFParserFactory;
-import org.openrdf.rio.RDFParserRegistry;
-import org.openrdf.rio.n3.N3ParserFactory;
-import org.openrdf.rio.ntriples.NTriplesParserFactory;
-import org.openrdf.rio.rdfxml.RDFXMLParserFactory;
-import org.openrdf.rio.trig.TriGParserFactory;
-import org.openrdf.rio.trix.TriXParserFactory;
-import org.openrdf.rio.turtle.TurtleParserFactory;
+import org.openrdf.rio.helpers.BasicParserSettings;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,82 +69,6 @@ implements SesameBackend<VALUE> {
 
   public AbstractSesameBackend(QueryResultProcessor<VALUE> qrp) {
     this.qrp = qrp;
-    initSesameRDFParsers();
-  }
-
-  private final void initSesameRDFParsers() {
-    /* N3 */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.N3;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new N3ParserFactory().getParser();
-      }
-    });
-    /* NTRIPLES */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.NTRIPLES;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new NTriplesParserFactory().getParser();
-      }
-    });
-    /* RDFXML */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.RDFXML;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new RDFXMLParserFactory().getParser();
-      }
-    });
-    /* TRIG */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.TRIG;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new TriGParserFactory().getParser();
-      }
-    });
-    /* TRIX */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.TRIX;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new TriXParserFactory().getParser();
-      }
-    });
-    /* TURTLE */
-    RDFParserRegistry.getInstance().add(new RDFParserFactory() {
-      @Override
-      public RDFFormat getRDFFormat() {
-        return RDFFormat.TURTLE;
-      }
-
-      @Override
-      public RDFParser getParser() {
-        return new TurtleParserFactory().getParser();
-      }
-    });
   }
 
   @Override
@@ -173,7 +82,9 @@ implements SesameBackend<VALUE> {
     }
     try {
       con = repository.getConnection();
-      con.setAutoCommit(true);
+      con.getParserConfig().set(BasicParserSettings.VERIFY_DATATYPE_VALUES, false);
+      con.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, false);
+      con.getParserConfig().set(BasicParserSettings.NORMALIZE_DATATYPE_VALUES, false);
     } catch (RepositoryException e) {
       logger.error("Unable to get a connection to the repository", e);
       con = null;
@@ -183,14 +94,13 @@ implements SesameBackend<VALUE> {
 
   @Override
   public QueryIterator<VALUE> submit(String query)
-      throws SesameBackendException {
+  throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
 
   @Override
-  public QueryIterator<VALUE> submit(
-      QueryResultProcessor<VALUE> qrp, String query)
-      throws SesameBackendException {
+  public QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query)
+  throws SesameBackendException {
     return new SesameQueryIterator(qrp, query);
   }
 
@@ -207,7 +117,7 @@ implements SesameBackend<VALUE> {
         con.close();
       }
     } catch (RepositoryException e) {
-      logger.error("{}", e);
+      logger.error("", e);
       throw new SesameBackendException(e);
     } finally {
       try {
@@ -215,91 +125,49 @@ implements SesameBackend<VALUE> {
           con.getRepository().shutDown();
         }
       } catch (RepositoryException e) {
-        logger.error("{}", e);
+        logger.error("", e);
         throw new SesameBackendException(e);
       }
     }
   }
 
-  private void addDirectoryToRepository(File path, String baseURI,
-      RDFFormat format, Resource... contexts) throws SesameBackendException {
-    if (path.exists()) {
-      File[] files = path.listFiles();
-      for (int i = 0; i < files.length; i++) {
-        if (!files[i].exists()) {
-          throw new IllegalArgumentException("The file " + files[i]
-              + " doesn't exist");
-        }
-        if (files[i].isDirectory()) {
-          addDirectoryToRepository(files[i], baseURI, format, contexts);
-        } else {
-          logger.info("ADD FILE: " + files[i] + " (" + format + ")");
-          try {
-            if (files[i].getAbsolutePath().endsWith(".gz")) {
-              final InputStream compressedFile = new GZIPInputStream(
-                  new BufferedInputStream(new FileInputStream(files[i])));
-              getConnection().add(compressedFile, baseURI, format, contexts);
-            } else {
-              getConnection().add(files[i], baseURI, format, contexts);
-            }
-            logger.info("FILE ADDED: " + getConnection().size(contexts)
-                + " statements");
-          } catch (RDFParseException e) {
-            logger.error("", e);
-            throw new SesameBackendException(e);
-          } catch (RepositoryException e) {
-            logger.error("", e);
-            throw new SesameBackendException(e);
-          } catch (IOException e) {
-            logger.error("", e);
-            throw new SesameBackendException(e);
-          }
-        }
-      }
-    }
-  }
-
-  @Override
-  public void addToRepository(File path, RDFFormat format,
-      Resource... contexts) throws SesameBackendException {
+  private void doAddToRepository(File path, RDFFormat format, Resource... contexts)
+  throws SesameBackendException{
     final String baseURI = "";
 
+    try {
+      if (path.isFile()) {
+        logger.info("Number of stamement :" + con.size(contexts));
+        logger.info("Processing [{}] ({})", path, format);
+        con.add(path, baseURI, format, contexts);
+        logger.info("Total statements: {}", con.size(contexts));
+      } else if (path.isDirectory()) {
+        for (File file : path.listFiles()) {
+          doAddToRepository(file, format, contexts);
+        }
+      }
+    } catch (Exception e) {
+      logger.error("", e);
+      throw new SesameBackendException(e);
+    }
+  }
+  @Override
+  public void addToRepository(File path, RDFFormat format, Resource... contexts)
+  throws SesameBackendException {
     if (!path.exists()) {
       throw new IllegalArgumentException("The file " + path + " doesn't exist");
     }
     try {
-      if (path.getAbsolutePath().endsWith(".gz")) {
-        final InputStream compressedFile = new GZIPInputStream(
-            new BufferedInputStream(new FileInputStream(path)));
-
-        logger.info("ADD FILE: " + path + " (" + format + ")");
-        getConnection().add(compressedFile, baseURI, format, contexts);
-        logger.info("FILE ADDED: " + getConnection().size(contexts)
-            + " statements");
-      } else {
-        if (path.isFile()) {
-          logger
-              .info("Number of stamement :" + getConnection().size(contexts));
-          logger.info("ADD FILE: " + path + " (" + format + ")");
-          getConnection().add(path, baseURI, format, contexts);
-          logger.info("FILE ADDED: " + getConnection().size(contexts)
-              + " statements");
-        } else if (path.isDirectory()) { /* Directory */
-          addDirectoryToRepository(path, baseURI, format, contexts);
-        }
-      }
-    } catch (FileNotFoundException e) {
-      logger.error("", e);
-      throw new SesameBackendException(e);
-    } catch (IOException e) {
-      logger.error("", e);
-      throw new SesameBackendException(e);
-    } catch (RDFParseException e) {
-      logger.error("", e);
-      throw new SesameBackendException(e);
+      con.begin();
+      doAddToRepository(path, format, contexts);
+      con.commit();
     } catch (RepositoryException e) {
       logger.error("", e);
-      throw new SesameBackendException(e);
+      try {
+        con.rollback();
+      } catch (RepositoryException e1) {
+        logger.error("", e);
+      }
     }
   }
 
@@ -530,7 +398,7 @@ implements SesameBackend<VALUE> {
         try {
           results.close();
         } catch (QueryEvaluationException e) {
-          logger.error("{}", e);
+          logger.error("", e);
         }
       }
     }
