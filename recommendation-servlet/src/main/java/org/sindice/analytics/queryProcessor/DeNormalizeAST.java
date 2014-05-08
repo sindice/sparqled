@@ -17,9 +17,6 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ASTVisitorBase;
 import org.openrdf.sindice.query.parser.sparql.BlankNodeVarProcessor;
@@ -27,14 +24,11 @@ import org.openrdf.sindice.query.parser.sparql.PrefixDeclProcessor;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTBasicGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphGraphPattern;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTGraphPatternGroup;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTIRI;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTOptionalGraphPattern;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTQName;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTriplesSameSubjectPath;
 import org.openrdf.sindice.query.parser.sparql.ast.Node;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
-import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 /**
@@ -49,32 +43,10 @@ public final class DeNormalizeAST {
   public static void process(ASTQueryContainer ast)
   throws MalformedQueryException, VisitorException {
     final DeNormalizeASTVisitor deNorm = new DeNormalizeASTVisitor();
-    final DeNormalizeQualifiedName qname = new DeNormalizeQualifiedName();
 
-    final Map<String, String> prefixes = PrefixDeclProcessor.process(ast);
-    qname.visit(ast, prefixes);
+    PrefixDeclProcessor.process(ast);
     BlankNodeVarProcessor.process(ast);
     deNorm.visit(ast, null);
-  }
-
-  private static class DeNormalizeQualifiedName extends ASTVisitorBase {
-
-    @Override
-    public Object visit(ASTQName node, Object data)
-    throws VisitorException {
-      final Map<String, String> prefixes = (Map<String, String>) data;
-
-      for (Entry<String, String> p : prefixes.entrySet()) {
-        if (node.getValue().startsWith(p.getKey())) {
-          final ASTIRI iri = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-          iri.setValue(node.getValue().replaceFirst(p.getKey() + ":", p.getValue()));
-          node.jjtReplaceWith(iri);
-          break;
-        }
-      }
-      return super.visit(node, data);
-    }
-
   }
 
   private static class DeNormalizeASTVisitor extends ASTVisitorBase {
