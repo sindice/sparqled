@@ -15,4 +15,4 @@ The application must be configured to interact with [2].
 Update the path to the `sparqled.war` file and replace `BASEDIR` with the path to the sparqled root folder.
 2. The file `config.xml` is already configured for [2].
 3. Copy `irefindex.xml` to `$CATALINA_HOME/conf/Catalina/localhost`.
-4. The application can be accessed at http://localhost:8080/irefindex/
+4. The application can be accessed at [http://localhost:8080/irefindex/](http://localhost:8080/irefindex/).
