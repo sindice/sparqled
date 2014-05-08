@@ -40,9 +40,6 @@ public final class ASTProcessorUtil {
                                                        Node object) {
     final ASTTriplesSameSubjectPath triple = new ASTTriplesSameSubjectPath(SyntaxTreeBuilderTreeConstants.JJTTRIPLESSAMESUBJECTPATH);
     final ASTPropertyListPath pListPath = new ASTPropertyListPath(SyntaxTreeBuilderTreeConstants.JJTPROPERTYLISTPATH);
-    final ASTPathAlternative pathAlt = new ASTPathAlternative(SyntaxTreeBuilderTreeConstants.JJTPATHALTERNATIVE);
-    final ASTPathSequence pathSeq = new ASTPathSequence(SyntaxTreeBuilderTreeConstants.JJTPATHSEQUENCE);
-    final ASTPathElt pathElt = new ASTPathElt(SyntaxTreeBuilderTreeConstants.JJTPATHELT);
     final ASTObjectList objList = new ASTObjectList(SyntaxTreeBuilderTreeConstants.JJTOBJECTLIST);
 
     // Subject
@@ -50,7 +47,12 @@ public final class ASTProcessorUtil {
     // Predicate
     if (predicate instanceof ASTVar) { // VerbSimple
       pListPath.jjtAppendChild(predicate);
-    } else { // VerbPath
+    } else if (predicate instanceof ASTPathAlternative) { // Existing VerbPath
+      pListPath.jjtAppendChild(predicate);
+    } else { // Create VerbPath
+      final ASTPathAlternative pathAlt = new ASTPathAlternative(SyntaxTreeBuilderTreeConstants.JJTPATHALTERNATIVE);
+      final ASTPathSequence pathSeq = new ASTPathSequence(SyntaxTreeBuilderTreeConstants.JJTPATHSEQUENCE);
+      final ASTPathElt pathElt = new ASTPathElt(SyntaxTreeBuilderTreeConstants.JJTPATHELT);
       pListPath.jjtAppendChild(pathAlt);
       pathAlt.jjtAppendChild(pathSeq);
       pathSeq.jjtAppendChild(pathElt);

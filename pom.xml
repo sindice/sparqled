@@ -24,8 +24,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   </scm>
 
   <properties>
-    <sesame.version>2.6.10</sesame.version>
-    <pof.version>2.6.10</pof.version>
+    <sesame.version>2.7.11</sesame.version>
     <project.source.charset>UTF-8</project.source.charset>
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version.source>1.6</java.version.source>

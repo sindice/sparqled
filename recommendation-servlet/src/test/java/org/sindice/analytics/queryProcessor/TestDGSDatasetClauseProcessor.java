@@ -56,10 +56,7 @@ public class TestDGSDatasetClauseProcessor {
                                 "     TriplesSameSubjectPath\n" +
                                 "      Var (s)\n" +
                                 "      PropertyListPath\n" +
-                                "       PathAlternative\n" +
-                                "        PathSequence\n" +
-                                "         PathElt\n" +
-                                "          Var (?POF)\n" +
+                                "       Var (?POF)\n" +
                                 "       ObjectList\n" +
                                 "        Var (o)";
 
@@ -87,10 +84,7 @@ public class TestDGSDatasetClauseProcessor {
                                 "     TriplesSameSubjectPath\n" +
                                 "      Var (s)\n" +
                                 "      PropertyListPath\n" +
-                                "       PathAlternative\n" +
-                                "        PathSequence\n" +
-                                "         PathElt\n" +
-                                "          Var (?POF)\n" +
+                                "       Var (?POF)\n" +
                                 "       ObjectList\n" +
                                 "        Var (o)";
 
