@@ -9,7 +9,7 @@ You must have downloaded or created the binaries. If not, follow those [steps](h
 
 ## Create the Graph Schema
 
-The data in the tarball `swdf.tar.bz2` is in N-Triples format. The graph schema has been created already using the [hadoop-based](https://github.com/sindice/summary) implementation of the graph schema computation, and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
+The data in the tarball `swdf.tar.bz2` is in `N-Triples` format. The graph schema has been created already using the [hadoop-based](https://github.com/sindice/summary) implementation of the graph schema computation, and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
 
 ## Deploy SPARQLed
 
