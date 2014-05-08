@@ -17,16 +17,21 @@ The data in the tarball `swdf.tar.bz2` is in `N-Triples` format. The graph schem
 ```sh
 # Uncompress the bzip2 tarball
 42sh$ tar xjvf swdf.tar.bz2
-# Create the Native repository into the folder `native` with the statements in the files under `./swdf/` folder.
+# Create the Native repository into the folder `native` with the statements
+# in the files under `./swdf/` folder.
 # The statements are added to the named graph `http://data.semanticweb.org/`.
-42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI --format N-TRIPLES --type NATIVE --args native --contexts http://data.semanticweb.org/ --add-rdf ./swdf/
+42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
+                --format N-TRIPLES --type NATIVE --args native
+                --contexts http://data.semanticweb.org/ --add-rdf ./swdf/
 ```
 2. Add the graph schema to the repository.
 ```sh
 # Uncompress the data
 42sh$ bunzip2 swdf-types.nq.bz2
 # Add the statements to the named graph `http://data.semanticweb.org/summary`.
-42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI --format N-QUADS --type NATIVE --args native-summary --contexts http://data.semanticweb.org/summary --add-rdf ./swdf-types.nq
+42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
+                --format N-QUADS --type NATIVE --args native-summary
+                --contexts http://data.semanticweb.org/summary --add-rdf ./swdf-types.nq
 ```
 3. Update the path to the `native` folder in `config.xml`.
 4. Update the paths to `sparqled.war` and to the sparqled home `demo/swdf/` in `swdf.xml`.
