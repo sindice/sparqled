@@ -128,6 +128,21 @@ public class TestSesameBackend {
     return Arrays.asList(data);
   }
 
+  @Test
+  public void testAddFormats() throws Exception {
+    final Resource cxt = NTriplesUtil.parseResource("<http://lists.w3.org>", new MemValueFactory());
+
+    // each file contain the same statments, they are then overwritten
+    backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.NTRIPLES, cxt);
+    assertEquals(5, backend.getConnection().size());
+    backend.addToRepository(new File("./src/test/resources/tbl.ttl.gz"), RDFFormat.TURTLE, cxt);
+    assertEquals(5, backend.getConnection().size());
+    backend.addToRepository(new File("./src/test/resources/tbl.rdf.gz"), RDFFormat.RDFXML, cxt);
+    assertEquals(5, backend.getConnection().size());
+    backend.addToRepository(new File("./src/test/resources/tbl.nq.gz"), RDFFormat.NQUADS);
+    assertEquals(5, backend.getConnection().size());
+  }
+
   @Test(expected = SesameBackendException.class)
   public void testAddWrongFormat() throws Exception {
     backend.addToRepository(new File("./src/test/resources/tbl.nt.gz"), RDFFormat.RDFXML);
