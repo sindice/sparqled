@@ -76,10 +76,7 @@ public class TestPointOfFocusProcessor {
                                 "     TriplesSameSubjectPath\n" +
                                 "      Var (s)\n" +
                                 "      PropertyListPath\n" +
-                                "       PathAlternative\n" +
-                                "        PathSequence\n" +
-                                "         PathElt\n" +
-                                "          Var (POF)\n" +
+                                "       Var (POF)\n" +
                                 "       ObjectList\n" +
                                 "        Var (o)";
 
@@ -176,10 +173,7 @@ public class TestPointOfFocusProcessor {
                                 "     TriplesSameSubjectPath\n" +
                                 "      Var (s)\n" +
                                 "      PropertyListPath\n" +
-                                "       PathAlternative\n" +
-                                "        PathSequence\n" +
-                                "         PathElt\n" +
-                                "          Var (POF)\n" +
+                                "       Var (POF)\n" +
                                 "       ObjectList\n" +
                                 "        Var (o)";
 
@@ -211,10 +205,7 @@ public class TestPointOfFocusProcessor {
                                 "     TriplesSameSubjectPath\n" +
                                 "      Var (s)\n" +
                                 "      PropertyListPath\n" +
-                                "       PathAlternative\n" +
-                                "        PathSequence\n" +
-                                "         PathElt\n" +
-                                "          Var (POF)\n" +
+                                "       Var (POF)\n" +
                                 "       ObjectList\n" +
                                 "        Var (o)\n" +
                                 "  GroupClause\n" +

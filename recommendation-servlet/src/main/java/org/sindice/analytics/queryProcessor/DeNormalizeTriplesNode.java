@@ -24,7 +24,7 @@ import org.openrdf.sindice.query.parser.sparql.ASTVisitorBase;
 import org.openrdf.sindice.query.parser.sparql.BlankNodeVarProcessor;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTBlankNodePropertyList;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTObjectList;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyList;
+import org.openrdf.sindice.query.parser.sparql.ast.ASTPropertyListPath;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTTriplesSameSubjectPath;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTVar;
 import org.openrdf.sindice.query.parser.sparql.ast.Node;
@@ -48,7 +48,7 @@ public final class DeNormalizeTriplesNode {
    */
   public static List<ASTTriplesSameSubjectPath> process(ASTTriplesSameSubjectPath node)
   throws VisitorException {
-    final ArrayList<ASTTriplesSameSubjectPath> group = new ArrayList<ASTTriplesSameSubjectPath>();
+    final List<ASTTriplesSameSubjectPath> group = new ArrayList<ASTTriplesSameSubjectPath>();
 
     // expand BlankNodePropertyList
     node.jjtAccept(new ExpandBlankNodePropertyListVisitor(), group);
@@ -58,7 +58,9 @@ public final class DeNormalizeTriplesNode {
     return group;
   }
 
-  // create the triples patterns of a {@link BlankNodePropertyList}
+  /**
+   * Create the triples patterns of a {@link ASTBlankNodePropertyList}
+   */
   private static class ExpandBlankNodePropertyListVisitor extends ASTVisitorBase {
 
     private ASTVar anonSubject;
@@ -69,24 +71,28 @@ public final class DeNormalizeTriplesNode {
       anonSubject = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
       anonSubject.setName(node.getVarName());
       anonSubject.setAnonymous(true);
-      return super.visit(node, data);
+      data = super.visit(node, data);
+      anonSubject = null;
+      return data;
     }
 
     @Override
-    public Object visit(ASTPropertyList node, Object data)
+    public Object visit(ASTPropertyListPath node, Object data)
     throws VisitorException {
-      final ArrayList<Node> group = (ArrayList<Node>) data;
-      final ASTObjectList objList = node.getObjectList();
+      if (anonSubject != null) { // Check if this ASTPropertyListPath node is a descendant of ASTBlankNodePropertyList
+        final List<Node> group = (List<Node>) data;
+        final ASTObjectList objList = node.getObjectList();
 
-      for (int i = 0; i < objList.jjtGetNumChildren(); i++) {
-        if (objList.jjtGetChild(i) instanceof ASTBlankNodePropertyList) {
-          final ASTBlankNodePropertyList bn = (ASTBlankNodePropertyList) objList.jjtGetChild(i);
-          final ASTVar var = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-          var.setName(bn.getVarName());
-          var.setAnonymous(true);
-          group.add(ASTProcessorUtil.createTriple(anonSubject, node.getVerb(), var));
-        } else {
-          group.add(ASTProcessorUtil.createTriple(anonSubject, node.getVerb(), objList.jjtGetChild(i)));
+        for (int i = 0; i < objList.jjtGetNumChildren(); i++) {
+          if (objList.jjtGetChild(i) instanceof ASTBlankNodePropertyList) {
+            final ASTBlankNodePropertyList bn = (ASTBlankNodePropertyList) objList.jjtGetChild(i);
+            final ASTVar var = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
+            var.setName(bn.getVarName());
+            var.setAnonymous(true);
+            group.add(ASTProcessorUtil.createTriple(anonSubject, node.getVerb(), var));
+          } else {
+            group.add(ASTProcessorUtil.createTriple(anonSubject, node.getVerb(), objList.jjtGetChild(i)));
+          }
         }
       }
       return super.visit(node, data);

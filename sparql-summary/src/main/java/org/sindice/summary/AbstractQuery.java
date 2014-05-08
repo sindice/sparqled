@@ -83,14 +83,12 @@ abstract public class AbstractQuery {
       initDump("/tmp/Graph-Summary-out/out" + r);
       _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" + r);
     }
-    _logger.info("LAUNCH QUERY");
     QueryIterator<BindingSet> queryIt = _repository.submit(query);
     if (_pagination >= 0)
       queryIt.setPagination(_pagination);
     while (queryIt.hasNext()) {
       _dump.dumpRDFNode(queryIt.next());
     }
-    _logger.info("END QUERY");
   }
 
   /**
@@ -108,15 +106,12 @@ abstract public class AbstractQuery {
       initDump("/tmp/Graph-Summary-out/out" + r);
       _logger.info("Dump initializes by default at /tmp/Graph-Summary-out/out" + r);
     }
-
-    _logger.info("LAUNCH QUERY");
     QueryIterator<BindingSet> queryIt = _repository.submit(query);
     if (_pagination >= 0)
       queryIt.setPagination(_pagination);
     while (queryIt.hasNext()) {
       _dump.dumpRDFPred(queryIt.next());
     }
-    _logger.info("END QUERY");
   }
 
   /**
@@ -218,7 +213,7 @@ abstract public class AbstractQuery {
     try {
       _repository.closeConnection();
     } catch (SesameBackendException e) {
-      _logger.error(e.getMessage());
+      _logger.error("", e);
     }
     _dump.closeRDF();
   }

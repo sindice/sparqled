@@ -129,14 +129,18 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
+
+      ast = SyntaxTreeBuilder.parseQuery(q);
+
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
     }
-
-    ast = SyntaxTreeBuilder.parseQuery(q);
-
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
   }
 
   @Test
@@ -147,14 +151,18 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
+  
+      ast = SyntaxTreeBuilder.parseQuery(q);
+
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
     }
-
-    ast = SyntaxTreeBuilder.parseQuery(q);
-
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
   }
 
   @Test
@@ -165,13 +173,17 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
-    ast = SyntaxTreeBuilder.parseQuery(q);
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
+      ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -182,13 +194,17 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
-    ast = SyntaxTreeBuilder.parseQuery(q);
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
+      ast = SyntaxTreeBuilder.parseQuery(q);
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -375,12 +391,16 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -392,12 +412,16 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -409,12 +433,16 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -426,12 +454,16 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
-    }
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
 
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
+    }
   }
 
   @Test
@@ -573,11 +605,15 @@ public class TestDeNormalizeASTVisitor {
     String expectedAst = "";
     String line;
 
-    while ((line = r.readLine()) != null) {
-      expectedAst += line + "\n";
+    try {
+      while ((line = r.readLine()) != null) {
+        expectedAst += line + "\n";
+      }
+      DeNormalizeAST.process(ast);
+      assertEquals(expectedAst, ast.dump("") + "\n");
+    } finally {
+      r.close();
     }
-    DeNormalizeAST.process(ast);
-    assertEquals(expectedAst, ast.dump("") + "\n");
   }
 
 }

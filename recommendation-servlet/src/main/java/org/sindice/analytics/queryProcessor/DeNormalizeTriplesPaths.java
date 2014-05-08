@@ -48,7 +48,7 @@ public final class DeNormalizeTriplesPaths {
 
   public static List<Node> process(ASTTriplesSameSubjectPath node)
   throws VisitorException {
-    final ArrayList<Node> group = new ArrayList<Node>();
+    final List<Node> group = new ArrayList<Node>();
 
     // get the subject: already denormalized
     subject = node.jjtGetChild(0);

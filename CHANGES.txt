@@ -6,6 +6,7 @@ Improvements
 * [GH-12] Improve pagination
 * [GH-13] Split the AnalyticsVocab class into one class per vocabulary
 * [GH-33] Add sesame query parser as submodule
+* [GH-45] Update sesame dependency to 2.7.11
 
 New Features
 
