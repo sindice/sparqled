@@ -19,3 +19,4 @@ Tasks
 * [GH-37] Remove Virtuoso sesame plugin
 * [GH-40] Clean sesame backend cli
 * [GH-42] Remove unused modules
+* [GH-47] Add NQuads data format

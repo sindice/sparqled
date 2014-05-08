@@ -56,13 +56,12 @@ import org.slf4j.LoggerFactory;
 public class SparqlQueryServlet
 extends HttpServlet {
 
-  private static final long                         serialVersionUID = 4137296200305461786L;
+  private static final long         serialVersionUID = 4137296200305461786L;
 
-  private static final Logger                       logger           = LoggerFactory
-                                                                     .getLogger(SparqlQueryServlet.class);
+  private static final Logger       logger           = LoggerFactory.getLogger(SparqlQueryServlet.class);
 
-  private static SesameBackend<BindingSet> _repository;
-  private PreProcessing                             preprocessing    = null;
+  private SesameBackend<BindingSet> _repository;
+  private PreProcessing             preprocessing    = null;
 
   /**
    * Initialize the proxy servlet
@@ -86,10 +85,8 @@ extends HttpServlet {
         .getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
                       SparqlQueryServletListener.PREPROCESSING_ARGS);
         preprocessing = (PreProcessing) Class.forName(prep).newInstance();
-        if (preprocessing.getVarPrefix() == null ||
-            preprocessing.getVarPrefix().isEmpty() ||
-            preprocessing.getVarSuffix() == null ||
-            preprocessing.getVarSuffix().isEmpty()) {
+        if (preprocessing.getVarPrefix() == null || preprocessing.getVarPrefix().isEmpty() ||
+            preprocessing.getVarSuffix() == null || preprocessing.getVarSuffix().isEmpty()) {
           throw new RuntimeException("The PreProcessing Class must return non empty prefix/suffix");
         }
         preprocessing.init(prepArgs);
@@ -103,7 +100,6 @@ extends HttpServlet {
       throw new RuntimeException(e);
     }
 
-    // SPARQL endpoint with graph summary
     final BackendType backend = BackendType.valueOf((String) config
     .getServletContext().getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
                                       SparqlQueryServletListener.BACKEND));
@@ -112,12 +108,11 @@ extends HttpServlet {
                   SparqlQueryServletListener.BACKEND_ARGS);
 
     // create repository
-    _repository = SesameBackendFactory.getDgsBackend(backend,
-                                                     backendArgs);
+    _repository = SesameBackendFactory.getDgsBackend(backend, backendArgs);
     try {
       _repository.initConnection();
     } catch (SesameBackendException e) {
-      logger.error("{}", e);
+      logger.error("", e);
     }
   }
 
@@ -127,7 +122,7 @@ extends HttpServlet {
     try {
       _repository.closeConnection();
     } catch (SesameBackendException e) {
-      logger.error("{}", e);
+      logger.error("", e);
     }
     super.destroy();
   }
