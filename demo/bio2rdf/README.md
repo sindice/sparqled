@@ -5,7 +5,11 @@ This demo uses the SPARQL endpoint of [iRefIndex](http://download.bio2rdf.org/re
 ## Requirements
 
 You must have a Tomcat instance up and running.
-You must have downloaded or created the binaries. If not, follow those [steps](https://github.com/sindice/sparqled/wiki/Getting-Binaries).
+You must have downloaded or created the binaries. If not, follow those [steps](https://github.com/sindice/sparqled/wiki/Getting-Binaries). In this demo, we will use the `sparqled.war` binary.
+
+## Create the Graph Schema
+
+The graph schema of **iRefIndex** is already loaded into the SPARQL endpoint of **iRefIndex**, under the named graph `http://sindice.com/analytics`.
 
 ## Deploy SPARQLed
 

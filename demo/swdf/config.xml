@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+
+    <recommender>
+        <backend>NATIVE</backend>
+        <backendArgs>/path/to/native-summary</backendArgs>
+        <graphSummaryGraph>http://data.semanticweb.org/summary</graphSummaryGraph>
+    </recommender>
+
+    <proxy>
+        <backend>NATIVE</backend>
+        <backendArgs>/path/to/native</backendArgs>
+    </proxy>
+
+</configuration>

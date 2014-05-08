@@ -30,7 +30,7 @@
                   <resource>META-INF/services/org.openrdf.rio.RDFWriterFactory</resource>
                 </transformer>
               </transformers>
-            </configuration>
+        </configuration>
           </execution>
         </executions>
       </plugin>
