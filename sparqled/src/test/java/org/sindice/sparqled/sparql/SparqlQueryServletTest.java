@@ -20,10 +20,10 @@ package org.sindice.sparqled.sparql;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,9 +31,9 @@ import java.util.Collection;
 import javax.servlet.ServletException;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -47,6 +47,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.sail.Sail;
 import org.openrdf.sail.memory.MemoryStore;
 import org.openrdf.sail.nativerdf.NativeStore;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
@@ -60,24 +61,24 @@ import org.slf4j.LoggerFactory;
 @RunWith(value = Parameterized.class)
 public class SparqlQueryServletTest {
 
+  private static final Logger logger   = LoggerFactory.getLogger(SparqlQueryServletTest.class);
+  private static final String dgsInput = "./src/test/resources/QueryBackend/test.nt";
+
+  private final ServletTester aseTester;
+  private final String        aseBaseUrl;
+  private final HttpClient    client;
+
   @Parameters
   public static Collection<Object[]> data() {
     Object[][] data = new Object[][] {
-            { BackendType.NATIVE, "/tmp/test-unit-native/", "", "" },
-            { BackendType.MEMORY, "/tmp/test-unit-memory/", "", "" }
+            { BackendType.NATIVE, "/tmp/test-unit-native/" },
+            { BackendType.MEMORY, "/tmp/test-unit-memory/" }
     };
     return Arrays.asList(data);
   }
 
-  private static final String dgsInput = "./src/test/resources/QueryBackend/test.nt";
-
-  private static ServletTester aseTester;
-  private static String aseBaseUrl;
-  private static HttpClient client = null;
-
-  public SparqlQueryServletTest(BackendType backend, String backendArgs,
-          String backendArgsHTTP, String backendArgsHTTP2) throws Exception {
-
+  public SparqlQueryServletTest(BackendType backend, String backendArgs)
+  throws Exception {
     client = new HttpClient();
 
     aseTester = new ServletTester();
@@ -103,80 +104,54 @@ public class SparqlQueryServletTest {
 
   @AfterClass
   public static void clean() {
-    File path = new File("/tmp/test-unit-memory/");
-    deleteDirectory(path);
-    path = new File("/tmp/test-unit-native/");
-    deleteDirectory(path);
-  }
-
-  private static Boolean deleteDirectory(File path) {
-    Boolean resultat = true;
-    if (path.exists()) {
-      File[] files = path.listFiles();
-      for (int i = 0; i < files.length; i++) {
-        if (files[i].isDirectory()) {
-          resultat &= deleteDirectory(files[i]);
-        } else {
-          resultat &= files[i].delete();
-        }
-      }
-    }
-    resultat &= path.delete();
-    return (resultat);
+    FileUtils.deleteQuietly(new File("/tmp/test-unit-memory/"));
+    FileUtils.deleteQuietly(new File("/tmp/test-unit-native/"));
   }
 
   @BeforeClass
   public static void initRepository() throws ServletException {
-    Logger logger = LoggerFactory.getLogger(SparqlQueryServletTest.class);
-    logger.debug("CREATE MEMORY");
-    final SailRepository memoryRepository = new SailRepository(
-            new MemoryStore(new File("/tmp/test-unit-memory/")));
-    try {
-      final BufferedInputStream dgsInputStream = new BufferedInputStream(
-              new FileInputStream(dgsInput));
-      AnalyticsClassAttributes
-              .initClassAttributes(new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
+    AnalyticsClassAttributes.initClassAttributes(new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
 
-      memoryRepository.initialize();
-      memoryRepository.getConnection().add(dgsInputStream, "",
-              RDFFormat.NTRIPLES);
-      memoryRepository.shutDown();
-      logger.debug(" MEMORY CLOSE");
-    } catch (RDFParseException e) {
-      e.printStackTrace();
-    } catch (RepositoryException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    logger.debug("CREATE MEMORY");
+    createRepository(new MemoryStore(new File("/tmp/test-unit-memory/")));
+    logger.debug("MEMORY CLOSE");
 
     logger.debug("CREATE Native");
-    final SailRepository nativeRepository = new SailRepository(
-            new NativeStore(new File("/tmp/test-unit-native/")));
+    createRepository(new NativeStore(new File("/tmp/test-unit-native/")));
+    logger.debug("NATIVE CLOSE");
+  }
+
+  private static void createRepository(Sail sail) {
+    final SailRepository repo = new SailRepository(sail);
     try {
-      final BufferedInputStream dgsInputStream = new BufferedInputStream(
-              new FileInputStream(dgsInput));
-      AnalyticsClassAttributes
-              .initClassAttributes(new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
+      final InputStream dgsInputStream = new FileInputStream(dgsInput);
 
-      nativeRepository.initialize();
-      nativeRepository.getConnection().add(dgsInputStream, "",
-              RDFFormat.NTRIPLES);
-      nativeRepository.shutDown();
-      logger.debug("NATIVE CLOSE");
+      try {
+        repo.initialize();
+        repo.getConnection().add(dgsInputStream, "", RDFFormat.NTRIPLES);
+      } finally {
+        try {
+          dgsInputStream.close();
+        } finally {
+          try {
+            repo.getConnection().close();
+          } finally {
+            repo.shutDown();
+          }
+        }
+      }
     } catch (RDFParseException e) {
-      e.printStackTrace();
+      logger.error("", e);
     } catch (RepositoryException e) {
-      e.printStackTrace();
+      logger.error("", e);
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error("", e);
     }
-
   }
 
   @Test
-  public void testQuery() throws IllegalArgumentException, HttpException,
-          IOException {
+  public void testQuery()
+  throws Exception {
     final String query = "SELECT ?p WHERE { ?s ?p ?o . }LIMIT 4";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -203,8 +178,8 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryOrdered() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryOrdered()
+  throws Exception {
     final String query = "SELECT ?s ?p WHERE { ?s ?p ?o . }ORDER BY ?s ?p";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -241,13 +216,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryPagination() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryPagination()
+  throws Exception {
     final String query = "SELECT ?p WHERE { ?s ?p ?o . } LIMIT 2 OFFSET 2";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -267,13 +241,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQuerySelectStar() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQuerySelectStar()
+  throws Exception {
     final String query = "SELECT * WHERE { ?s ?p ?o . } LIMIT 1";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
@@ -292,13 +265,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryFrom() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryFrom()
+  throws Exception {
     final String query = "SELECT ?p FROM <http://rottentomatoes.com> WHERE { ?s ?p ?o . } LIMIT 4";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -314,13 +286,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryFromAndPagination() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryFromAndPagination()
+  throws Exception {
     final String query = "SELECT ?s ?p FROM <http://rottentomatoes.com> WHERE { ?s ?p ?o . } LIMIT 2 OFFSET 2";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -336,13 +307,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryEmptySelectStar() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryEmptySelectStar()
+  throws Exception {
     final String query = "SELECT * WHERE { ?s <http://purl.org/dc/terms/title> ?o }LIMIT 10";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -358,13 +328,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryInvalidSelect() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryInvalidSelect()
+  throws Exception {
     final String query = "SELECT ?p WHERE { ?s <http://purl.org/dc/terms/title> ?o }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -380,13 +349,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testQueryInvalid() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testQueryInvalid()
+  throws Exception {
     final String query = "SELECT ?p WHERE { ?s ?o }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -414,13 +382,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testSubmitQueryInvalid() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testSubmitQueryInvalid()
+  throws Exception {
     final String query = "SELECT ?p WHERE { ?s <INVALID> ?o }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -436,13 +403,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testASK() throws IllegalArgumentException, HttpException,
-          IOException {
+  public void testASK()
+  throws Exception {
     final String query = "ASK WHERE { ?s <http://opengraphprotocol.org/schema/firstName> ?o . }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -456,13 +422,12 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testASK2() throws IllegalArgumentException, HttpException,
-          IOException {
+  public void testASK2()
+  throws Exception {
     final String query = "ASK WHERE { ?s <http://purl.org/dc/terms/NOTHING> ?o . }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -476,14 +441,13 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testConstruct() throws IllegalArgumentException,
-          HttpException, IOException {
+  public void testConstruct()
+  throws Exception {
     final String query = "CONSTRUCT { ?product ?p ?o }  WHERE { "
             + "?product ?p ?o ." + "} LIMIT 2";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -506,15 +470,14 @@ public class SparqlQueryServletTest {
   }
 
   @Test
-  public void testDescribe() throws IllegalArgumentException, HttpException,
-          IOException {
+  public void testDescribe()
+  throws Exception {
     final String query = "DESCRIBE ?s WHERE { "
             + "?s <http://opengraphprotocol.org/schema/firstName> ?o "
             + "} LIMIT 1";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
