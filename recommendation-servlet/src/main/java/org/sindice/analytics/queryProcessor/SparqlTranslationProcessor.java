@@ -294,8 +294,6 @@ public final class SparqlTranslationProcessor {
       source.setValue(DataGraphSummaryVocab.EDGE_SOURCE.toString());
       final ASTIRI target = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
       target.setValue(DataGraphSummaryVocab.EDGE_TARGET.toString());
-      final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      origin.setValue(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString());
 
       // Check if the object variable is a leaf or not
       isLeaf.setVar((ASTVar) node.jjtGetChild(1).jjtGetChild(1).jjtGetChild(0));
@@ -344,6 +342,9 @@ public final class SparqlTranslationProcessor {
       }
       // edge origin
       if (dataset != null) {
+        final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
+        origin.setValue(DataGraphSummaryVocab.EDGE_PUBLISHED_IN.toString());
+
         final ASTTriplesSameSubjectPath t4 = ASTProcessorUtil.createTriple(s, origin, dataset);
         bgp.jjtAppendChild(t4);
         if (datasetEdgePOF(data, node.jjtGetChild(0), dataset, bgp)) {
@@ -358,11 +359,12 @@ public final class SparqlTranslationProcessor {
       final List<String> pofMetadata = (List<String>) data;
       final ASTIRI label = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
       label.setValue(DataGraphSummaryVocab.LABEL.toString());
-      final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
-      origin.setValue(DataGraphSummaryVocab.DOMAIN_URI.toString());
 
       // Class origin
       if (dataset != null) { // the dataset is the POF
+        final ASTIRI origin = new ASTIRI(SyntaxTreeBuilderTreeConstants.JJTIRI);
+        origin.setValue(DataGraphSummaryVocab.DOMAIN_URI.toString());
+
         final ASTTriplesSameSubjectPath t1 = ASTProcessorUtil.createTriple(node.jjtGetChild(0), origin, dataset);
         bgp.jjtAppendChild(t1);
         if (datasetClassPOF(data, node.jjtGetChild(0), dataset, bgp)) {
