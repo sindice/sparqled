@@ -308,7 +308,9 @@ public class Dump {
     try {
       // Create ancestor directory tree
       final File parent = new File(outputFile).getParentFile();
-      parent.mkdirs();
+      if (parent != null) {
+        parent.mkdirs();
+      }
       // Create file
       _output = new BufferedWriter(new OutputStreamWriter(
           new GZIPOutputStream(new FileOutputStream(outputFile))));

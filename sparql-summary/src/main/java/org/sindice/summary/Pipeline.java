@@ -93,7 +93,7 @@ public class Pipeline {
             .withRequiredArg().ofType(Integer.class).defaultsTo(0);
         acceptsAll(asList("domain", "graph"),
             "Limit the search to one domain.").withRequiredArg();
-        accepts("outputfile", "The output file.").withRequiredArg().required();
+        accepts("outputfile", "The output file. It will be GZIP compressed.").withRequiredArg().required();
         acceptsAll(asList("database", "db"), "The database in the MYSQL.")
             .withRequiredArg();
         accepts("user", "The user for a MYSQL connection.").withRequiredArg();
@@ -105,7 +105,7 @@ public class Pipeline {
                 + AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE)
             .withRequiredArg().ofType(String.class);
         acceptsAll(asList(SUMMARY_ALGORITHM, "algorithm"),
-            "Allow the user to change the clustering algorithm to create the summary.")
+            "Allow the user to change the clustering algorithm to create the summary: " + Arrays.toString(SummaryAlgorithm.values()))
             .withRequiredArg().ofType(SummaryAlgorithm.class).defaultsTo(SummaryAlgorithm.MULTI_LABELLED);
         accepts(HELP, "show help");
       }

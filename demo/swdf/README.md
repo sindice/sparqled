@@ -9,7 +9,7 @@ You must have downloaded or created the binaries. If not, follow those [steps](h
 
 ## Create the Graph Schema
 
-The data in the tarball `swdf.tar.bz2` is in `N-Triples` format. The graph schema has been created already using the [hadoop-based](https://github.com/sindice/summary) implementation of the graph schema computation, and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
+The data in the tarball `swdf.tar.bz2` is in `Turtle` format. The graph schema has been created already using the [hadoop-based](https://github.com/sindice/summary) implementation of the graph schema computation, and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
 
 ## Deploy SPARQLed
 
@@ -21,7 +21,7 @@ The data in the tarball `swdf.tar.bz2` is in `N-Triples` format. The graph schem
 # in the files under `./swdf/` folder.
 # The statements are added to the named graph `http://data.semanticweb.org/`.
 42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
-                --format N-TRIPLES --type NATIVE --args native \
+                --format Turtle --type NATIVE --args native \
                 --contexts http://data.semanticweb.org/ --add-rdf ./swdf/
 ```
 2. Add the graph schema to the repository.
