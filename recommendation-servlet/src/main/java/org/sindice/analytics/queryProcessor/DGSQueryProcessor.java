@@ -19,7 +19,6 @@ package org.sindice.analytics.queryProcessor;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.List;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
@@ -65,16 +64,12 @@ implements QueryProcessor {
   public String getDGSQuery(ASTConstraint... contraints)
   throws DGSException {
     if (dgsQuery == null) {
-      try {
-        if (contraints != null && contraints.length != 0) {
-          // TODO: add possible constraints to the query
-          ast.getQuery().getWhereClause();
-        }
-        writer.getBuffer().setLength(0);
-        dgsQuery = mustache.execute(writer, dgs.getRecommendationQuery()).toString();
-      } catch (IOException e) {
-        throw new DGSException(e);
+      if (contraints != null && contraints.length != 0) {
+        // TODO: add possible constraints to the query
+        ast.getQuery().getWhereClause();
       }
+      writer.getBuffer().setLength(0);
+      dgsQuery = mustache.execute(writer, dgs.getRecommendationQuery()).toString();
     }
     return dgsQuery;
   }
