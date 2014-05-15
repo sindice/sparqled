@@ -37,7 +37,16 @@ public class TestValidateQ4Recommendations {
   throws Exception {
     ast = null;
     AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
+  }
+
+  @Test(expected=DGSException.class)
+  public void testNoPOF()
+  throws Exception {
+    final String q = "SELECT * { ?s ?p ?o }";
+
+    ast = SyntaxTreeBuilder.parseQuery(q);
+    ValidateQ4Recommendations.process(ast);
   }
 
   @Test(expected=DGSException.class)

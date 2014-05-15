@@ -17,8 +17,6 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
-
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
@@ -30,20 +28,22 @@ import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
  */
 public final class SparqlToDGSQuery {
 
-  private static RecommendationType type;
+  private RecommendationType  type;
+  private POFMetadata         meta;
+  private RecommendationQuery rq;
 
-  private SparqlToDGSQuery() {
-  }
-
-  public static POFMetadata process(ASTQueryContainer ast, List<String> varsToProject)
+  public void process(ASTQueryContainer ast)
   throws MalformedQueryException, VisitorException {
+    meta = null;
+    rq = null;
+    type = RecommendationType.NONE;
     if (!ast.containsQuery()) {
-      return null;
+      return;
     }
 
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
     // Retrieve the POF metadata
-    final POFMetadata meta = PofNodesMetadata.retrieve(ast);
+    meta = PofNodesMetadata.retrieve(ast);
     // Remove RDF tags
     RDFTagRemover.remove(ast);
     // expand each TP into simple one: denormalize syntax sugar constructions
@@ -52,29 +52,31 @@ public final class SparqlToDGSQuery {
     // Ensure the query is valid for recommendation
     ValidateQ4Recommendations.process(ast);
 
-    ASTVarGenerator.addVars(ASTVarProcessor.process(ast));
+    SparqlVarGenerator.addVars(ASTVarProcessor.process(ast));
     /*
      * Map SPARQL query to a Data Graph Summary query
      */
     // 1. Materialize the POF
-    type = PointOfFocusProcessor.process(ast, varsToProject);
+    type = PointOfFocusProcessor.process(ast);
     // 2. Remove Content Elements
     ContentRemovalProcessor.process(ast);
     // Define Recommendation Scope
     RecommendationScopeProcessor.process(ast);
     // TODO: Optimize the query by removing unnecessary parts, e.g., optional, unions
     // 3. Map to the DGS query
-    SparqlTranslationProcessor.process(ast);
-    // Add DGS filters
-    PofFilterProcessor.process(ast, meta);
+    rq = SparqlTranslationProcessor.process(meta, ast);
+  }
+
+  public RecommendationType getRecommendationType() {
+    return type;
+  }
+
+  public POFMetadata getPOFMetadata() {
     return meta;
   }
 
-  /**
-   * @return the type
-   */
-  public static RecommendationType getRecommendationType() {
-    return type;
+  public RecommendationQuery getRecommendationQuery() {
+    return rq;
   }
 
 }

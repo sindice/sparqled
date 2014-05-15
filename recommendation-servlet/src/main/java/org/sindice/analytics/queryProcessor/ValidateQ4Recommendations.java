@@ -35,7 +35,9 @@ public final class ValidateQ4Recommendations {
   public static void process(ASTQueryContainer ast)
   throws VisitorException {
     final ASTValidateAST validate = new ASTValidateAST();
-    validate.visit(ast, null);
+    if ((Integer) validate.visit(ast, 0) == 0) {
+      throw new DGSException("No Point Of Focus found");
+    }
   }
 
   private static class ASTValidateAST extends ASTVisitorBase {
@@ -63,6 +65,7 @@ public final class ValidateQ4Recommendations {
         if (++nPOF > 1) {
           throw new DGSException("There can be only one Point Of Focus");
         }
+        data = nPOF;
       }
       if (node.getName().equals("?" + SyntaxTreeBuilder.FillVar)) {
         if (++nFillVar > 1) {

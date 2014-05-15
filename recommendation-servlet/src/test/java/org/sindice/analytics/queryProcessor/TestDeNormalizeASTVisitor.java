@@ -43,7 +43,7 @@ public class TestDeNormalizeASTVisitor {
   public void setUp()
   throws Exception {
     ast = null;
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
   }
 
   @After
@@ -214,7 +214,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(2, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -260,7 +260,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -306,7 +306,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -343,7 +343,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -473,7 +473,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -541,7 +541,7 @@ public class TestDeNormalizeASTVisitor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     DeNormalizeAST.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(1, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +

@@ -127,7 +127,7 @@ public final class ContentRemovalProcessor {
     }
 
     private void replace(SimpleNode node) {
-      node.jjtReplaceWith(ASTVarGenerator.getASTVar("content"));
+      node.jjtReplaceWith(SparqlVarGenerator.getASTVar("content"));
     }
 
     private void replaceIRI(SimpleNode node, long valueHash) {
@@ -135,7 +135,7 @@ public final class ContentRemovalProcessor {
       final String varName = "IRI" + Long.toString(valueHash).replace('-', 'n');
 
       var.setName(varName);
-      ASTVarGenerator.addVar(varName);
+      SparqlVarGenerator.addVar(varName);
       node.jjtReplaceWith(var);
     }
 

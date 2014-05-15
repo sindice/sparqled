@@ -1,0 +1,62 @@
+PREFIX an: <http://vocab.sindice.net/analytics#>
+PREFIX sindice: <http://vocab.sindice.net/>
+
+SELECT DISTINCT {{#projection}}?{{var}} {{/projection}}{{^projection}}*{{/projection}}
+FROM <{{summary}}> WHERE {
+{{!
+    Translation of a triple pattern with a class attribute into a summary pattern
+}}
+{{#type}}
+{{#origin}}
+    ?{{resource}} sindice:domain_uri {{{dataset}}} .
+{{/origin}}
+{{#pof}}
+    ?{{resource}} an:label [
+                an:label ?POF;
+                an:type [
+                    an:cardinality ?CAcardinality;
+                    an:label ?CAlabel
+                ]
+            ];
+            an:cardinality ?POFcardinality .
+{{/pof}}
+{{^pof}}
+    ?{{resource}} an:label [ an:label {{{type}}} ] .
+{{/pof}}
+{{/type}}
+{{!
+    Translation of a triple pattern into a summary pattern
+}}
+{{#edge}}
+{{#origin}}
+    ?{{resource}} an:publishedIn {{{dataset}}} .
+{{/origin}}
+    ?{{resource}} an:source ?{{source}} .
+{{#leaf}}
+    ?{{resource}} an:target "dummy class: 4841526962763945421" .
+{{/leaf}}
+{{^leaf}}
+    FILTER (!isLiteral(?{{target}}))
+    ?{{resource}} an:target ?{{target}} .
+{{/leaf}}
+{{#pof}}
+    ?{{resource}} an:label ?POF;
+                  an:cardinality ?POFcardinality .
+{{/pof}}
+{{^pof}}
+    ?{{resource}} an:label {{{predicate}}} .
+{{/pof}}
+{{/edge}}
+{{!
+    Add a filter, e.g., based on a keyword for restricting the POF solutions
+}}
+{{#filter}}
+    FILTER({{{filter}}})
+{{/filter}}
+}
+{{!
+    Limit the results
+}}
+{{#limit}}
+LIMIT {{limit}}
+{{/limit}}

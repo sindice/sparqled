@@ -68,20 +68,6 @@ public interface QueryProcessor {
   throws DGSException;
 
   /**
-   * Parse a query, perform the mapping to a Data Graph Summary query and reduce
-   * its scope.
-   * 
-   * @param query
-   * @param varsToProject The variables to project in the DataGraphSummary query (By Default, it is the POF)
-   * @throws MalformedQueryException
-   * @throws VisitorException
-   * @throws TokenMgrError
-   * @throws ParseException
-   */
-  public void load(String query, List<String> varsToProject)
-  throws DGSException;
-
-  /**
    * Return the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
    * Only valid after the call to load.
    * @return

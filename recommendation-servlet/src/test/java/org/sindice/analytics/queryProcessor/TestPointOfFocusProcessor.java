@@ -43,7 +43,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     ast = null;
     AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
   }
 
   @After
@@ -81,7 +81,7 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
   }
 
@@ -108,7 +108,7 @@ public class TestPointOfFocusProcessor {
                                 "        Var (POF)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
   }
 
@@ -117,7 +117,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s <name> < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
   }
 
   @Test(expected=DGSException.class)
@@ -125,7 +125,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s ?p < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
   }
 
   public void testAdditionalProjectionVars()
@@ -152,7 +152,7 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, Arrays.asList("var2"));
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
   }
 
@@ -178,15 +178,15 @@ public class TestPointOfFocusProcessor {
                                 "        Var (o)";
 
     ast = SyntaxTreeBuilder.parseQuery(qAsk);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
 
     ast = SyntaxTreeBuilder.parseQuery(qConstruct);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
 
     ast = SyntaxTreeBuilder.parseQuery(qDescribe);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
   }
 
@@ -213,7 +213,7 @@ public class TestPointOfFocusProcessor {
                                 "    Var (s)";
 
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
     assertEquals(expectedAst, ast.dump(""));
   }
 
@@ -222,7 +222,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s a < }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
+    final RecommendationType type = PointOfFocusProcessor.process(ast);
     assertEquals(RecommendationType.CLASS, type);
   }
 
@@ -231,7 +231,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { ?s < ?o }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
+    final RecommendationType type = PointOfFocusProcessor.process(ast);
     assertEquals(RecommendationType.PREDICATE, type);
   }
 
@@ -240,7 +240,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { GRAPH < { ?s ?p ?o } }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    final RecommendationType type = PointOfFocusProcessor.process(ast, null);
+    final RecommendationType type = PointOfFocusProcessor.process(ast);
     assertEquals(RecommendationType.GRAPH, type);
   }
 
@@ -249,7 +249,7 @@ public class TestPointOfFocusProcessor {
   throws Exception {
     final String q = "SELECT ?s WHERE { GRAPH ?g { < ?p ?o } }";
     ast = SyntaxTreeBuilder.parseQuery(q);
-    PointOfFocusProcessor.process(ast, null);
+    PointOfFocusProcessor.process(ast);
   }
 
 }
