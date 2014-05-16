@@ -47,15 +47,13 @@ import org.sindice.core.analytics.commons.util.URIUtil;
  */
 public final class SparqlTranslationProcessor {
 
-  private final static IsLeaf      isLeaf                = new IsLeaf();
+  private final static IsLeaf      isLeaf = new IsLeaf();
   private static ASTQueryContainer astQueryContainer;
 
-  private SparqlTranslationProcessor() {
-  }
+  private SparqlTranslationProcessor() {}
 
   /**
    * Translate the SPARQL query to a Summary query.
-   * @return 
    */
   public static RecommendationQuery process(POFMetadata meta, ASTQueryContainer ast)
   throws MalformedQueryException, VisitorException {
@@ -119,6 +117,12 @@ public final class SparqlTranslationProcessor {
     for (Edge e : rq.edge()) {
       if (e.getResource().equals(pofResourceName)) {
         e.setResource(QueryProcessor.POF_RESOURCE);
+      }
+      if (e.getSource().equals(pofResourceName)) {
+        e.setSource(QueryProcessor.POF_RESOURCE);
+      }
+      if (e.getTarget() != null && e.getTarget().equals(pofResourceName)) {
+        e.setTarget(QueryProcessor.POF_RESOURCE);
       }
     }
     for (Type t : rq.type()) {

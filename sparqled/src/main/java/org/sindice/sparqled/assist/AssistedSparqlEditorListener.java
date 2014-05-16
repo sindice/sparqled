@@ -17,6 +17,7 @@
  */
 package org.sindice.sparqled.assist;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -55,6 +56,7 @@ extends SparqledContextListener {
   public static final String     DOMAIN_URI_PREFIX     = "domainUriPrefix";
   public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
   public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
+  public static final String     TEMPLATE              = "template";
 
   private MemcachedClientWrapper wrapper;
 
@@ -67,34 +69,42 @@ extends SparqledContextListener {
     logger.info("initializing ASE context");
     XMLConfiguration config = (XMLConfiguration) sce.getServletContext().getAttribute("config");
 
-    final String datasetLabelDef = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DATASET_LABEL_DEF, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
-    context.setAttribute(RECOMMENDER_WRAPPER + DATASET_LABEL_DEF, datasetLabelDef);
+    String template = doGetParameter(config, TEMPLATE, null);
+    try {
+      template = template == null ? null : new File(sparqledHome, template).getCanonicalPath();
+    } catch (IOException e1) {
+      throw new IllegalArgumentException("Unable to load template=[" + template + "]");
+    }
+    setParameter(context, TEMPLATE, template);
 
-    final String domainUriPrefix = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
-    context.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, domainUriPrefix);
+    final String datasetLabelDef = doGetParameter(config, DATASET_LABEL_DEF, DataGraphSummaryVocab.DATASET_LABEL_DEF.toString());
+    setParameter(context, DATASET_LABEL_DEF, datasetLabelDef);
 
-    final String gsg = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
-    context.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, gsg);
+    final String domainUriPrefix = doGetParameter(config, DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
+    setParameter(context, DOMAIN_URI_PREFIX, domainUriPrefix);
 
-    final String backend = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND, BackendType.HTTP.toString());
-    context.setAttribute(RECOMMENDER_WRAPPER + BACKEND, backend);
-    final String[] backendArgs = getParametersWithLogging(config, RECOMMENDER_WRAPPER + "." + BACKEND_ARGS, new String[] { "http://sparql.sindice.com/sparql" });
-    context.setAttribute(RECOMMENDER_WRAPPER + BACKEND_ARGS, backendArgs);
+    final String gsg = doGetParameter(config, GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
+    setParameter(context, GRAPH_SUMMARY_GRAPH, gsg);
 
-    final String pagination = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + PAGINATION, Integer.toString(SesameBackend.LIMIT));
-    context.setAttribute(RECOMMENDER_WRAPPER + PAGINATION, Integer.valueOf(pagination));
+    final String backend = doGetParameter(config, BACKEND, BackendType.HTTP.toString());
+    setParameter(context, BACKEND, backend);
+    final String[] backendArgs = doGetParameters(config, BACKEND_ARGS, "http://sparql.sindice.com/sparql");
+    setParameter(context, BACKEND_ARGS, backendArgs);
 
-    final String limit = getParameterWithLogging(config, RECOMMENDER_WRAPPER + "." + LIMIT, "0"); // No limit by default
-    context.setAttribute(RECOMMENDER_WRAPPER + LIMIT, Integer.valueOf(limit));
+    final String pagination = doGetParameter(config, PAGINATION, Integer.toString(SesameBackend.LIMIT));
+    setParameter(context, PAGINATION, Integer.valueOf(pagination));
 
-    final String[] classAttributes = getParametersWithLogging(config, RECOMMENDER_WRAPPER + "." + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
-    context.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, classAttributes);
+    final String limit = doGetParameter(config, LIMIT, "1000");
+    setParameter(context, LIMIT, Integer.valueOf(limit));
 
-    final String useMemcached = getParameterWithLogging(config, "USE_MEMCACHED", "false");
-    final String memcachedHost = getParameterWithLogging(config, "MEMCACHED_HOST", "localhost");
-    final String memcachedPort = getParameterWithLogging(config, "MEMCACHED_PORT", "11211");
+    final String[] classAttributes = doGetParameters(config, CLASS_ATTRIBUTES, AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE);
+    setParameter(context, CLASS_ATTRIBUTES, classAttributes);
+
+    final String useMemcached = doGetParameter(config, "USE_MEMCACHED", "false");
 
     if (Boolean.parseBoolean(useMemcached)) {
+      final String memcachedHost = doGetParameter(config, "MEMCACHED_HOST", "localhost");
+      final String memcachedPort = doGetParameter(config, "MEMCACHED_PORT", "11211");
       try {
         final List<InetSocketAddress> addresses = AddrUtil.getAddresses(memcachedHost + ":" + memcachedPort);
         wrapper = new MemcachedClientWrapper(new MemcachedClient(addresses));
@@ -103,6 +113,18 @@ extends SparqledContextListener {
         logger.error("Could not initialize memcached !!!", e);
       }
     }
+  }
+
+  private String doGetParameter(XMLConfiguration config, String param, String defaultValue) {
+    return super.getParameter(config, RECOMMENDER_WRAPPER + "." + param, defaultValue);
+  }
+
+  private String[] doGetParameters(XMLConfiguration config, String param, String... defaultValues) {
+    return super.getParameters(config, RECOMMENDER_WRAPPER + "." + param, defaultValues);
+  }
+
+  private void setParameter(ServletContext context, String param, Object value) {
+    context.setAttribute(RECOMMENDER_WRAPPER + param, value);
   }
 
   @Override

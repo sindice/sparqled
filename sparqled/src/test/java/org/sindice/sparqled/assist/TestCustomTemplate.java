@@ -30,6 +30,7 @@ import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.GRAPH_SUM
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.LIMIT;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.PAGINATION;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.RECOMMENDER_WRAPPER;
+import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.TEMPLATE;
 import info.aduna.io.FileUtil;
 
 import java.io.File;
@@ -38,7 +39,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +55,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.mortbay.jetty.testing.ServletTester;
 import org.openrdf.http.protocol.Protocol;
 import org.openrdf.rio.RDFFormat;
@@ -66,61 +63,14 @@ import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 
-@RunWith(value=Parameterized.class)
-public class TestAssistedSparqlEditorSevlet {
+public class TestCustomTemplate {
 
-  private static ServletTester aseTester;
-  private static String        aseBaseUrl;
+  private static final String dgsInput = "./src/test/resources/testCustomTemplate/custom-summary.nt.gz";
 
-  private static HttpClient    client   = null;
+  private ServletTester       aseTester;
+  private String              aseBaseUrl;
 
-  private class Results implements Comparable<Results> {
-
-    public final int count;
-    public final String label;
-
-    public Results(int count, String label) {
-      this.count = count;
-      this.label = label;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof Results) {
-        Results r = (Results) obj;
-        return this.count == r.count && this.label.equals(r.label);
-      }
-      return false;
-    }
-
-    @Override
-    public int compareTo(Results r) {
-      if (this.count < r.count) {
-        return -1;
-      } else if (this.count > r.count) {
-        return 1;
-      }
-      return this.label.compareTo(r.label);
-    }
-
-    @Override
-    public String toString() {
-      return "count=" + count + " label=" + label;
-    }
-
-  }
-
-  private static int limit;
-
-  public TestAssistedSparqlEditorSevlet(int l) {
-    limit = l;
-  }
-
-  @Parameters
-  public static Collection<Object[]> configure() {
-    Object[][] data = new Object[][] { { 0 }, { 1 } }; // Limit values
-    return Arrays.asList(data);
-  }
+  private HttpClient          client   = null;
 
   @Before
   public void setUp()
@@ -132,14 +82,14 @@ public class TestAssistedSparqlEditorSevlet {
 
     aseTester = new ServletTester();
     aseTester.setContextPath("/");
-    String input = "./src/test/resources/testAssistedSparqlEditorSevlet/test-data-graph-summary_cascade.nt.gz";
-    aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(input)));
+    aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(dgsInput)));
     aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
     aseTester.addServlet(MemorySesameServletHelper.class, "/DGS-repo");
 
     String url = aseTester.createSocketConnector(true);
     final String dgsRepoServletUrl = url + "/DGS-repo";
 
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + TEMPLATE, "./src/test/resources/testCustomTemplate/custom-template.mustache");
     aseTester.setAttribute(RECOMMENDER_WRAPPER + BACKEND, BackendType.HTTP.toString());
     aseTester.setAttribute(RECOMMENDER_WRAPPER + BACKEND_ARGS, new String[] { dgsRepoServletUrl });
     aseTester.addServlet(AssistedSparqlEditorServlet.class, "/SparqlEditorServlet");
@@ -148,7 +98,7 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(RECOMMENDER_WRAPPER + DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN);
     aseTester.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
     aseTester.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
-    aseTester.setAttribute(RECOMMENDER_WRAPPER + LIMIT, limit);
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + LIMIT, 0);
     /*
      * Comment it to prevent it from creating the sindice.home_IS_UNDEFINED folder, or from writing into sindice.home/ROOT
      * TODO: Update the Listener to enable a Test mode -> the log files are created in a temp folder
@@ -184,9 +134,9 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.di.unipi.it/#produce"),
-        new Results(1, "http://www.di.unipi.it/#livein")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.di.unipi.it/#produce",
+        "http://www.di.unipi.it/#livein"
       );
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
@@ -228,8 +178,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(1, "http://www.di.unipi.it/#produce")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.di.unipi.it/#produce"
       );
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
@@ -282,7 +232,7 @@ public class TestAssistedSparqlEditorSevlet {
   }
 
   @Test
-  public void testClassAttributeRecommendation()
+  public void testClassRecommendation()
   throws Exception {
     final String query = "SELECT * { ?s a < }";
 
@@ -295,11 +245,11 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
 
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.countries.eu/beer"),
-        new Results(2, "http://www.countries.eu/drink"),
-        new Results(1, "http://www.countries.eu/person"),
-        new Results(1, "country")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.countries.eu/beer",
+        "http://www.countries.eu/drink",
+        "http://www.countries.eu/person",
+        "country"
       );
       checkResponse(jsonMap, expectedResults, true, false);
     } else {
@@ -310,14 +260,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testPredicateRecommendationWithQName()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     final String query = "PREFIX unipi: <http://www.di.unipi.it/#> SELECT * { ?s unipi:< ?o }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -329,10 +271,7 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
 
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "produce"),
-        new Results(1, "livein")
-      );
+      final List<String> expectedResults = Arrays.asList("produce", "livein");
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
       fail("code=" + code);
@@ -342,14 +281,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testClassRecommendationWithQName()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     final String query = "PREFIX c: <http://www.countries.eu/> SELECT * { ?s a c:< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -361,11 +292,7 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
 
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "drink"),
-        new Results(2, "beer"),
-        new Results(1, "person")
-      );
+      final List<String> expectedResults = Arrays.asList("drink", "beer", "person");
       checkResponse(jsonMap, expectedResults, true, false);
     } else {
       fail("code=" + code);
@@ -375,14 +302,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testClassRecommendationWithKeyword()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     final String query = "SELECT * { ?s a count< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -394,11 +313,11 @@ public class TestAssistedSparqlEditorSevlet {
       final ObjectMapper mapper = new ObjectMapper();
 
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.countries.eu/drink"),
-        new Results(2, "http://www.countries.eu/beer"),
-        new Results(1, "http://www.countries.eu/person"),
-        new Results(1, "country")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.countries.eu/drink",
+        "http://www.countries.eu/beer",
+        "http://www.countries.eu/person",
+        "country"
       );
       checkResponse(jsonMap, expectedResults, true, true);
     } else {
@@ -482,9 +401,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.di.unipi.it/#produce")
-      );
+      final List<String> expectedResults = Arrays.asList("http://www.di.unipi.it/#produce");
       checkResponse(jsonMap, expectedResults, false, true);
     } else {
       fail("code=" + code);
@@ -494,14 +411,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testDatatypeLiteral()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     final String query = "SELECT * { ?s <http://www.di< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -512,9 +421,8 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.di.unipi.it/#produce"),
-        new Results(1, "http://www.di.unipi.it/#livein")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.di.unipi.it/#produce", "http://www.di.unipi.it/#livein"
       );
       checkResponse(jsonMap, expectedResults, false, true);
     } else {
@@ -525,14 +433,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testPredicateRecommendationWithPrefix()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     final String query = "SELECT * { ?s <http://www.di< }";
 
     PostMethod post = new PostMethod(aseBaseUrl);
@@ -543,9 +443,9 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.di.unipi.it/#produce"),
-        new Results(1, "http://www.di.unipi.it/#livein")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.di.unipi.it/#produce",
+        "http://www.di.unipi.it/#livein"
       );
       checkResponse(jsonMap, expectedResults, false, true);
     } else {
@@ -556,14 +456,6 @@ public class TestAssistedSparqlEditorSevlet {
   @Test
   public void testKeywordAndLiteral()
   throws Exception {
-    if (limit != 0) {
-      /*
-       * Disable test if there is a limit: the limit is removed when executing
-       * FILTER queries in SparqlRecommender
-       */
-      return;
-    }
-
     /*
      * the literal is removed by the DGS processing as it is not a query
      * structural element
@@ -578,9 +470,9 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, "http://www.di.unipi.it/#produce"),
-        new Results(1, "http://www.di.unipi.it/#livein")
+      final List<String> expectedResults = Arrays.asList(
+        "http://www.di.unipi.it/#produce",
+        "http://www.di.unipi.it/#livein"
       );
       checkResponse(jsonMap, expectedResults, false, true);
     } else {
@@ -607,9 +499,9 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(2, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu"),
-        new Results(4, DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it")
+      final List<String> expectedResults = Arrays.asList(
+        DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "countries.eu",
+        DataGraphSummaryVocab.DOMAIN_URI_PREFIX + "unipi.it"
       );
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
@@ -633,9 +525,7 @@ public class TestAssistedSparqlEditorSevlet {
       final String json = post.getResponseBodyAsString();
       final ObjectMapper mapper = new ObjectMapper();
       final Map<String, Object> jsonMap = mapper.readValue(json, Map.class);
-      final List<Results> expectedResults = Arrays.asList(
-        new Results(1, "http://www.di.unipi.it/#produce")
-      );
+      final List<String> expectedResults = Arrays.asList("http://www.di.unipi.it/#produce");
       checkResponse(jsonMap, expectedResults, false, false);
     } else {
       fail("code=" + code);
@@ -666,7 +556,7 @@ public class TestAssistedSparqlEditorSevlet {
   }
 
   private void checkResponse(final Map<String, Object> jsonMap,
-                             final List<Results> expectedResults,
+                             final List<String> expectedResults,
                              final boolean isCAsubsEnabled,
                              final boolean isRecSubsEnabled) {
     assertTrue(jsonMap.containsKey(ResponseStructure.STATUS));
@@ -677,11 +567,7 @@ public class TestAssistedSparqlEditorSevlet {
     // check the number of results
     final Map results = (Map) jsonMap.get(ResponseStructure.RESULTS);
     assertTrue(results.containsKey(ResponseStructure.COUNT));
-    if (limit == 0) { // No Limit: all results are returned
-      assertEquals(expectedResults.size(), results.get(ResponseStructure.COUNT));
-    } else {
-      assertEquals(limit > expectedResults.size() ? expectedResults.size() : limit, results.get(ResponseStructure.COUNT));
-    }
+    assertEquals(expectedResults.size(), results.get(ResponseStructure.COUNT));
 
     // Check the substitution
     assertTrue(jsonMap.containsKey(ResponseStructure.CA_REPLACE));
@@ -692,34 +578,16 @@ public class TestAssistedSparqlEditorSevlet {
     // Check the ranking results
     final List<Map<String, Object>> bindings = (List<Map<String, Object>>) results.get(ResponseStructure.BINDINGS);
 
-    if (limit == 0) { // No Limit: all results are returned
-      assertEquals(expectedResults.size(), bindings.size());
-    } else {
-      assertEquals(limit > expectedResults.size() ? expectedResults.size() : limit, bindings.size());
-    }
+    assertEquals(expectedResults.size(), bindings.size());
 
-    final List<Results> actualResults = new ArrayList<Results>();
+    final List<String> actualResults = new ArrayList<String>();
     for (Map<String, Object> r : bindings) {
-      actualResults.add(new Results(Float.valueOf(r.get(ResponseStructure.COUNT).toString())
-      .intValue(), r.get(ResponseStructure.VALUE).toString()));
+      actualResults.add(r.get(ResponseStructure.VALUE).toString());
     }
-    if (limit == 0) {
-      Collections.sort(actualResults);
-      Collections.sort(expectedResults);
-      assertArrayEquals(expectedResults.toArray(new Results[0]), actualResults.toArray(new Results[0]));
-    } else {
-      for (int i = 0; i < limit; i++) {
-        for (int res_i = 0; res_i < expectedResults.size(); res_i++) {
-          for (int act_i = 0; act_i < actualResults.size(); act_i++) {
-            if (expectedResults.get(res_i).label.equals(actualResults.get(act_i).label)) {
-              actualResults.remove(act_i);
-              break;
-            }
-          }
-        }
-      }
-      assertTrue("expected=" + expectedResults.toString() + " actual=" + actualResults.toString(), actualResults.isEmpty());
-    }
+    Collections.sort(actualResults);
+    Collections.sort(expectedResults);
+    assertArrayEquals(expectedResults.toArray(new String[expectedResults.size()]),
+      actualResults.toArray(new String[actualResults.size()]));
   }
 
 }

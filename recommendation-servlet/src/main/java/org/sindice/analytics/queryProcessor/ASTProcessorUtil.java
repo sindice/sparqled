@@ -35,9 +35,7 @@ public final class ASTProcessorUtil {
   private ASTProcessorUtil() {
   }
 
-  public static ASTTriplesSameSubjectPath createTriple(Node subject,
-                                                       Node predicate,
-                                                       Node object) {
+  public static ASTTriplesSameSubjectPath createTriple(Node subject, Node predicate, Node object) {
     final ASTTriplesSameSubjectPath triple = new ASTTriplesSameSubjectPath(SyntaxTreeBuilderTreeConstants.JJTTRIPLESSAMESUBJECTPATH);
     final ASTPropertyListPath pListPath = new ASTPropertyListPath(SyntaxTreeBuilderTreeConstants.JJTPROPERTYLISTPATH);
     final ASTObjectList objList = new ASTObjectList(SyntaxTreeBuilderTreeConstants.JJTOBJECTLIST);

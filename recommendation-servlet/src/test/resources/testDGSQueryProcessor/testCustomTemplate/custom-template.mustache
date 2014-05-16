@@ -1,0 +1,30 @@
+PREFIX an: <http://vocab.sindice.net/analytics#>
+PREFIX sindice: <http://vocab.sindice.net/>
+
+SELECT DISTINCT ?POF
+FROM <{{summary}}> WHERE {
+{{!
+    Translation of a triple pattern with a class attribute into a summary pattern
+}}
+{{#type}}
+    ?{{resource}} a {{#pof}}?POF{{/pof}}{{^pof}}{{{type}}}{{/pof}} .
+{{/type}}
+{{!
+    Translation of a triple pattern into a summary pattern
+}}
+{{#edge}}
+    ?{{source}} {{#pof}}?POF{{/pof}}{{^pof}}{{{predicate}}}{{/pof}} {{#leaf}}""{{/leaf}}{{^leaf}}?{{target}}{{/leaf}} .
+{{/edge}}
+{{!
+    Add a filter, e.g., based on a keyword for restricting the POF solutions
+}}
+{{#filter}}
+    FILTER({{{filter}}})
+{{/filter}}
+}
+{{!
+    Limit the results
+}}
+{{#limit}}
+LIMIT {{limit}}
+{{/limit}}

@@ -17,7 +17,6 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.io.IOException;
 import java.io.StringWriter;
 
 import org.openrdf.query.MalformedQueryException;
@@ -51,6 +50,20 @@ implements QueryProcessor {
   public DGSQueryProcessor() {
     MustacheFactory mf = new DefaultMustacheFactory();
     mustache = mf.compile(TEMPLATE_NAME);
+  }
+
+  public DGSQueryProcessor(String pathToTemplate) {
+    MustacheFactory mf = new DefaultMustacheFactory();
+    mustache = mf.compile(pathToTemplate);
+  }
+
+  public DGSQueryProcessor(Mustache template) {
+    if (template == null) {
+      MustacheFactory mf = new DefaultMustacheFactory();
+      mustache = mf.compile(TEMPLATE_NAME);
+    } else {
+      mustache = template;
+    }
   }
 
   @Override

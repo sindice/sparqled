@@ -21,7 +21,7 @@ import org.sindice.analytics.queryProcessor.QueryProcessor;
 public class CardinalityRanking
 implements LabelsRanking {
 
-  private static final int       TOP        = 1000;
+  private static final int                 TOP        = 1000;
 
   private final Map<Label, Recommendation> labels     = new LinkedHashMap<Label, Recommendation>();
 

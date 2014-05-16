@@ -23,28 +23,22 @@ import static org.junit.Assert.assertTrue;
 import static org.sindice.analytics.RDFTestHelper.literal;
 import static org.sindice.analytics.RDFTestHelper.uri;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.zip.GZIPInputStream;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openrdf.model.Resource;
-import org.openrdf.repository.RepositoryException;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
@@ -53,19 +47,16 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
-import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
 
 /**
  * 
  */
-public class TestDGSBackend {
+public class TestDGSQueryProcessor {
 
   private static final SesameBackend<Label> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
-  private static final String dgsInput = "./src/test/resources/DGSBackend/test-data-graph-summary_cascade.nt.gz";
-  private final DGSQueryProcessor dgsQProcessor = new DGSQueryProcessor();
-  private final List<Label> actualLabels = new ArrayList<Label>();
+  private DGSQueryProcessor dgsQProcessor = new DGSQueryProcessor();
 
   private final Comparator<Label> cmpLabels = new Comparator<Label>() {
     @Override
@@ -80,57 +71,97 @@ public class TestDGSBackend {
 
   @BeforeClass
   public static void init()
-  throws FileNotFoundException, IOException,
-         RDFParseException, RepositoryException, SesameBackendException {
-    final BufferedReader dgsInputReader = new BufferedReader(new InputStreamReader(
-      new GZIPInputStream(new FileInputStream(dgsInput))));
-    backend.initConnection();
+  throws Exception {
+    init(backend, "./src/test/resources/testDGSQueryProcessor/test-data-graph-summary_cascade.nt.gz");
+  }
 
+  private static void init(SesameBackend<Label> backend, String input)
+  throws Exception {
     AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
     DataGraphSummaryVocab.resetToDefaults();
 
-    try {
-      final Resource c = NTriplesUtil.parseURI("<" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ">", new MemValueFactory());
-      backend.getConnection().add(dgsInputReader, "", RDFFormat.NTRIPLES, c);
-    } finally {
-      dgsInputReader.close();
-    }
+    final Resource c = NTriplesUtil.parseURI("<" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ">", new MemValueFactory());
+    backend.initConnection();
+    backend.getConnection().add(new File(input), "", RDFFormat.NTRIPLES, c);
   }
 
   @AfterClass
   public static void release()
-      throws IOException, SesameBackendException {
+  throws Exception {
     backend.closeConnection();
   }
 
-  @Before
-  public void setUp()
-      throws RepositoryException {
-    actualLabels.clear();
+  @Test
+  public void testCustomTemplate()
+  throws Exception {
+    final SesameBackend<Label> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
+
+    try {
+      init(backend, "./src/test/resources/testDGSQueryProcessor/testCustomTemplate/custom-summary.nt.gz");
+      dgsQProcessor = new DGSQueryProcessor("./src/test/resources/testDGSQueryProcessor/testCustomTemplate/custom-template.mustache");
+
+      final String q1 = "SELECT * { ?s < ?o }";
+      final List<Label> expected1 = Arrays.asList(
+        new Label(uri("http://www.di.unipi.it/#produce"), 0),
+        new Label(uri("http://www.di.unipi.it/#livein"), 0)
+      );
+      executeQuery(backend, q1, expected1);
+
+      final String q2 = "SELECT * { ?s <http://www.di.unipi< ?o }";
+      final List<Label> expected2 = Arrays.asList(
+        new Label(uri("http://www.di.unipi.it/#produce"), 0),
+        new Label(uri("http://www.di.unipi.it/#livein"), 0)
+      );
+      executeQuery(backend, q2, expected2);
+
+      final String q3 = "SELECT * { ?s produce< ?o }";
+      final List<Label> expected3 = Arrays.asList(
+        new Label(uri("http://www.di.unipi.it/#produce"), 0)
+      );
+      executeQuery(backend, q3, expected3, 1, 20);
+
+      final String q4 = "SELECT * { ?s a < }";
+      final List<Label> expected4 = Arrays.asList(
+        new Label(literal("country"), 0),
+        new Label(uri("http://www.countries.eu/drink"), 0),
+        new Label(uri("http://www.countries.eu/beer"), 0),
+        new Label(uri("http://www.countries.eu/person"), 0)
+      );
+      executeQuery(backend, q4, expected4);
+
+      final String q5 = "SELECT * { ?s <http://www.di.unipi.it/#produce> [ a < ] }";
+      final List<Label> expected5 = Arrays.asList(
+        new Label(uri("http://www.countries.eu/drink"), 0),
+        new Label(uri("http://www.countries.eu/beer"), 0)
+      );
+      executeQuery(backend, q5, expected5);
+    } finally {
+      backend.closeConnection();
+    }
   }
 
   @Test
   public void testPredicateRecommendation()
   throws Exception {
     final String query = "SELECT * { ?s < ?o }";
-    final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#livein"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
   public void testPredicateRecommendationWithPrefix()
   throws Exception {
     final String query = "SELECT * { ?s <http://www.di.unipi< ?o }";
-    final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#livein"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
 
@@ -138,12 +169,12 @@ public class TestDGSBackend {
   public void testPredicateRecommendationWithQName()
   throws Exception {
     final String query = "prefix unipi: <http://www.di.unipi.it/#> SELECT * { ?s unipi:< ?o }";
-    final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#produce"), 1),
+      new Label(uri("http://www.di.unipi.it/#livein"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
@@ -167,7 +198,7 @@ public class TestDGSBackend {
       add(new Label(uri("http://www.countries.eu/beer"), 1));
       add(new Label(uri("http://www.countries.eu/person"), 1));
     }};
-    executeQuery(query, expected);
+    executeQuery(backend, query, expected);
   }
 
   // FIXME: Correct handling of named graphs
@@ -176,10 +207,10 @@ public class TestDGSBackend {
   public void testGraphRecommendation()
   throws Exception {
     final String query = "SELECT * { GRAPH < { ?s a <http://www.countries.eu/person> ; ?p ?o } }";
-    final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   // FIXME: Correct handling of named graphs
@@ -188,11 +219,11 @@ public class TestDGSBackend {
   public void testAcrossGraphsRecommendation()
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; ?p ?o } GRAPH < { ?o a ?c } }";
-    final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(uri("http://sindice.com/dataspace/default/domain/countries.eu"), 1));
-      add(new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://sindice.com/dataspace/default/domain/countries.eu"), 1),
+      new Label(uri("http://sindice.com/dataspace/default/domain/unipi.it"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
@@ -200,49 +231,51 @@ public class TestDGSBackend {
   public void testAcrossGraphsRecommendation2()
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o } GRAPH <countries.eu> { ?o a ?c } }";
-    final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(uri("http://www.di.unipi.it/#livein"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#livein"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
   public void testAcrossGraphsRecommendation3()
   throws Exception {
     final String query = "SELECT * { GRAPH <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o . ?o a ?c } }";
-    final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
   public void testAcrossGraphsRecommendation4()
   throws Exception {
     final String query = "SELECT * FROM <http://pisa.unipi.it> { ?s a <http://www.countries.eu/person>; < ?o . ?o a ?c }";
-    final List<Label> expected = new ArrayList<Label>() {{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-    }};
-    executeQuery(query, expected);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1)
+    );
+    executeQuery(backend, query, expected);
   }
 
   @Test
   public void testLimitWithKeyword()
   throws Exception {
     final String query = "SELECT * { ?s produce< ?o }";
-    final List<Label> expected = new ArrayList<Label>(){{
-      add(new Label(uri("http://www.di.unipi.it/#produce"), 1));
-    }};
-    executeQuery(query, expected, 1, 20);
+    final List<Label> expected = Arrays.asList(
+      new Label(uri("http://www.di.unipi.it/#produce"), 1)
+    );
+    executeQuery(backend, query, expected, 1, 20);
   }
 
-  private void executeQuery(String query, List<Label> expected)
+  private void executeQuery(SesameBackend<Label> backend, String query, List<Label> expected)
   throws Exception {
-    executeQuery(query, expected, 0, 0);
+    executeQuery(backend, query, expected, 0, 0);
   }
 
-  private void executeQuery(String query, List<Label> expected, int limit, int pagination)
+  private void executeQuery(SesameBackend<Label> backend, String query, List<Label> expected, int limit, int pagination)
   throws Exception {
+    final List<Label> actualLabels = new ArrayList<Label>();
+
     dgsQProcessor.load(query);
     final String dgsQuery = limit == 0 ? dgsQProcessor.getDGSQuery() : dgsQProcessor.getDGSQueryWithLimit(limit);
     final QueryIterator<Label> qit = backend.submit(dgsQuery);
@@ -253,6 +286,9 @@ public class TestDGSBackend {
     Collections.sort(actualLabels, cmpLabels);
     Collections.sort(expected, cmpLabels);
 
+    if (!Arrays.deepEquals(expected.toArray(), actualLabels.toArray())) {
+      throw new ComparisonFailure(null, expected.toString(), actualLabels.toString());
+    }
     assertArrayEquals(actualLabels.toString(), expected.toArray(), actualLabels.toArray());
     // Check that the expected context elements are present
     for (int i = 0; i < expected.size(); i++) {

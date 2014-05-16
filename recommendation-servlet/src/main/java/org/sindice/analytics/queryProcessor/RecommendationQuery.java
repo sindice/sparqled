@@ -132,6 +132,20 @@ public class RecommendationQuery {
     }
 
     /**
+     * @return the source
+     */
+    public String getSource() {
+      return source;
+    }
+
+    /**
+     * @return the target
+     */
+    public String getTarget() {
+      return target;
+    }
+
+    /**
      * @param resource the resource to set
      */
     public void setResource(String resource) {

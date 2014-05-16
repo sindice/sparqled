@@ -24,7 +24,6 @@ import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.QueryProcessor;
-import org.sindice.analytics.ranking.Label;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
 public class DGSQueryResultProcessor
@@ -34,19 +33,18 @@ implements QueryResultProcessor<Label> {
   public Label process(Object o) {
     final Label label;
     final BindingSet set = (BindingSet) o; // The DGS query is a SELECT query
-    final Iterator<Binding> it = set.iterator();
 
     final Value pof = set.getValue(SyntaxTreeBuilder.PointOfFocus);
     final Value pofCard = set.getValue(QueryProcessor.CARDINALITY_VAR);
-    final Value pofResource = set.getValue(QueryProcessor.POF_RESOURCE);
 
-    if (pof != null && pofCard != null && pofResource != null) {
-      label = new Label(pof, Long.valueOf(pofCard.stringValue()));
+    if (pof != null) {
+      label = new Label(pof, pofCard == null ? 0 : Long.valueOf(pofCard.stringValue()));
+      final Iterator<Binding> it = set.iterator();
       while (it.hasNext()) {
         final Binding binding = it.next();
 
         if (!binding.getName().equals(SyntaxTreeBuilder.PointOfFocus) &&
-             !binding.getName().equals(QueryProcessor.CARDINALITY_VAR)) {
+            !binding.getName().equals(QueryProcessor.CARDINALITY_VAR)) {
           label.addContext(binding.getName(), binding.getValue().stringValue());
         }
       }

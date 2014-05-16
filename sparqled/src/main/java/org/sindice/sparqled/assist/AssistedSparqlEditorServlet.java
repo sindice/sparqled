@@ -24,6 +24,7 @@ import java.net.URLDecoder;
 import java.util.Arrays;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +55,8 @@ extends HttpServlet {
 
   public static final String   DGS_GRAPH        = "dg";
 
-  private SesameBackend<Label> dgsBackend       = null;
+  private SparqlRecommender    recommender;
+  private SesameBackend<Label> dgsBackend;
   private int                  pagination;
   private int                  limit;
 
@@ -64,22 +66,25 @@ extends HttpServlet {
     super.init(config);
 
     logger.info("Intialized ASE Servlet");
+    final ServletContext c = config.getServletContext();
 
+    recommender = new SparqlRecommender((String) getParameter(c, AssistedSparqlEditorListener.TEMPLATE));
     // SPARQL endpoint with graph summary
-    final BackendType backend = BackendType.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND));
-    final String[] backendArgs = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.BACKEND_ARGS);
+    final BackendType backend = BackendType.valueOf((String) getParameter(c, AssistedSparqlEditorListener.BACKEND));
+    final String[] backendArgs = (String[]) getParameter(c, AssistedSparqlEditorListener.BACKEND_ARGS);
     // The pagination value
-    pagination = (Integer) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.PAGINATION);
+    pagination = (Integer) getParameter(c, AssistedSparqlEditorListener.PAGINATION);
     // The Limit of results to be retrieved
-    limit = (Integer) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.LIMIT);
+    limit = (Integer) getParameter(c, AssistedSparqlEditorListener.LIMIT);
     // The ClassAttributes
-    final String[] classAttributes = (String[]) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
+    final String[] classAttributes = (String[]) getParameter(c, AssistedSparqlEditorListener.CLASS_ATTRIBUTES);
     // Set the domain URI prefix
-    DataGraphSummaryVocab.setDomainUriPrefix((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
+    DataGraphSummaryVocab.setDomainUriPrefix((String) getParameter(c, AssistedSparqlEditorListener.DOMAIN_URI_PREFIX));
     // Set the dataset label definition
-    DataGraphSummaryVocab.setDatasetLabelDefinition(DatasetLabel.valueOf((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.DATASET_LABEL_DEF)));
+    DatasetLabel dl = DatasetLabel.valueOf(getParameter(c, AssistedSparqlEditorListener.DATASET_LABEL_DEF).toString());
+    DataGraphSummaryVocab.setDatasetLabelDefinition(dl);
     // Set the summary named graph
-    DataGraphSummaryVocab.setGraphSummaryGraph((String) config.getServletContext().getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
+    DataGraphSummaryVocab.setGraphSummaryGraph((String) getParameter(c, AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
 
     AnalyticsClassAttributes.initClassAttributes(classAttributes);
     try {
@@ -93,6 +98,10 @@ extends HttpServlet {
     } catch (Exception e) {
       logger.error("Failed to start the DGS backend", e);
     }
+  }
+
+  private Object getParameter(ServletContext c, String param) {
+    return c.getAttribute(AssistedSparqlEditorListener.RECOMMENDER_WRAPPER + param);
   }
 
   @Override
@@ -151,7 +160,6 @@ extends HttpServlet {
    */
   private void getRecommendationAsJson(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
-    logger.info("\nBegin processing request");
     final PrintWriter out = response.getWriter();
 
     response.setContentType("application/json");
@@ -169,7 +177,7 @@ extends HttpServlet {
       final ResponseWriter<String> responseWriter = new JsonResponseWriter();
       final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
       // Get recommendation
-      response = (String) SparqlRecommender.run(dgsBackend, responseWriter, query, pagination, limit);
+      response = recommender.run(dgsBackend, responseWriter, query, pagination, limit);
     }
     return response;
   }

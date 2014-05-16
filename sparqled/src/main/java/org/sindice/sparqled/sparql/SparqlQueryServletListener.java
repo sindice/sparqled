@@ -41,8 +41,7 @@ import org.slf4j.LoggerFactory;
 public class SparqlQueryServletListener
 extends SparqledContextListener {
 
-  private static final Logger    logger             = LoggerFactory
-                                                    .getLogger(SparqlQueryServletListener.class);
+  private static final Logger    logger             = LoggerFactory.getLogger(SparqlQueryServletListener.class);
 
   public static final String     SQS_WRAPPER        = "proxy";
   public static final String     BACKEND            = "backend";
@@ -56,38 +55,49 @@ extends SparqledContextListener {
   public void contextInitialized(ServletContextEvent sce) {
     super.contextInitialized(sce);
 
-    final ServletContext context = sce.getServletContext();
-
     logger.info("initializing SQS context");
-    XMLConfiguration config = (XMLConfiguration) sce.getServletContext().getAttribute("config");
+    ServletContext c = sce.getServletContext();
+    XMLConfiguration config = (XMLConfiguration) c.getAttribute("config");
 
     // PreProcessing
-    final String prep = config.getString(SQS_WRAPPER + "." + PREPROCESSING, "");
-    context.setAttribute(SQS_WRAPPER + PREPROCESSING, prep);
-    final String[] prepArgs = getParametersWithLogging(config, SQS_WRAPPER + "." + PREPROCESSING_ARGS, new String[] {});
-    context.setAttribute(SQS_WRAPPER + PREPROCESSING_ARGS, prepArgs);
+    final String prep = doGetParameter(config, PREPROCESSING, "");
+    setParameter(c, PREPROCESSING, prep);
+    final String[] prepArgs = doGetParameters(config, PREPROCESSING_ARGS);
+    setParameter(c, PREPROCESSING_ARGS, prepArgs);
 
-    final String backend = config.getString(SQS_WRAPPER + "." + BACKEND, BackendType.NATIVE.toString());
-    context.setAttribute(SQS_WRAPPER + BACKEND, backend);
-    // TODO handle HTTPmode
-    final String[] backendArgs = getParametersWithLogging(config, SQS_WRAPPER + "." + BACKEND_ARGS, new String[] { "./native-repository" });
-    context.setAttribute(SQS_WRAPPER + BACKEND_ARGS, backendArgs);
+    final String backend = doGetParameter(config, BACKEND, BackendType.NATIVE.toString());
+    setParameter(c, BACKEND, backend);
+    final String[] backendArgs = doGetParameters(config, BACKEND_ARGS, "./native-repository");
+    setParameter(c, BACKEND_ARGS, backendArgs);
 
     logger.info("Backend={} BackendArgs={}", backend, Arrays.toString(backendArgs));
 
-    final String useMemcached = getParameterWithLogging(config, "USE_MEMCACHED", "false");
-    final String memcachedHost = getParameterWithLogging(config, "MEMCACHED_HOST", "localhost");
-    final String memcachedPort = getParameterWithLogging(config, "MEMCACHED_PORT", "11211");
+    final String useMemcached = getParameter(config, "USE_MEMCACHED", "false");
 
     if (Boolean.parseBoolean(useMemcached)) {
+      final String memcachedHost = getParameter(config, "MEMCACHED_HOST", "localhost");
+      final String memcachedPort = getParameter(config, "MEMCACHED_PORT", "11211");
+
       try {
         final List<InetSocketAddress> addresses = AddrUtil.getAddresses(memcachedHost + ":" + memcachedPort);
         wrapper = new MemcachedClientWrapper(new MemcachedClient(addresses));
-        sce.getServletContext().setAttribute(SQS_WRAPPER + MemcachedClientWrapper.class.getName(), wrapper);
+        setParameter(c, SQS_WRAPPER + MemcachedClientWrapper.class.getName(), wrapper);
       } catch (IOException e) {
         logger.error("Could not initialize memcached !!!", e);
       }
     }
+  }
+
+  private String doGetParameter(XMLConfiguration config, String param, String defaultValue) {
+    return super.getParameter(config, SQS_WRAPPER + "." + param, defaultValue);
+  }
+
+  private String[] doGetParameters(XMLConfiguration config, String param, String... defaultValues) {
+    return super.getParameters(config, SQS_WRAPPER + "." + param, defaultValues);
+  }
+
+  private void setParameter(ServletContext context, String param, Object value) {
+    context.setAttribute(SQS_WRAPPER + param, value);
   }
 
   @Override
