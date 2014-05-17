@@ -52,11 +52,18 @@ implements QueryProcessor {
     mustache = mf.compile(TEMPLATE_NAME);
   }
 
+  /**
+   * Create a new instance with a custom {@link Mustache} template
+   * @param pathToTemplate the path to the Mustache template for the SPARQL query translation
+   */
   public DGSQueryProcessor(String pathToTemplate) {
     MustacheFactory mf = new DefaultMustacheFactory();
     mustache = mf.compile(pathToTemplate);
   }
 
+  /**
+   * Create a new instance with the given {@link Mustache} instance
+   */
   public DGSQueryProcessor(Mustache template) {
     if (template == null) {
       MustacheFactory mf = new DefaultMustacheFactory();
@@ -94,11 +101,7 @@ implements QueryProcessor {
       dgsQuery = null;
       ast = SyntaxTreeBuilder.parseQuery(query);
       dgs.process(ast);
-    } catch (ParseException e) {
-      throw new DGSException(e);
-    } catch (VisitorException e) {
-      throw new DGSException(e);
-    } catch (MalformedQueryException e) {
+    } catch (Exception e) {
       throw new DGSException(e);
     }
   }
