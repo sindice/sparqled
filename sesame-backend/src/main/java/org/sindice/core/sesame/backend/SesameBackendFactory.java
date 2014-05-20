@@ -32,14 +32,14 @@ public final class SesameBackendFactory {
   private SesameBackendFactory() {}
 
   public static <VALUE> SesameBackend<VALUE> getDgsBackend(BackendType type,
-                                                                             QueryResultProcessor<VALUE> qrp,
-                                                                             String... args) {
+                                                           QueryResultProcessor<VALUE> qrp,
+                                                           String... args) {
     switch (type) {
       case MEMORY:
-        if (args.length > 1) {
+        if (args != null && args.length > 1) {
           throw new IllegalArgumentException("The Memory backend takes zero or one argument: <data-dir>?");
         }
-        return new MemorySesameBackend<VALUE>(qrp, args.length == 0 ? null : args[0]);
+        return new MemorySesameBackend<VALUE>(qrp, (args == null || args.length == 0) ? null : args[0]);
       case VIRTUOSO:
       case HTTP:
         if (args.length != 1) {

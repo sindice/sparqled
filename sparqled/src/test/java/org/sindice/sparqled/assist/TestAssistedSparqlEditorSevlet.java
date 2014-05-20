@@ -30,9 +30,7 @@ import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.GRAPH_SUM
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.LIMIT;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.PAGINATION;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.RECOMMENDER_WRAPPER;
-import info.aduna.io.FileUtil;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -65,14 +63,15 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.MemorySesameServletHelper;
 
 @RunWith(value=Parameterized.class)
 public class TestAssistedSparqlEditorSevlet {
 
-  private static ServletTester aseTester;
-  private static String        aseBaseUrl;
+  private ServletTester aseTester = new ServletTester();
+  private String        aseBaseUrl;
 
-  private static HttpClient    client   = null;
+  private HttpClient    client    = new HttpClient();
 
   private class Results implements Comparable<Results> {
 
@@ -110,7 +109,7 @@ public class TestAssistedSparqlEditorSevlet {
 
   }
 
-  private static int limit;
+  private final int limit;
 
   public TestAssistedSparqlEditorSevlet(int l) {
     limit = l;
@@ -128,13 +127,10 @@ public class TestAssistedSparqlEditorSevlet {
     // reset the vocab parameters
     DataGraphSummaryVocab.resetToDefaults();
 
-    client = new HttpClient();
-
-    aseTester = new ServletTester();
     aseTester.setContextPath("/");
-    String input = "./src/test/resources/testAssistedSparqlEditorSevlet/test-data-graph-summary_cascade.nt.gz";
+    String input = "./src/test/resources/testAssistedSparqlEditorSevlet/test-data-graph-summary_cascade.nq.gz";
     aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(input)));
-    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
+    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NQUADS);
     aseTester.addServlet(MemorySesameServletHelper.class, "/DGS-repo");
 
     String url = aseTester.createSocketConnector(true);
@@ -164,10 +160,6 @@ public class TestAssistedSparqlEditorSevlet {
   throws Exception {
     if (aseTester != null) {
       aseTester.stop();
-    }
-    File repo = new File("/tmp/DGS-repo-test");
-    if (repo.exists()) {
-      FileUtil.deleteDir(repo);
     }
   }
 

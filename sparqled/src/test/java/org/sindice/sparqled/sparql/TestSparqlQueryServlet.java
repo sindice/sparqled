@@ -19,72 +19,50 @@ package org.sindice.sparqled.sparql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.sindice.sparqled.sparql.SparqlQueryServletListener.BACKEND;
+import static org.sindice.sparqled.sparql.SparqlQueryServletListener.BACKEND_ARGS;
+import static org.sindice.sparqled.sparql.SparqlQueryServletListener.SQS_WRAPPER;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.servlet.ServletException;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import org.mortbay.jetty.testing.ServletTester;
 import org.openrdf.http.protocol.Protocol;
-import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFParseException;
-import org.openrdf.sail.Sail;
-import org.openrdf.sail.memory.MemoryStore;
-import org.openrdf.sail.nativerdf.NativeStore;
-import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sindice.sparqled.MemorySesameServletHelper;
 
 /**
  * 
  */
-@RunWith(value = Parameterized.class)
-public class SparqlQueryServletTest {
-
-  private static final Logger        logger    = LoggerFactory.getLogger(SparqlQueryServletTest.class);
-  private static final String        dgsInput  = "./src/test/resources/QueryBackend/test.nt";
+public class TestSparqlQueryServlet {
 
   private final ServletTester aseTester = new ServletTester();
-  private final String        aseBaseUrl;
+  private String              aseBaseUrl;
   private final HttpClient    client    = new HttpClient();
 
-  @Parameters
-  public static Collection<Object[]> data() {
-    return Arrays.asList(
-      new Object[] { BackendType.NATIVE, "/tmp/test-unit-native/" },
-      new Object[] { BackendType.MEMORY, "/tmp/test-unit-memory/" }
-    );
-  }
-
-  public SparqlQueryServletTest(BackendType backend, String backendArgs)
+  @Before
+  public void setUp()
   throws Exception {
     aseTester.setContextPath("/");
+
+    String input = "./src/test/resources/QueryBackend/test.nt.gz";
+    aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(input)));
+    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
+    aseTester.addServlet(MemorySesameServletHelper.class, "/repo");
+
     String url = aseTester.createSocketConnector(true);
-    aseTester.setAttribute(SparqlQueryServletListener.SQS_WRAPPER
-            + SparqlQueryServletListener.BACKEND, backend.toString());
-    aseTester.setAttribute(SparqlQueryServletListener.SQS_WRAPPER
-            + SparqlQueryServletListener.BACKEND_ARGS,
-            new String[] { backendArgs });
+    final String repoUrl = url + "/repo";
+
+    aseTester.setAttribute(SQS_WRAPPER + BACKEND, BackendType.HTTP.toString());
+    aseTester.setAttribute(SQS_WRAPPER + BACKEND_ARGS, new String[] { repoUrl });
     aseTester.addServlet(SparqlQueryServlet.class, "/SparqlEditorServlet");
 
     aseBaseUrl = url + "/SparqlEditorServlet";
@@ -95,53 +73,6 @@ public class SparqlQueryServletTest {
   public void tearDownAfter() throws Exception {
     if (aseTester != null) {
       aseTester.stop();
-    }
-  }
-
-  @AfterClass
-  public static void clean() {
-    FileUtils.deleteQuietly(new File("/tmp/test-unit-memory/"));
-    FileUtils.deleteQuietly(new File("/tmp/test-unit-native/"));
-  }
-
-  @BeforeClass
-  public static void initRepository() throws ServletException {
-    AnalyticsClassAttributes.initClassAttributes(new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
-
-    logger.debug("CREATE MEMORY");
-    createRepository(new MemoryStore(new File("/tmp/test-unit-memory/")));
-    logger.debug("MEMORY CLOSE");
-
-    logger.debug("CREATE Native");
-    createRepository(new NativeStore(new File("/tmp/test-unit-native/")));
-    logger.debug("NATIVE CLOSE");
-  }
-
-  private static void createRepository(Sail sail) {
-    final SailRepository repo = new SailRepository(sail);
-    try {
-      final InputStream dgsInputStream = new FileInputStream(dgsInput);
-
-      try {
-        repo.initialize();
-        repo.getConnection().add(dgsInputStream, "", RDFFormat.NTRIPLES);
-      } finally {
-        try {
-          dgsInputStream.close();
-        } finally {
-          try {
-            repo.getConnection().close();
-          } finally {
-            repo.shutDown();
-          }
-        }
-      }
-    } catch (RDFParseException e) {
-      logger.error("", e);
-    } catch (RepositoryException e) {
-      logger.error("", e);
-    } catch (IOException e) {
-      logger.error("", e);
     }
   }
 
@@ -179,8 +110,7 @@ public class SparqlQueryServletTest {
     final String query = "SELECT ?s ?p WHERE { ?s ?p ?o . }ORDER BY ?s ?p";
 
     PostMethod post = new PostMethod(aseBaseUrl);
-    post.addParameter(Protocol.QUERY_PARAM_NAME,
-            URLEncoder.encode(query, "UTF-8"));
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
@@ -389,8 +319,8 @@ public class SparqlQueryServletTest {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       String ref = "{\"status\":\"ERROR\","
-              + "\"message\":\"org.openrdf.query.MalformedQueryException: "
-              + "Not a valid (absolute) URI: INVALID\"}";
+              + "\"message\":\"org.openrdf.repository.http.HTTPQueryEvaluationException: " +
+              "org.openrdf.query.MalformedQueryException: Not a valid (absolute) URI: INVALID\"}";
 
       assertEquals(ref, json.toString());
     } else {
