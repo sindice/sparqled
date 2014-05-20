@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import org.openrdf.model.Resource;
 import org.openrdf.query.BooleanQuery;
 import org.openrdf.query.GraphQuery;
-import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -77,7 +76,6 @@ implements SesameBackend<VALUE> {
       repository = getRepository();
       repository.initialize();
     } catch (RepositoryException e) {
-      logger.error("", e);
       throw new SesameBackendException(e);
     }
     try {
@@ -86,9 +84,8 @@ implements SesameBackend<VALUE> {
       con.getParserConfig().set(BasicParserSettings.FAIL_ON_UNKNOWN_DATATYPES, false);
       con.getParserConfig().set(BasicParserSettings.NORMALIZE_DATATYPE_VALUES, false);
     } catch (RepositoryException e) {
-      logger.error("Unable to get a connection to the repository", e);
       con = null;
-      throw new SesameBackendException(e);
+      throw new SesameBackendException("Unable to get a connection to the repository", e);
     }
   }
 
@@ -117,7 +114,6 @@ implements SesameBackend<VALUE> {
         con.close();
       }
     } catch (RepositoryException e) {
-      logger.error("", e);
       throw new SesameBackendException(e);
     } finally {
       try {
@@ -125,7 +121,6 @@ implements SesameBackend<VALUE> {
           con.getRepository().shutDown();
         }
       } catch (RepositoryException e) {
-        logger.error("", e);
         throw new SesameBackendException(e);
       }
     }
@@ -147,7 +142,6 @@ implements SesameBackend<VALUE> {
         }
       }
     } catch (Exception e) {
-      logger.error("", e);
       throw new SesameBackendException(e);
     }
   }
@@ -173,30 +167,34 @@ implements SesameBackend<VALUE> {
 
   private class SesameQueryIterator extends QueryIterator<VALUE> {
 
-    private int pagination = LIMIT;
-    private long limit = 0; // user defined limit: by default get everything
-    private long offset = 0; // user defined offset
-    private long paginatedOffset = 0; // offset used for the paginated
-                                      // queries
-    private int resultCounter; // count the number of returned result
-    private String query;
-    private SesameQRHandler<?> results = null;
+    private int                               pagination      = LIMIT;
+    /* user defined limit: by default get everything */
+    private long                              limit           = 0;
+    /* user defined offset */
+    private long                              offset          = 0;
+    /* offset used for the paginated queries */
+    private long                              paginatedOffset = 0;
+    /* count the number of returned result */
+    private int                               resultCounter;
+    private String                            query;
+    private SesameQRHandler<?>                results         = null;
 
-    private final Set<String> bindingNames = new LinkedHashSet<String>();
+    private final Set<String>                 bindingNames    = new LinkedHashSet<String>();
 
-    // initialize the iterator to the passed query
-    private boolean init = false;
-    private final ASTQueryContainer ast;
+    /* initialize the iterator to the passed query */
+    private boolean                           init            = false;
+    private final ASTQueryContainer           ast;
 
-    private final Matcher rmLimit = Pattern.compile("limit\\s?\\d+",
-        Pattern.CASE_INSENSITIVE).matcher("");
-    private final Matcher rmOffset = Pattern.compile("offset\\s?\\d+",
-        Pattern.CASE_INSENSITIVE).matcher("");
+    private final Matcher                     rmLimit         = Pattern
+                                                              .compile("limit\\s?\\d+", Pattern.CASE_INSENSITIVE)
+                                                              .matcher("");
+    private final Matcher                     rmOffset        = Pattern
+                                                              .compile("offset\\s?\\d+", Pattern.CASE_INSENSITIVE)
+                                                              .matcher("");
 
     private final QueryResultProcessor<VALUE> qrp;
 
-    public SesameQueryIterator(QueryResultProcessor<VALUE> qrp,
-        String query) throws SesameBackendException {
+    public SesameQueryIterator(QueryResultProcessor<VALUE> qrp, String query) throws SesameBackendException {
       this.qrp = qrp;
       this.query = query;
       try {
@@ -304,8 +302,7 @@ implements SesameBackend<VALUE> {
         }
         return true;
       } catch (TokenMgrError e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
+        throw new SesameBackendException(e);
       }
     }
 
@@ -342,15 +339,15 @@ implements SesameBackend<VALUE> {
           }
         }
       } catch (QueryEvaluationException e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
+        throw new SesameBackendException(e);
       }
       return true;
     }
 
-    private SesameQRHandler<?> submitQuery() {
+    @SuppressWarnings("rawtypes")
+    private SesameQRHandler submitQuery() {
       try {
-        final SesameQRHandler<?> res;
+        final SesameQRHandler res;
         final String pagQuery = constructSearchSequence();
         logger.debug("Query=[{}]", pagQuery);
 
@@ -371,15 +368,8 @@ implements SesameBackend<VALUE> {
           throw new RuntimeException("Unsupported query: " + ast.getQuery().getClass().getSimpleName());
         }
         return res;
-      } catch (RepositoryException e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
-      } catch (MalformedQueryException e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
-      } catch (QueryEvaluationException e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
+      } catch (Exception e) {
+        throw new SesameBackendException(e);
       }
     }
 
@@ -411,8 +401,7 @@ implements SesameBackend<VALUE> {
         resultCounter++;
         return value;
       } catch (QueryEvaluationException e) {
-        logger.error("", e);
-        throw new RuntimeException(e);
+        throw new SesameBackendException(e);
       }
     }
 

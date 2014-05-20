@@ -62,10 +62,11 @@ import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.MemorySesameServletHelper;
 
 public class TestCustomTemplate {
 
-  private static final String dgsInput = "./src/test/resources/testCustomTemplate/custom-summary.nt.gz";
+  private static final String dgsInput = "./src/test/resources/testCustomTemplate/custom-summary.nq.gz";
 
   private ServletTester       aseTester;
   private String              aseBaseUrl;
@@ -83,7 +84,7 @@ public class TestCustomTemplate {
     aseTester = new ServletTester();
     aseTester.setContextPath("/");
     aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(dgsInput)));
-    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
+    aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NQUADS);
     aseTester.addServlet(MemorySesameServletHelper.class, "/DGS-repo");
 
     String url = aseTester.createSocketConnector(true);
