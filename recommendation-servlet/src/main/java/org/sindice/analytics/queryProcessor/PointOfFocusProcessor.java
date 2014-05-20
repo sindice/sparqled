@@ -53,13 +53,10 @@ public final class PointOfFocusProcessor {
   private PointOfFocusProcessor() {
   }
 
-  public static RecommendationType process(ASTQueryContainer ast, List<String> varsToProject)
+  public static RecommendationType process(ASTQueryContainer ast)
   throws VisitorException {
     final List<String> v = new ArrayList<String>();
 
-    if (varsToProject != null) {
-      v.addAll(varsToProject);
-    }
     if (!(ast.getQuery() instanceof ASTSelectQuery)) { // Change to a SelectQuery
       final ASTSelectQuery selectQuery = new ASTSelectQuery(SyntaxTreeBuilderTreeConstants.JJTSELECTQUERY);
       final ASTSelect select = new ASTSelect(SyntaxTreeBuilderTreeConstants.JJTSELECT);

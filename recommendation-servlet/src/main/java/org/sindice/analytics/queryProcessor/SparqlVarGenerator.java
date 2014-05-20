@@ -28,14 +28,14 @@ import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstant
 /**
  * Create unique SPARQL variables in the query
  */
-public final class ASTVarGenerator {
+public final class SparqlVarGenerator {
 
   public static long                 SEED    = 42;
   private static final Random        rand    = new Random(SEED);
   private static final Set<String>   created = new LinkedHashSet<String>();
   private static final StringBuilder sb      = new StringBuilder();
 
-  private ASTVarGenerator() {
+  private SparqlVarGenerator() {
   }
 
   public static void reset() {
@@ -56,7 +56,7 @@ public final class ASTVarGenerator {
     return created.toArray(new String[created.size()]);
   }
 
-  public static ASTVar getASTVar(String prefix) {
+  public static String getVar(String prefix) {
     String vn;
 
     do {
@@ -65,9 +65,12 @@ public final class ASTVarGenerator {
       vn = sb.toString().replace('-', 'n');
     } while (created.contains(vn));
     created.add(vn);
+    return vn;
+  }
 
+  public static ASTVar getASTVar(String prefix) {
     final ASTVar var = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
-    var.setName(vn);
+    var.setName(getVar(prefix));
     return var;
   }
 

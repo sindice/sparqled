@@ -44,7 +44,7 @@ public class TestPofNodesMetadata {
   throws Exception {
     ast = null;
     AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
   }
 
   @Test

@@ -168,9 +168,12 @@ implements ResponseWriter<String> {
   }
 
   private void addClassAttributes(final Label sug, final Map<String, Object> rec) {
-    final ArrayList<Map<String, Object>> contexts = new ArrayList<Map<String, Object>>();
     final Map<String, Long> classAttributes = (Map<String, Long>) sug.getContext().get(QueryProcessor.CLASS_ATTRIBUTE_MAP);
 
+    if (classAttributes == null) {
+      return;
+    }
+    final List<Map<String, Object>> contexts = new ArrayList<Map<String, Object>>();
     for (Entry<String, Long> ca : classAttributes.entrySet()) {
       final String value = ca.getKey();
       final long count = ca.getValue();

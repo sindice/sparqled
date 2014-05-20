@@ -78,7 +78,7 @@ public final class DeNormalizeTriplesPaths {
           Node interimSubject = subject;
 
           for (int j = 0; j < pathElts.size() - 1; j++) { // for each predicate defining the path to the object
-            final ASTVar interimObject = ASTVarGenerator.getASTVar("pathElt");
+            final ASTVar interimObject = SparqlVarGenerator.getASTVar("pathElt");
             final Node s;
             final Node o;
 

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -74,16 +75,11 @@ extends HttpServlet {
   throws ServletException {
     super.init(config);
 
-    logger.info("Intialized Proxy Servlet");
-    // Preprocessing
-    final String prep = (String) config.getServletContext()
-    .getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
-                  SparqlQueryServletListener.PREPROCESSING);
+    final ServletContext c = config.getServletContext();
+    final String prep = (String) getParameter(c, SparqlQueryServletListener.PREPROCESSING);
     try {
       if (prep != null && !prep.isEmpty()) {
-        final String[] prepArgs = (String[]) config.getServletContext()
-        .getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
-                      SparqlQueryServletListener.PREPROCESSING_ARGS);
+        final String[] prepArgs = (String[]) getParameter(c, SparqlQueryServletListener.PREPROCESSING_ARGS);
         preprocessing = (PreProcessing) Class.forName(prep).newInstance();
         if (preprocessing.getVarPrefix() == null || preprocessing.getVarPrefix().isEmpty() ||
             preprocessing.getVarSuffix() == null || preprocessing.getVarSuffix().isEmpty()) {
@@ -92,20 +88,12 @@ extends HttpServlet {
         preprocessing.init(prepArgs);
         logger.info("Using preprocessing class: {} args={}", prep, Arrays.toString(prepArgs));
       }
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (ClassNotFoundException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
 
-    final BackendType backend = BackendType.valueOf((String) config
-    .getServletContext().getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
-                                      SparqlQueryServletListener.BACKEND));
-    final String[] backendArgs = (String[]) config.getServletContext()
-    .getAttribute(SparqlQueryServletListener.SQS_WRAPPER +
-                  SparqlQueryServletListener.BACKEND_ARGS);
+    final BackendType backend = BackendType.valueOf((String) getParameter(c, SparqlQueryServletListener.BACKEND));
+    final String[] backendArgs = (String[]) getParameter(c, SparqlQueryServletListener.BACKEND_ARGS);
 
     // create repository
     _repository = SesameBackendFactory.getDgsBackend(backend, backendArgs);
@@ -114,6 +102,11 @@ extends HttpServlet {
     } catch (SesameBackendException e) {
       logger.error("", e);
     }
+    logger.info("Intialized Proxy Servlet");
+  }
+
+  private Object getParameter(ServletContext c, String param) {
+    return c.getAttribute(SparqlQueryServletListener.SQS_WRAPPER + param);
   }
 
   @Override
@@ -199,7 +192,6 @@ extends HttpServlet {
       results.put("ordered", "true");
       json.put("status", "ERROR");
       json.put("message", e.getLocalizedMessage());
-      logger.debug(json.toString());
       out.print(json);
       out.flush();
       out.close();

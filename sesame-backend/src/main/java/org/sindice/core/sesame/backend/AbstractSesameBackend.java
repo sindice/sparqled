@@ -356,24 +356,19 @@ implements SesameBackend<VALUE> {
 
         if (ast.getQuery() instanceof ASTSelectQuery) {
           res = new BindingSetSesameQRHandler();
-          final TupleQuery tupleQuery = getConnection().prepareTupleQuery(
-              QueryLanguage.SPARQL, pagQuery);
+          final TupleQuery tupleQuery = getConnection().prepareTupleQuery(QueryLanguage.SPARQL, pagQuery);
           res.set(tupleQuery.evaluate());
         } else if (ast.getQuery() instanceof ASTAskQuery) {
           res = new BooleanSesameQRHandler();
-          final BooleanQuery booleanQuery = getConnection()
-              .prepareBooleanQuery(QueryLanguage.SPARQL, pagQuery);
+          final BooleanQuery booleanQuery = getConnection().prepareBooleanQuery(QueryLanguage.SPARQL, pagQuery);
           res.set(booleanQuery.evaluate());
-        } else if (ast.getQuery() instanceof ASTConstructQuery
-            || ast.getQuery() instanceof ASTDescribeQuery) {
+        } else if (ast.getQuery() instanceof ASTConstructQuery || ast.getQuery() instanceof ASTDescribeQuery) {
           res = new StatementSesameQRHandler();
-          final GraphQuery graphQuery = getConnection().prepareGraphQuery(
-              QueryLanguage.SPARQL, pagQuery);
+          final GraphQuery graphQuery = getConnection().prepareGraphQuery(QueryLanguage.SPARQL, pagQuery);
           res.set(graphQuery.evaluate());
         } else {
           logger.error("Unsupported query: {}\n{}", ast.getQuery(), query);
-          throw new RuntimeException("Unsupported query: "
-              + ast.getQuery().getClass().getSimpleName());
+          throw new RuntimeException("Unsupported query: " + ast.getQuery().getClass().getSimpleName());
         }
         return res;
       } catch (RepositoryException e) {

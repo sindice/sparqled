@@ -54,6 +54,8 @@ implements ServletContextListener {
   public static final String  CONFIG_XML    = "config.xml";
   public static final String  SPARQLED_HOME = "sparqled/home";
 
+  protected File sparqledHome;
+
   @Override
   public void contextDestroyed(ServletContextEvent servletContextEvent) {
     logger.info("destroying context");
@@ -65,7 +67,7 @@ implements ServletContextListener {
 
     addEnvToContext(context);
     final String home = (String) context.getInitParameter(SPARQLED_HOME);
-    final File sparqledHome = home == null ? null : new File(home);
+    sparqledHome = home == null ? null : new File(home);
 
     logger.info("Looking for configuration in [{}]", sparqledHome);
     if (sparqledHome == null || !sparqledHome.exists()) {
@@ -187,9 +189,7 @@ implements ServletContextListener {
    * @param defaultValue the default value of the parameter
    * @return the value associated with the given parameter's name
    */
-  protected static final String getParameterWithLogging(XMLConfiguration config,
-                                                        String name,
-                                                        String defaultValue) {
+  protected static final String getParameter(XMLConfiguration config, String name, String defaultValue) {
     if (config == null) {
       return defaultValue;
     }
@@ -211,9 +211,7 @@ implements ServletContextListener {
    * @param defaultValues the default set of values for the parameter
    * @return the values associated with the given parameter's name
    */
-  protected static final String[] getParametersWithLogging(XMLConfiguration config,
-                                                           String name,
-                                                           String[] defaultValues) {
+  protected static final String[] getParameters(XMLConfiguration config, String name, String[] defaultValues) {
     if (config == null) {
       return defaultValues;
     }

@@ -32,6 +32,10 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
+
 /**
  * 
  */
@@ -39,7 +43,18 @@ public final class SparqlRecommender {
 
   private static final Logger logger  = LoggerFactory.getLogger(SparqlRecommender.class);
 
-  private SparqlRecommender() {}
+  private final Mustache template;
+
+  public SparqlRecommender(String pathToTemplate) {
+    if (pathToTemplate != null) {
+      logger.info("Loading template at [{}]", pathToTemplate);
+      MustacheFactory mf = new DefaultMustacheFactory();
+      template = mf.compile(pathToTemplate);
+    } else {
+      logger.info("Loading default template");
+      template = null;
+    }
+  }
 
   /**
    * Returns an object containing the list of recommendation for the given query
@@ -50,11 +65,7 @@ public final class SparqlRecommender {
    * @param limit
    * @return
    */
-  public static <C> C run(SesameBackend<Label> dgsBackend,
-                          ResponseWriter<C> response,
-                          String query,
-                          int pagination,
-                          int limit) {
+  public <C> C run(SesameBackend<Label> dgsBackend, ResponseWriter<C> response, String query, int pagination, int limit) {
     // TODO: Support queries with multiple FROM clauses
     RecommendationType recommendationType = RecommendationType.NONE;
 
@@ -69,7 +80,7 @@ public final class SparqlRecommender {
       /*
        * Get the DataGraphSummary query
        */
-      final QueryProcessor qp = new DGSQueryProcessor();
+      final QueryProcessor qp = new DGSQueryProcessor(template);
       qp.load(query);
 
       meta = qp.getPofASTMetadata();

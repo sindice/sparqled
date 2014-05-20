@@ -17,15 +17,14 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
+import java.io.StringWriter;
 
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTLimit;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
-import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
+
+import com.github.mustachejava.DefaultMustacheFactory;
+import com.github.mustachejava.Mustache;
+import com.github.mustachejava.MustacheFactory;
 
 /**
  * 
@@ -33,42 +32,54 @@ import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 public class DGSQueryProcessor
 implements QueryProcessor {
 
-  private ASTQueryContainer  ast;
-  private String             dgsQuery;
-  private RecommendationType type;
+  /** Default name of the template */
+  public static final String     TEMPLATE_NAME = "translate.mustache";
 
-  private POFMetadata        pofMetadata; // The Point Of Focus metadata
+  private final Mustache         mustache;
 
-  @Override
-  public String getDGSQueryWithLimit(int limit, ASTConstraint... contraints)
-  throws DGSException {
-    final ASTLimit astLimit;
+  private ASTQueryContainer      ast;
+  private String                 dgsQuery;
 
-    if (limit != 0) {
-      if (ast.getQuery().getLimit() == null) {
-        astLimit = new ASTLimit(SyntaxTreeBuilder.LIMIT);
-        ast.getQuery().jjtAppendChild(astLimit);
-      } else {
-        astLimit = ast.getQuery().getLimit();
-      }
-      astLimit.setValue(limit);
+  private final SparqlToDGSQuery dgs           = new SparqlToDGSQuery();
+  private final StringWriter     writer        = new StringWriter();
+
+  public DGSQueryProcessor() {
+    MustacheFactory mf = new DefaultMustacheFactory();
+    mustache = mf.compile(TEMPLATE_NAME);
+  }
+
+  /**
+   * Create a new instance with a custom {@link Mustache} template
+   * @param pathToTemplate the path to the Mustache template for the SPARQL query translation
+   */
+  public DGSQueryProcessor(String pathToTemplate) {
+    MustacheFactory mf = new DefaultMustacheFactory();
+    mustache = mf.compile(pathToTemplate);
+  }
+
+  /**
+   * Create a new instance with the given {@link Mustache} instance
+   */
+  public DGSQueryProcessor(Mustache template) {
+    if (template == null) {
+      MustacheFactory mf = new DefaultMustacheFactory();
+      mustache = mf.compile(TEMPLATE_NAME);
+    } else {
+      mustache = template;
     }
-    return this.getDGSQuery(contraints);
   }
 
   @Override
-  public String getDGSQuery(ASTConstraint... contraints)
-  throws DGSException {
+  public String getDGSQueryWithLimit(int limit) {
+    dgs.getRecommendationQuery().setLimit(limit);
+    return this.getDGSQuery();
+  }
+
+  @Override
+  public String getDGSQuery() {
     if (dgsQuery == null) {
-      try {
-        if (contraints != null && contraints.length != 0) {
-          // TODO: add possible constraints to the query
-          ast.getQuery().getWhereClause();
-        }
-        dgsQuery = AST2TextTranslator.translate(ast);
-      } catch (VisitorException e) {
-        throw new DGSException(e);
-      }
+      writer.getBuffer().setLength(0);
+      dgsQuery = mustache.execute(writer, dgs.getRecommendationQuery()).toString();
     }
     return dgsQuery;
   }
@@ -76,35 +87,23 @@ implements QueryProcessor {
   @Override
   public void load(String query)
   throws DGSException {
-    this.load(query, null);
-  }
-
-  @Override
-  public void load(String query, List<String> varsToProject)
-  throws DGSException {
     try {
       dgsQuery = null;
-      pofMetadata = null;
       ast = SyntaxTreeBuilder.parseQuery(query);
-      pofMetadata = SparqlToDGSQuery.process(ast, varsToProject);
-      type = SparqlToDGSQuery.getRecommendationType();
-    } catch (ParseException e) {
-      throw new DGSException(e);
-    } catch (VisitorException e) {
-      throw new DGSException(e);
-    } catch (MalformedQueryException e) {
+      dgs.process(ast);
+    } catch (Exception e) {
       throw new DGSException(e);
     }
   }
 
   @Override
   public POFMetadata getPofASTMetadata() {
-    return pofMetadata;
+    return dgs.getPOFMetadata();
   }
 
   @Override
   public RecommendationType getRecommendationType() {
-    return type;
+    return dgs.getRecommendationType();
   }
 
 }

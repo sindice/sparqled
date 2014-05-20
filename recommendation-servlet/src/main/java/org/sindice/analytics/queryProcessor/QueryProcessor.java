@@ -17,15 +17,8 @@
  */
 package org.sindice.analytics.queryProcessor;
 
-import java.util.List;
-
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.sindice.query.parser.sparql.ast.ASTConstraint;
-import org.openrdf.sindice.query.parser.sparql.ast.ParseException;
 import org.openrdf.sindice.query.parser.sparql.ast.SimpleNode;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.openrdf.sindice.query.parser.sparql.ast.TokenMgrError;
-import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 /**
  * 
@@ -52,57 +45,29 @@ public interface QueryProcessor {
   }
 
   /**
-   * Parse a query, perform the mapping to a Data Graph Summary query and reduce
+   * Parses a query, perform the mapping to a Data Graph Summary query and reduce
    * its scope.
    * 
    * @param query
-   * @throws VisitorException
-   * @throws MalformedQueryException
-   * @throws ParseException
-   * @throws VisitorException
-   * @throws MalformedQueryException
-   * @throws ParseException
-   * @throws TokenMgrError
    */
   public void load(String query)
   throws DGSException;
 
   /**
-   * Parse a query, perform the mapping to a Data Graph Summary query and reduce
-   * its scope.
-   * 
-   * @param query
-   * @param varsToProject The variables to project in the DataGraphSummary query (By Default, it is the POF)
-   * @throws MalformedQueryException
-   * @throws VisitorException
-   * @throws TokenMgrError
-   * @throws ParseException
+   * Returns the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
+   * Only valid after the call to {@link #load(String)}.
    */
-  public void load(String query, List<String> varsToProject)
-  throws DGSException;
+  public String getDGSQuery();
 
   /**
-   * Return the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
-   * Only valid after the call to load.
-   * @return
-   * @throws VisitorException 
+   * Returns the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
+   * Only valid after the call to {@link #load(String)}. Add a limit clause to the query.
    */
-  public String getDGSQuery(ASTConstraint... contraints)
-  throws DGSException;
+  public String getDGSQueryWithLimit(int limit);
 
   /**
-   * Return the Data Graph Summary query from the one passed in {@link AbstractQueryProcessor#load(String)}.
-   * Only valid after the call to load. Add a limit clause to the query.
-   * @return
-   * @throws VisitorException 
-   */
-  public String getDGSQueryWithLimit(int limit, ASTConstraint... contraints)
-  throws DGSException;
-
-  /**
-   * returns a list of metadata for the given field,
+   * Returns a list of metadata for the given field,
    * associated to the POF while building the AST.
-   * @return
    */
   public POFMetadata getPofASTMetadata();
 

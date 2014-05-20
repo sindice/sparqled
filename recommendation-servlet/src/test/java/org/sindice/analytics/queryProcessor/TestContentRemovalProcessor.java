@@ -40,7 +40,7 @@ public class TestContentRemovalProcessor {
   throws Exception {
     ast = null;
     AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
-    ASTVarGenerator.reset();
+    SparqlVarGenerator.reset();
   }
 
   @Test
@@ -50,7 +50,7 @@ public class TestContentRemovalProcessor {
     ast = SyntaxTreeBuilder.parseQuery(q);
     ContentRemovalProcessor.process(ast);
 
-    final String[] vars = ASTVarGenerator.getCurrentVarNames();
+    final String[] vars = SparqlVarGenerator.getCurrentVarNames();
     assertEquals(3, vars.length);
     final String expectedAst = "QueryContainer\n" +
                                 " SelectQuery\n" +
@@ -85,7 +85,6 @@ public class TestContentRemovalProcessor {
                                 "       Var (p)\n" +
                                 "       ObjectList\n" +
                                 "        Var (" + vars[2] + ")";
-
 
     assertEquals(expectedAst, ast.dump(""));
   }
