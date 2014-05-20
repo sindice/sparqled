@@ -86,7 +86,6 @@ public class TestContentRemovalProcessor {
                                 "       ObjectList\n" +
                                 "        Var (" + vars[2] + ")";
 
-
     assertEquals(expectedAst, ast.dump(""));
   }
 

@@ -17,6 +17,7 @@ import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTString;
 import org.openrdf.sindice.query.parser.sparql.ast.ASTVar;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilderVisitor;
 import org.openrdf.sindice.query.parser.sparql.ast.VisitorException;
 
 import com.github.mustachejava.DefaultMustacheFactory;
@@ -24,7 +25,7 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 
 /**
- * 
+ * Provides helper methods for testing a {@link RecommendationQuery}.
  */
 public class SparqlTranslationHelper {
 
@@ -36,11 +37,26 @@ public class SparqlTranslationHelper {
     mustache = mf.compile(DGSQueryProcessor.TEMPLATE_NAME);
   }
 
-  private String getQuery(RecommendationQuery rq) {
+  /**
+   * Returns the SPARQL query by using the {@link Mustache} template {@link DGSQueryProcessor#TEMPLATE_NAME}.
+   * @param rq the {@link RecommendationQuery}
+   * @return the SPARQL query for rq
+   */
+  public String getQuery(RecommendationQuery rq) {
     w.getBuffer().setLength(0);
     return mustache.execute(w, rq).toString();
   }
 
+  /**
+   * This {@link SyntaxTreeBuilderVisitor} collects the structural elements of the SPARQL query.
+   * A structural element is either:
+   * <ul>
+   * <li>a variable name;</li>
+   * <li>an IRI;</li>
+   * <li>a literal; or</li>
+   * <li>a qualified name.</li>
+   * </ul>
+   */
   private static class SparqlStructure extends ASTVisitorBase {
 
     final List<String> elements = new ArrayList<String>();
@@ -75,15 +91,20 @@ public class SparqlTranslationHelper {
 
   }
 
+  /**
+   * Asserts the actual and expected {@link RecommendationQuery}s are similar.
+   * {@link RecommendationQuery}s are similar if all their variables, predicates, and classes are equal. A variable name
+   * in the actual query can be different than in the expected. However, it should map to a variable in the expected
+   * query that has the same patterns.
+   * @param expected the expected {@link RecommendationQuery}
+   * @param actual the actual {@link RecommendationQuery} as returned by {@link SparqlTranslationHelper}
+   */
   public void assertDGSQuery(RecommendationQuery expected, RecommendationQuery actual)
   throws Exception {
-    StringWriter w = new StringWriter();
-
     SparqlStructure expectedStruct = new SparqlStructure();
     ASTQueryContainer expectedAst = SyntaxTreeBuilder.parseQuery(getQuery(expected));
     expectedStruct.visit(expectedAst, null);
 
-    w.getBuffer().setLength(0);
     SparqlStructure actualStruct = new SparqlStructure();
     ASTQueryContainer actualAst = SyntaxTreeBuilder.parseQuery(getQuery(actual));
     actualStruct.visit(actualAst, null);

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sindice.analytics.ranking;
+package org.sindice.analytics.queryProcessor;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -41,8 +41,8 @@ import org.openrdf.model.Resource;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.ntriples.NTriplesUtil;
 import org.openrdf.sail.memory.model.MemValueFactory;
-import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
-import org.sindice.analytics.queryProcessor.QueryProcessor;
+import org.sindice.analytics.ranking.DGSQueryResultProcessor;
+import org.sindice.analytics.ranking.Label;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.sesame.backend.SesameBackend;
@@ -75,6 +75,11 @@ public class TestDGSQueryProcessor {
     init(backend, "./src/test/resources/testDGSQueryProcessor/test-data-graph-summary_cascade.nt.gz");
   }
 
+  /**
+   * Load the {@link SesameBackend} with the given RDF data in the {@link RDFFormat#NTRIPLES} format.
+   * @param backend the {@link SesameBackend} instance
+   * @param input the path to the RDF data
+   */
   private static void init(SesameBackend<Label> backend, String input)
   throws Exception {
     AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
@@ -272,6 +277,15 @@ public class TestDGSQueryProcessor {
     executeQuery(backend, query, expected, 0, 0);
   }
 
+  /**
+   * Asserts the solutions of the query are equal to the expected ones.
+   * @param backend the {@link SesameBackend} loaded with test data
+   * @param query a SPARQL query
+   * @param expected the {@link List} of expected {@link Label}s for the {@link DGSQueryProcessor translated} query
+   * @param limit the value for the LIMIT clause of the translated query
+   * @param pagination set the {@link QueryIterator#setPagination(int) pagination}
+   * @throws Exception if an error occurred while translating the query, or while executing the translated query
+   */
   private void executeQuery(SesameBackend<Label> backend, String query, List<Label> expected, int limit, int pagination)
   throws Exception {
     final List<Label> actualLabels = new ArrayList<Label>();

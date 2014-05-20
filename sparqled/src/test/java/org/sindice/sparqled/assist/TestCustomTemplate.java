@@ -565,7 +565,7 @@ public class TestCustomTemplate {
     assertTrue(jsonMap.containsKey(ResponseStructure.RESULTS) &&
                jsonMap.get(ResponseStructure.RESULTS) instanceof Map);
     // check the number of results
-    final Map results = (Map) jsonMap.get(ResponseStructure.RESULTS);
+    final Map<String, Object> results = (Map<String, Object>) jsonMap.get(ResponseStructure.RESULTS);
     assertTrue(results.containsKey(ResponseStructure.COUNT));
     assertEquals(expectedResults.size(), results.get(ResponseStructure.COUNT));
 
