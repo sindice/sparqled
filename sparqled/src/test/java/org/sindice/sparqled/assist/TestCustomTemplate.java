@@ -28,9 +28,13 @@ import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.DATASET_L
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.DOMAIN_URI_PREFIX;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.LIMIT;
+import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.LOWER_BOUND;
+import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.MIN_RECS;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.PAGINATION;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.RECOMMENDER_WRAPPER;
+import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.STEP;
 import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.TEMPLATE;
+import static org.sindice.sparqled.assist.AssistedSparqlEditorListener.UPPER_BOUND;
 import info.aduna.io.FileUtil;
 
 import java.io.File;
@@ -100,6 +104,10 @@ public class TestCustomTemplate {
     aseTester.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
     aseTester.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
     aseTester.setAttribute(RECOMMENDER_WRAPPER + LIMIT, 0);
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + UPPER_BOUND, 0);
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + LOWER_BOUND, 0);
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + MIN_RECS, 1);
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + STEP, 10);
     /*
      * Comment it to prevent it from creating the sindice.home_IS_UNDEFINED folder, or from writing into sindice.home/ROOT
      * TODO: Update the Listener to enable a Test mode -> the log files are created in a temp folder

@@ -44,19 +44,24 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorListener
 extends SparqledContextListener {
 
-  private static final Logger    logger                = LoggerFactory.getLogger(AssistedSparqlEditorListener.class);
+  private static final Logger    logger              = LoggerFactory.getLogger(AssistedSparqlEditorListener.class);
 
-  public static final String     RECOMMENDER_WRAPPER   = "recommender";
+  public static final String     RECOMMENDER_WRAPPER = "recommender";
 
-  public static final String     CLASS_ATTRIBUTES      = "classAttributes";
-  public static final String     BACKEND               = "backend";
-  public static final String     BACKEND_ARGS          = "backendArgs";
-  public static final String     PAGINATION            = "pagination";
-  public static final String     LIMIT                 = "limit";
-  public static final String     DOMAIN_URI_PREFIX     = "domainUriPrefix";
-  public static final String     DATASET_LABEL_DEF     = "datasetLabelDef";
-  public static final String     GRAPH_SUMMARY_GRAPH   = "graphSummaryGraph";
-  public static final String     TEMPLATE              = "template";
+  public static final String     CLASS_ATTRIBUTES    = "classAttributes";
+  public static final String     BACKEND             = "backend";
+  public static final String     BACKEND_ARGS        = "backendArgs";
+  public static final String     PAGINATION          = "pagination";
+  public static final String     LIMIT               = "limit";
+  public static final String     DOMAIN_URI_PREFIX   = "domainUriPrefix";
+  public static final String     DATASET_LABEL_DEF   = "datasetLabelDef";
+  public static final String     GRAPH_SUMMARY_GRAPH = "graphSummaryGraph";
+  public static final String     TEMPLATE            = "template";
+
+  public static final String     UPPER_BOUND         = "upperBound";
+  public static final String     LOWER_BOUND         = "lowerBound";
+  public static final String     MIN_RECS            = "minRecs";
+  public static final String     STEP                = "step";
 
   private MemcachedClientWrapper wrapper;
 
@@ -97,18 +102,24 @@ extends SparqledContextListener {
     final String limit = doGetParameter(config, LIMIT, "1000");
     setParameter(context, LIMIT, Integer.valueOf(limit));
 
+    setParameter(context, UPPER_BOUND, Integer.valueOf(doGetParameter(config, UPPER_BOUND, "0")));
+    setParameter(context, LOWER_BOUND, Integer.valueOf(doGetParameter(config, LOWER_BOUND, "0")));
+    setParameter(context, MIN_RECS, Integer.valueOf(doGetParameter(config, MIN_RECS, "10")));
+    setParameter(context, STEP, Integer.valueOf(doGetParameter(config, STEP, "10")));
+
     final String[] classAttributes = doGetParameters(config, CLASS_ATTRIBUTES, AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE);
     setParameter(context, CLASS_ATTRIBUTES, classAttributes);
 
-    final String useMemcached = doGetParameter(config, "USE_MEMCACHED", "false");
+    final String useMemcached = getParameter(config, "USE_MEMCACHED", "false");
 
     if (Boolean.parseBoolean(useMemcached)) {
-      final String memcachedHost = doGetParameter(config, "MEMCACHED_HOST", "localhost");
-      final String memcachedPort = doGetParameter(config, "MEMCACHED_PORT", "11211");
+      final String memcachedHost = getParameter(config, "MEMCACHED_HOST", "localhost");
+      final String memcachedPort = getParameter(config, "MEMCACHED_PORT", "11211");
       try {
         final List<InetSocketAddress> addresses = AddrUtil.getAddresses(memcachedHost + ":" + memcachedPort);
         wrapper = new MemcachedClientWrapper(new MemcachedClient(addresses));
-        sce.getServletContext().setAttribute(MemcachedClientWrapper.class.getName(), wrapper);
+        context.setAttribute(MemcachedClientWrapper.class.getName(), wrapper);
+        logger.info("Memcached Initialized");
       } catch (IOException e) {
         logger.error("Could not initialize memcached !!!", e);
       }

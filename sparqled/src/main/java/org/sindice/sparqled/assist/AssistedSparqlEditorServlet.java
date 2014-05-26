@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -40,6 +42,8 @@ import org.sindice.core.sesame.backend.SesameBackend;
 import org.sindice.core.sesame.backend.SesameBackendException;
 import org.sindice.core.sesame.backend.SesameBackendFactory;
 import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
+import org.sindice.sparqled.CacheKeyHelper;
+import org.sindice.sparqled.MemcachedClientWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,16 +53,25 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorServlet
 extends HttpServlet {
 
-  private static final long    serialVersionUID = 4137296200305461786L;
+  private static final long      serialVersionUID   = 4137296200305461786L;
 
-  private static final Logger  logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
+  private static final Logger    logger             = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String   DGS_GRAPH        = "dg";
+  public static final String     DGS_GRAPH          = "dg";
 
-  private SparqlRecommender    recommender;
-  private SesameBackend<Label> dgsBackend;
-  private int                  pagination;
-  private int                  limit;
+  private static final int       DEFAULT_EXP_IN_SEC = 3600 * 24;
+  private int                    expTimeInSeconds   = DEFAULT_EXP_IN_SEC;
+  private MemcachedClientWrapper mcw;
+
+  private SparqlRecommender      recommender;
+  private SesameBackend<Label>   dgsBackend;
+  private int                    pagination;
+  private int                    limit;
+
+  private int                    upperBound;
+  private int                    lowerBound;
+  private int                    minRecs;
+  private int                    step;
 
   @Override
   public void init(ServletConfig config)
@@ -86,6 +99,12 @@ extends HttpServlet {
     // Set the summary named graph
     DataGraphSummaryVocab.setGraphSummaryGraph((String) getParameter(c, AssistedSparqlEditorListener.GRAPH_SUMMARY_GRAPH));
 
+    // To get results in steps
+    upperBound = (Integer) getParameter(c, AssistedSparqlEditorListener.UPPER_BOUND);
+    lowerBound = (Integer) getParameter(c, AssistedSparqlEditorListener.LOWER_BOUND);
+    minRecs = (Integer) getParameter(c, AssistedSparqlEditorListener.MIN_RECS);
+    step = (Integer) getParameter(c, AssistedSparqlEditorListener.STEP);
+
     AnalyticsClassAttributes.initClassAttributes(classAttributes);
     try {
       final DGSQueryResultProcessor qrp = new DGSQueryResultProcessor();
@@ -98,6 +117,7 @@ extends HttpServlet {
     } catch (Exception e) {
       logger.error("Failed to start the DGS backend", e);
     }
+    mcw = (MemcachedClientWrapper) getServletContext().getAttribute(MemcachedClientWrapper.class.getName());
   }
 
   private Object getParameter(ServletContext c, String param) {
@@ -160,10 +180,31 @@ extends HttpServlet {
    */
   private void getRecommendationAsJson(HttpServletRequest request, HttpServletResponse response)
   throws IOException {
+    final String json;
     final PrintWriter out = response.getWriter();
-
     response.setContentType("application/json");
-    out.print(computeResponse(request));
+
+    if(mcw != null ){
+      // first compute key 
+      Map<String, String> params = new LinkedHashMap<String,String>();
+      String query = request.getParameter(Protocol.QUERY_PARAM_NAME);
+      params.put("query", CacheKeyHelper.prepareQueryForKeyComputation(query));
+      String key = MemcachedClientWrapper.getCacheKey(params);
+      logger.debug("computed following key:[{}] for query [{}]",key,query);
+      if (mcw.get(key)!=null) {
+        json = (String) mcw.get(key);
+        logger.debug("Got recomendations from cache");
+      } else {
+        json = computeResponse(request);
+        logger.debug("Computed recomendations and put into cache");
+        mcw.add(key, expTimeInSeconds, json);
+      }
+    } else {
+      json = computeResponse(request);
+      logger.debug("Computed recomendations");
+    }
+
+    out.print(json);
     out.flush();
     out.close();
   }
@@ -177,7 +218,8 @@ extends HttpServlet {
       final ResponseWriter<String> responseWriter = new JsonResponseWriter();
       final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
       // Get recommendation
-      response = recommender.run(dgsBackend, responseWriter, query, pagination, limit);
+      response = recommender
+      .run(dgsBackend, responseWriter, query, pagination, limit, upperBound, lowerBound, minRecs, step);
     }
     return response;
   }

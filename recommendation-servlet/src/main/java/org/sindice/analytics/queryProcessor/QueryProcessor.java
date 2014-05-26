@@ -65,6 +65,8 @@ public interface QueryProcessor {
    */
   public String getDGSQueryWithLimit(int limit);
 
+  public String getDGSQueryWithBound(int bound, int limit);
+
   /**
    * Returns a list of metadata for the given field,
    * associated to the POF while building the AST.

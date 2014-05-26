@@ -84,6 +84,7 @@ public class RecommendationQuery {
     String resource;
     String dataset;
     String type;
+    private int bound;
 
     public Type() {}
 
@@ -105,6 +106,14 @@ public class RecommendationQuery {
      */
     public void setResource(String resource) {
       this.resource = resource;
+    }
+
+    Integer bound() {
+      return bound == 0 ? null : bound;
+    }
+
+    public void setBound(int bound) {
+      this.bound = bound;
     }
 
     /**
@@ -132,7 +141,8 @@ public class RecommendationQuery {
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder();
-      sb.append("dataset=").append(dataset).append(" resource=").append(resource).append(" type=").append(type);
+      sb.append("dataset=").append(dataset).append(" resource=").append(resource)
+      .append(" type=").append(type).append(" bound=").append(bound);
       return sb.toString();
     }
 
@@ -161,6 +171,7 @@ public class RecommendationQuery {
     String source;
     String predicate;
     String target;
+    private int bound;
 
     public Edge() {}
 
@@ -170,6 +181,17 @@ public class RecommendationQuery {
       this.source = source;
       this.predicate = predicate;
       this.target = target;
+    }
+
+    /**
+     * @param bound the bound to set
+     */
+    public void setBound(int bound) {
+      this.bound = bound;
+    }
+
+    Integer bound() {
+      return bound == 0 ? null : bound;
     }
 
     /**
@@ -240,7 +262,8 @@ public class RecommendationQuery {
     public String toString() {
       StringBuilder sb = new StringBuilder();
       sb.append("dataset=").append(dataset).append(" resource=").append(resource)
-        .append(" source=").append(source).append(" predicate=").append(predicate).append(" target=").append(target);
+        .append(" source=").append(source).append(" predicate=").append(predicate).append(" target=").append(target)
+        .append(" bound=").append(bound);
       return sb.toString();
     }
 

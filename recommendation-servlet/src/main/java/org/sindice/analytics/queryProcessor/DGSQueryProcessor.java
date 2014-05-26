@@ -21,6 +21,8 @@ import java.io.StringWriter;
 
 import org.openrdf.sindice.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
+import org.sindice.analytics.queryProcessor.RecommendationQuery.Edge;
+import org.sindice.analytics.queryProcessor.RecommendationQuery.Type;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
@@ -81,6 +83,20 @@ implements QueryProcessor {
       writer.getBuffer().setLength(0);
       dgsQuery = mustache.execute(writer, dgs.getRecommendationQuery()).toString();
     }
+    return dgsQuery;
+  }
+
+  @Override
+  public String getDGSQueryWithBound(int bound, int limit) {
+    dgs.getRecommendationQuery().setLimit(limit);
+    for (Edge e : dgs.getRecommendationQuery().edge()) {
+      e.setBound(bound);
+    }
+    for (Type t : dgs.getRecommendationQuery().type()) {
+      t.setBound(bound);
+    }
+    writer.getBuffer().setLength(0);
+    dgsQuery = mustache.execute(writer, dgs.getRecommendationQuery()).toString();
     return dgsQuery;
   }
 

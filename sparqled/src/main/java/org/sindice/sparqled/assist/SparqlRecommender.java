@@ -17,6 +17,11 @@
  */
 package org.sindice.sparqled.assist;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+
 import org.openrdf.sindice.query.parser.sparql.ast.SyntaxTreeBuilder;
 import org.sindice.analytics.queryProcessor.DGSException;
 import org.sindice.analytics.queryProcessor.DGSQueryProcessor;
@@ -45,10 +50,23 @@ public final class SparqlRecommender {
 
   private final Mustache template;
 
+  private static class SparqledMustacheFactory extends DefaultMustacheFactory {
+
+    @Override
+    public Reader getReader(String resourceName) {
+      try {
+        return new BufferedReader(new FileReader(resourceName));
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+  }
+
   public SparqlRecommender(String pathToTemplate) {
     if (pathToTemplate != null) {
       logger.info("Loading template at [{}]", pathToTemplate);
-      MustacheFactory mf = new DefaultMustacheFactory();
+      MustacheFactory mf = new SparqledMustacheFactory();
       template = mf.compile(pathToTemplate);
     } else {
       logger.info("Loading default template");
@@ -65,7 +83,15 @@ public final class SparqlRecommender {
    * @param limit
    * @return
    */
-  public <C> C run(SesameBackend<Label> dgsBackend, ResponseWriter<C> response, String query, int pagination, int limit) {
+  public <C> C run(SesameBackend<Label> dgsBackend,
+                   ResponseWriter<C> response,
+                   String query,
+                   int pagination,
+                   int limit,
+                   int upperBound,
+                   int lowerBound,
+                   int minRecs,
+                   int step) {
     // TODO: Support queries with multiple FROM clauses
     RecommendationType recommendationType = RecommendationType.NONE;
 
@@ -87,42 +113,48 @@ public final class SparqlRecommender {
       final String qname = (String) meta.pofNode.getMetadata(SyntaxTreeBuilder.Qname);
       recommendationType = qp.getRecommendationType();
 
-      final String dgsQuery;
-      if (limit == 0) {
-        dgsQuery = qp.getDGSQuery();
-      } else {
-        dgsQuery = qp.getDGSQueryWithLimit(limit);
-      }
-      logger.debug("RecommendationType: {}\nDGS query: [{}]", recommendationType, dgsQuery);
       if (!recommendationType.equals(RecommendationType.NONE)) {
-        /*
-         * Get the list of candidates and rank them
-         */
-        final QueryIterator<Label> qrp = dgsBackend.submit(dgsQuery);
-        qrp.setPagination(pagination);
-        while (qrp.hasNext()) {
-          final Label label = qrp.next();
-
-          if (label == null) {
-            logger.debug("No Recommendation for the label: {}", label);
-            continue;
+        do {
+          final String dgsQuery;
+          if (limit == 0 && upperBound == 0) {
+            dgsQuery = qp.getDGSQuery();
+          } else if (upperBound == 0) {
+            dgsQuery = qp.getDGSQueryWithLimit(limit);
+          } else {
+            dgsQuery = qp.getDGSQueryWithBound(upperBound, limit);
           }
-          // QName filtering
-          if (qname != null) {
-            if (!label.getLabel().startsWith(qname)) {
+          logger.debug("RecommendationType: {}\nDGS query: [{}]", recommendationType, dgsQuery);
+          /*
+           * Get the list of candidates and rank them
+           */
+          final QueryIterator<Label> qrp = dgsBackend.submit(dgsQuery);
+          qrp.setPagination(pagination);
+          while (qrp.hasNext()) {
+            final Label label = qrp.next();
+
+            if (label == null) {
+              logger.debug("No Recommendation for the label: {}", label);
               continue;
             }
-            // recommend only the localname
-            label.setType(LabelType.QNAME);
-            label.setLabel(label.getLabel().replaceFirst(qname, ""));
+            // QName filtering
+            if (qname != null) {
+              if (!label.getLabel().startsWith(qname)) {
+                continue;
+              }
+              // recommend only the localname
+              label.setType(LabelType.QNAME);
+              label.setLabel(label.getLabel().replaceFirst(qname, ""));
+            }
+            lr.addLabel(label);
+            logger.debug("No Recommendation for the label: {}", label);
           }
-          logger.debug("Label=[{}]", label);
-          lr.addLabel(label);
-        }
-        // Check if there are some recommendations
-        if (lr.size() == 0) {
-          return response.createEmptyAnswer("No recommendation from the given position");
-        }
+          // Check if there are some recommendations
+          if (lr.size() == 0) {
+            return response.createEmptyAnswer("No recommendation from the given position");
+          }
+          logger.debug("Bound=[{}] Number-of-recommendations=[{}]", upperBound, lr.size());
+          upperBound /= step;
+        } while (lr.size() < minRecs && upperBound > lowerBound);
       } else {
         return response.createEmptyAnswer("Cannot compute recommendation from the given position");
       }
