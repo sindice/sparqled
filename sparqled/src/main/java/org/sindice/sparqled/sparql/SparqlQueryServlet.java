@@ -35,7 +35,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import org.openrdf.http.protocol.Protocol;
-import org.openrdf.model.impl.StatementImpl;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
+import org.openrdf.query.Binding;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.parser.sparql.ast.ASTAskQuery;
 import org.openrdf.query.parser.sparql.ast.ASTConstructQuery;
@@ -176,9 +181,9 @@ extends HttpServlet {
       if (ast.getQuery() instanceof ASTSelectQuery) {
         parseSelect(response, queryIt);
       } else if (ast.getQuery() instanceof ASTConstructQuery) {
-        parseConstruct(response, queryIt);
+        parseGraphResult(response, queryIt);
       } else if (ast.getQuery() instanceof ASTDescribeQuery) {
-        parseDescribe(response, queryIt);
+        parseGraphResult(response, queryIt);
       } else if (ast.getQuery() instanceof ASTAskQuery) {
         parseAsk(response, queryIt);
       }
@@ -215,26 +220,19 @@ extends HttpServlet {
     try {
       while (queryIt.hasNext()) {
         // Find the correct format of the return value.
-        Object result = queryIt.next();
+        BindingSet result = queryIt.next();
         Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
 
-        BindingSet bindingSet = (BindingSet) result;
-        for (String name : queryIt.getBindingNames()) {
-          if (preprocessing != null &&
-              name.startsWith(preprocessing.getVarPrefix()) &&
-              name.endsWith(preprocessing.getVarSuffix())) {
+        for (Binding binding : result) {
+          if (preprocessing != null && binding.getName().startsWith(preprocessing.getVarPrefix()) &&
+          binding.getName().endsWith(preprocessing.getVarSuffix())) {
             /*
              * Filter additional SPARQL variables produced by
              * the preprocessing class
              */
             continue;
           }
-          if (bindingSet.hasBinding(name)) {
-            JSONObject node = new JSONObject();
-            node.put("type", "uri");
-            node.put("value", bindingSet.getValue(name).toString());
-            bindings.put(name, node);
-          }
+          bindings.put(binding.getName(), getSerializedValue(binding.getValue()));
         }
         results.accumulate("bindings", bindings);
       }
@@ -253,7 +251,6 @@ extends HttpServlet {
            */
           continue;
         }
-        logger.debug("name: " + name);
         head.accumulate("vars", name);
       }
       json.put("results", results);
@@ -266,14 +263,12 @@ extends HttpServlet {
       json.put("status", "ERROR");
       json.put("message", e.getLocalizedMessage());
     }
-    logger.debug(json.toString());
     out.print(json);
     out.flush();
     out.close();
   }
 
-  private void parseConstruct(HttpServletResponse response,
-                              final QueryIterator<BindingSet> queryIt)
+  private void parseGraphResult(HttpServletResponse response, final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -289,25 +284,13 @@ extends HttpServlet {
     try {
       while (queryIt.hasNext()) {
         // Find the correct format of the return value.
-        Object result = queryIt.next();
+        Statement st = (Statement) queryIt.next();
         Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
-        StatementImpl constructResult = (StatementImpl) result;
-        JSONObject node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getSubject().toString());
-        bindings.put("s", node);
-        node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getPredicate().toString());
-        bindings.put("p", node);
-        node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getObject().toString());
-        bindings.put("o", node);
+        bindings.put("s", getSerializedValue(st.getSubject()));
+        bindings.put("p", getSerializedValue(st.getPredicate()));
+        bindings.put("o", getSerializedValue(st.getObject()));
         results.accumulate("bindings", bindings);
-        logger.debug(constructResult.getSubject().toString() +
-                     constructResult.getPredicate().toString() +
-                     constructResult.getObject().toString());
+        logger.debug("s=[{}] p=[{}] o=[{}]", st.getSubject(), st.getPredicate(), st.getObject());
       }
       if (!results.containsKey("bindings")) {
         // handle empty select result
@@ -327,72 +310,41 @@ extends HttpServlet {
       json.put("status", "ERROR");
       json.put("message", e.getLocalizedMessage());
     }
-    logger.debug(json.toString());
     out.print(json);
     out.flush();
     out.close();
-
   }
 
-  private void parseDescribe(HttpServletResponse response,
-                             final QueryIterator<BindingSet> queryIt)
-  throws IOException {
-    final JSONObject json = new JSONObject();
-    final PrintWriter out = response.getWriter();
+  /**
+   * Returns a JSON object for the serialization of the result {@link Value}.
+   * @param v the {@link Value} of a {@link Binding}
+   * @return a {@link JSONObject} built according to
+   * <a href="http://www.w3.org/TR/rdf-sparql-json-res/#variable-binding-results">
+   * http://www.w3.org/TR/rdf-sparql-json-res/#variable-binding-results</a>
+   */
+  private JSONObject getSerializedValue(Value v) {
+    JSONObject node = new JSONObject();
 
-    // Parse the result to a JSON format
-    final JSONObject head = new JSONObject();
-    head.put("link", "[]");
-    JSONObject results = new JSONObject();
-
-    results.put("distinct", "false");
-    results.put("ordered", "true");
-
-    try {
-      while (queryIt.hasNext()) {
-        // Find the correct format of the return value.
-        Object result = queryIt.next();
-        Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
-        StatementImpl constructResult = (StatementImpl) result;
-        JSONObject node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getSubject().toString());
-        bindings.put("s", node);
-        node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getPredicate().toString());
-        bindings.put("p", node);
-        node = new JSONObject();
-        node.put("type", "uri");
-        node.put("value", constructResult.getObject().toString());
-        bindings.put("o", node);
-        results.accumulate("bindings", bindings);
-        logger.debug(constructResult.getSubject().toString() +
-                     constructResult.getPredicate().toString() +
-                     constructResult.getObject().toString());
+    node.put("value", v.stringValue());
+    if (v instanceof URI) {
+      node.put("type", "uri");
+    } else if (v instanceof BNode) {
+      node.put("type", "bnode");
+    } else {
+      final Literal lit = (Literal) v;
+      final String lang = lit.getLanguage();
+      final URI datatype = lit.getDatatype();
+      if (datatype != null) {
+        node.put("type", "typed-literal");
+        node.put("datatype", datatype.stringValue());
+      } else {
+        node.put("type", "literal");
+        if (lang != null) {
+          node.put("xml:lang", lang);
+        }
       }
-      if (!results.containsKey("bindings")) {
-        // handle empty select result
-        results.put("bindings", "[]");
-      }
-
-      head.accumulate("vars", "s");
-      head.accumulate("vars", "p");
-      head.accumulate("vars", "o");
-      json.put("results", results);
-
-      json.put("head", head);
-      json.put("status", "SUCCESS");
-      json.put("message", "");
-    } catch (Exception e) {
-      logger.error("Cannot compute the query.", e);
-      json.put("status", "ERROR");
-      json.put("message", e.getLocalizedMessage());
     }
-    logger.debug(json.toString());
-    out.print(json);
-    out.flush();
-    out.close();
+    return node;
   }
 
   private void parseAsk(HttpServletResponse response,

@@ -18,18 +18,27 @@
 package org.sindice.sparqled.sparql;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.sindice.sparqled.sparql.SparqlQueryServletListener.BACKEND;
 import static org.sindice.sparqled.sparql.SparqlQueryServletListener.BACKEND_ARGS;
 import static org.sindice.sparqled.sparql.SparqlQueryServletListener.SQS_WRAPPER;
+import static org.sindice.sparqled.sparql.SparqlResultsHelper.add;
+import static org.sindice.sparqled.sparql.SparqlResultsHelper.binding;
+import static org.sindice.sparqled.sparql.SparqlResultsHelper.bindings;
 
 import java.io.FileInputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +62,7 @@ public class TestSparqlQueryServlet {
   throws Exception {
     aseTester.setContextPath("/");
 
-    String input = "./src/test/resources/QueryBackend/test.nt.gz";
+    String input = "./src/test/resources/testSparqlQueryServlet/test.nt.gz";
     aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(input)));
     aseTester.setAttribute(MemorySesameServletHelper.FORMAT, RDFFormat.NTRIPLES);
     aseTester.addServlet(MemorySesameServletHelper.class, "/repo");
@@ -86,19 +95,20 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":[{\"p\":{\"type\""
-              + ":\"uri\",\"value\":\"http://opengraphprotocol.org/sch"
-              + "ema/firstName\"}},{\"p\":{\"type\":\"uri\",\"value\":"
-              + "\"http://opengraphprotocol.org/schema/type\"}},{\"p\":"
-              + "{\"type\":\"uri\",\"value\":\"http://opengraphprotocol."
-              + "org/schema/like\"}},{\"p\":{\"type\":\"uri\",\"value\":"
-              + "\"http://opengraphprotocol.org/schema/firstName\"}}"
-              + "]},\"head\":{\"link\":[],\"vars\":\"p\"},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/like"))
+      ));
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -107,35 +117,89 @@ public class TestSparqlQueryServlet {
   @Test
   public void testQueryOrdered()
   throws Exception {
-    final String query = "SELECT ?s ?p WHERE { ?s ?p ?o . }ORDER BY ?s ?p";
+    final String query = "SELECT ?s ?p WHERE { ?s ?p ?o . } ORDER BY ?s ?p";
 
     PostMethod post = new PostMethod(aseBaseUrl);
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\",\"ordered\":\"true\",\"bindings\":["
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/like\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/b\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/b\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/b\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/think_at\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/b\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/c\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/c\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/test\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/c\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/d\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/fail\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/e\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/f\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/do\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/f\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/g\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/test\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/g\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/g\"},\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"}}]},"
-              + "\"head\":{\"link\":[],\"vars\":[\"s\",\"p\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/like"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/b")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/b")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/b")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/think_at"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/b")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/c")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/c")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/test"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/c")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/d")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/fail"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/e")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/f")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/do"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/f")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/g")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/test"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/g")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/g")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type"))
+      ));
+      assertResults(post, expected, true);
     } else {
       fail("code=" + code);
     }
@@ -151,16 +215,14 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":[{\"p\":"
-              + "{\"type\":\"uri\",\"value\":\"http://opengraphprotocol."
-              + "org/schema/like\"}},{\"p\":{\"type\":\"uri\",\"value\":"
-              + "\"http://opengraphprotocol.org/schema/firstName\"}}"
-              + "]},\"head\":{\"link\":[],\"vars\":\"p\"},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName"))
+      ));
+      expected.add(bindings(
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/like"))
+      ));
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -175,16 +237,13 @@ public class TestSparqlQueryServlet {
     post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":{"
-              + "\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Richard\\\"\"}}},"
-              + "\"head\":{\"link\":[],\"vars\":[\"s\",\"p\",\"o\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName")),
+        binding("o", add("type", "literal"), add("value", "Richard"))
+      ));
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -200,12 +259,8 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":[]},\"head\":{\"link\":[],\"vars\":\"p\"},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -221,12 +276,8 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":[]},\"head\":{\"link\":[],\"vars\":[\"s\",\"p\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -242,12 +293,8 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\","
-              + "\"ordered\":\"true\",\"bindings\":[]},\"head\":{\"link\":[],\"vars\":[\"s\",\"o\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -359,7 +406,6 @@ public class TestSparqlQueryServlet {
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
       String ref = "{\"boolean\":\"false\",\"head\":{\"link\":[]},\"status\":\"SUCCESS\",\"message\":\"\"}";
-
       assertEquals(ref, json.toString());
     } else {
       fail("code=" + code);
@@ -377,19 +423,18 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\",\"ordered\":\"true\","
-              + "\"bindings\":["
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Richard\\\"\"}},"
-              + "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"},"
-              + "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/type\"},"
-              + "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Thing\\\"\"}}]}"
-              + ",\"head\":{\"link\":[],\"vars\":[\"s\",\"p\",\"o\"]},"
-              + "\"status\":\"SUCCESS\",\"message\":\"\"}";
-
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName")),
+        binding("o", add("type", "literal"), add("value", "Richard"))
+      ));
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/type")),
+        binding("o", add("type", "literal"), add("value", "Thing"))
+      ));
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
     }
@@ -407,16 +452,90 @@ public class TestSparqlQueryServlet {
 
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
-      final String json = post.getResponseBodyAsString();
-      String ref = "{\"results\":{\"distinct\":\"false\",\"ordered\":\"true\",\"bindings\":" +
-          "{\"s\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/a\"}," +
-          "\"p\":{\"type\":\"uri\",\"value\":\"http://opengraphprotocol.org/schema/firstName\"}," +
-          "\"o\":{\"type\":\"uri\",\"value\":\"\\\"Richard\\\"\"}}}," +
-          "\"head\":{\"link\":[],\"vars\":[\"s\",\"p\",\"o\"]}," +
-          "\"status\":\"SUCCESS\",\"message\":\"\"}";
-      assertEquals(ref, json.toString());
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("s", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/a")),
+        binding("p", add("type", "uri"), add("value", "http://opengraphprotocol.org/schema/firstName")),
+        binding("o", add("type", "literal"), add("value", "Richard"))
+      ));
+      assertResults(post, expected, false);
     } else {
       fail("code=" + code);
+    }
+  }
+
+  @Test
+  public void testVariableType()
+  throws Exception {
+    String input = "src/test/resources/testSparqlQueryServlet/testVariableType/test.nt.gz";
+
+    aseTester.stop();
+    String url = aseTester.createSocketConnector(true);
+    final String repoUrl = url + "/repo";
+
+    aseTester.setAttribute(SQS_WRAPPER + BACKEND, BackendType.HTTP.toString());
+    aseTester.setAttribute(SQS_WRAPPER + BACKEND_ARGS, new String[] { repoUrl });
+    aseTester.addServlet(SparqlQueryServlet.class, "/SparqlEditorServlet");
+
+    aseBaseUrl = url + "/SparqlEditorServlet";
+    aseTester.setAttribute(MemorySesameServletHelper.FILE_STREAM, new GZIPInputStream(new FileInputStream(input)));
+    aseTester.start();
+
+    final String query = "select ?o { ?s ?p ?o }";
+
+    PostMethod post = new PostMethod(aseBaseUrl);
+    post.addParameter(Protocol.QUERY_PARAM_NAME, URLEncoder.encode(query, "UTF-8"));
+
+    final int code = client.executeMethod(post);
+    if (code == HttpStatus.SC_OK) {
+      final List<Map<String, Object>> expected = new ArrayList<Map<String,Object>>();
+      expected.add(bindings(
+        binding("o", add("type", "literal"), add("value", "123"))
+      ));
+      expected.add(bindings(
+        binding("o", add("type", "literal"), add("value", "Coeur"), add("xml:lang", "fr"))
+      ));
+      expected.add(bindings(
+        binding("o", add("type", "typed-literal"), add("value", "123"), add("datatype", ":long"))
+      ));
+      expected.add(bindings(
+        binding("o", add("type", "bnode"), add("value", "b1"))
+      ));
+      assertResults(post, expected, false);
+    } else {
+      fail("code=" + code);
+    }
+  }
+
+  /**
+   * Asserts the results returned by {@link SparqlQueryServlet}
+   * @param post the {@link PostMethod} with the response returned by {@link SparqlQueryServlet}
+   * @param expected the expected list of bindings
+   * @param inOrder <code>true</code> if the order of bindings in the response should be asserted. If <code>false</code>,
+   * the order of bindings do not matter.
+   * @throws Exception
+   * @see {@link SparqlResultsHelper}
+   */
+  private void assertResults(PostMethod post, List<Map<String, Object>> expected, boolean inOrder)
+  throws Exception {
+    final ObjectMapper mapper = new ObjectMapper();
+    final Map<String, Object> map = mapper.readValue(post.getResponseBodyAsStream(), Map.class);
+
+    assertEquals("SUCCESS", map.get("status"));
+
+    final Object actual = ((Map) map.get("results")).get("bindings");
+
+    if (actual instanceof List) {
+      final List<Map<String, Object>> list = (List<Map<String,Object>>) actual;
+      if (inOrder) {
+        assertEquals(expected, list);
+      } else {
+        for (Map<String, Object> l : expected) {
+          assertThat(list, hasItem(l));
+        }
+      }
+    } else {
+      assertEquals(expected.get(0), actual);
     }
   }
 

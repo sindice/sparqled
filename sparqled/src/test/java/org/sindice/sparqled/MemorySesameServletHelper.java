@@ -35,23 +35,21 @@ import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.resultio.sparqlxml.SPARQLBooleanXMLWriter;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
+import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.helpers.BasicParserSettings;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.ntriples.NTriplesWriter;
 import org.openrdf.sail.memory.MemoryStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MemorySesameServletHelper
 extends HttpServlet {
 
   private static final long   serialVersionUID = -3562458310115107697L;
-
-  private static final Logger logger           = LoggerFactory.getLogger(MemorySesameServletHelper.class);
 
   public static final String  FILE_STREAM      = "filename";
   public static final String  FORMAT           = "format";
@@ -69,14 +67,19 @@ extends HttpServlet {
     final InputStream fileStream = (InputStream) config.getServletContext().getAttribute(FILE_STREAM);
     final RDFFormat format = (RDFFormat) config.getServletContext().getAttribute(FORMAT);
 
+    RepositoryConnection con = null;
     try {
       memBackend.initialize();
-      memBackend.getConnection().begin();
-      memBackend.getConnection().add(fileStream, "", format);
-      memBackend.getConnection().commit();
+      con = memBackend.getConnection();
+      con.getParserConfig().set(BasicParserSettings.PRESERVE_BNODE_IDS, true);
+      con.begin();
+      con.add(fileStream, "", format);
+      con.commit();
     } catch (Exception e) {
       try {
-        memBackend.getConnection().rollback();
+        if (con != null) {
+          con.rollback();
+        }
       } catch (RepositoryException e1) {
         throw new RuntimeException(e1);
       }
@@ -87,7 +90,6 @@ extends HttpServlet {
 
   @Override
   public void destroy() {
-    logger.info("Destroy DGS Servlet");
     try {
       memBackend.getConnection().close();
     } catch (RepositoryException e) {
