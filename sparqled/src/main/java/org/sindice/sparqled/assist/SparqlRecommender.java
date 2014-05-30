@@ -146,7 +146,7 @@ public final class SparqlRecommender {
               label.setLabel(label.getLabel().replaceFirst(qname, ""));
             }
             lr.addLabel(label);
-            logger.debug("No Recommendation for the label: {}", label);
+            logger.debug("Label: {}", label);
           }
           // Check if there are some recommendations
           if (lr.size() == 0) {
