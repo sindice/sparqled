@@ -52,21 +52,21 @@ import org.slf4j.LoggerFactory;
 /**
  * @param <VALUE>
  */
-public abstract class AbstractSesameBackend<VALUE>
-implements SesameBackend<VALUE> {
+public abstract class AbstractSesameBackend
+implements SesameBackend {
 
-  protected static final Logger             logger = LoggerFactory.getLogger(AbstractSesameBackend.class);
+  protected static final Logger      logger = LoggerFactory.getLogger(AbstractSesameBackend.class);
 
-  private final QueryResultProcessor<VALUE> qrp;
+  private final QueryResultProcessor qrp;
 
-  private RepositoryConnection              con;
-  private Repository                        repository;
+  private RepositoryConnection       con;
+  private Repository                 repository;
 
   public AbstractSesameBackend() {
     this(null);
   }
 
-  public AbstractSesameBackend(QueryResultProcessor<VALUE> qrp) {
+  public AbstractSesameBackend(QueryResultProcessor qrp) {
     this.qrp = qrp;
   }
 
@@ -90,15 +90,15 @@ implements SesameBackend<VALUE> {
   }
 
   @Override
-  public QueryIterator<VALUE> submit(String query)
+  public <VALUE> QueryIterator<VALUE> submit(String query)
   throws SesameBackendException {
-    return new SesameQueryIterator(qrp, query);
+    return new SesameQueryIterator<VALUE>(qrp, query);
   }
 
   @Override
-  public QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query)
+  public <VALUE> QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query)
   throws SesameBackendException {
-    return new SesameQueryIterator(qrp, query);
+    return new SesameQueryIterator<VALUE>(qrp, query);
   }
 
   protected abstract Repository getRepository();
@@ -165,7 +165,7 @@ implements SesameBackend<VALUE> {
     }
   }
 
-  private class SesameQueryIterator extends QueryIterator<VALUE> {
+  private class SesameQueryIterator<VALUE> extends QueryIterator<VALUE> {
 
     private int                               pagination      = LIMIT;
     /* user defined limit: by default get everything */

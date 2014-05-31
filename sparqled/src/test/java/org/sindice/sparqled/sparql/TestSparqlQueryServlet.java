@@ -386,7 +386,7 @@ public class TestSparqlQueryServlet {
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
-      String ref = "{\"boolean\":\"true\",\"head\":{\"link\":[]},\"status\":\"SUCCESS\",\"message\":\"\"}";
+      String ref = "{\"boolean\":true,\"head\":{\"link\":[]},\"status\":\"SUCCESS\",\"message\":\"\"}";
 
       assertEquals(ref, json.toString());
     } else {
@@ -405,7 +405,7 @@ public class TestSparqlQueryServlet {
     final int code = client.executeMethod(post);
     if (code == HttpStatus.SC_OK) {
       final String json = post.getResponseBodyAsString();
-      String ref = "{\"boolean\":\"false\",\"head\":{\"link\":[]},\"status\":\"SUCCESS\",\"message\":\"\"}";
+      String ref = "{\"boolean\":false,\"head\":{\"link\":[]},\"status\":\"SUCCESS\",\"message\":\"\"}";
       assertEquals(ref, json.toString());
     } else {
       fail("code=" + code);

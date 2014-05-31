@@ -25,3 +25,4 @@ Tasks
 Bugs
 
 * [GH-54] Correct the type of result returned by SparqlQueryServlet
+* [GH-56] Correct the use og generics in SesameBackend

@@ -19,7 +19,6 @@ package org.sindice.sparqled.sparql;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,12 +61,12 @@ import org.slf4j.LoggerFactory;
 public class SparqlQueryServlet
 extends HttpServlet {
 
-  private static final long         serialVersionUID = 4137296200305461786L;
+  private static final long   serialVersionUID = 4137296200305461786L;
 
-  private static final Logger       logger           = LoggerFactory.getLogger(SparqlQueryServlet.class);
+  private static final Logger logger           = LoggerFactory.getLogger(SparqlQueryServlet.class);
 
-  private SesameBackend<BindingSet> _repository;
-  private PreProcessing             preprocessing    = null;
+  private SesameBackend       _repository;
+  private PreProcessing       preprocessing    = null;
 
   /**
    * Initialize the proxy servlet
@@ -153,13 +152,9 @@ extends HttpServlet {
 
   /**
    * Send the query to the repository, retrieve the result and format it.
-   * 
-   * @throws UnsupportedEncodingException
-   * @throws Exception
    */
-  private void getResult(HttpServletRequest request,
-                         HttpServletResponse response)
-  throws UnsupportedEncodingException, Exception {
+  private void getResult(HttpServletRequest request, HttpServletResponse response)
+  throws Exception {
     response.setContentType("application/json");
 
     // get the query
@@ -172,7 +167,7 @@ extends HttpServlet {
 
     // Process the query
     logger.debug(query);
-    QueryIterator<BindingSet> queryIt;
+    QueryIterator queryIt;
     try {
       queryIt = _repository.submit(query);
 
@@ -203,8 +198,7 @@ extends HttpServlet {
     }
   }
 
-  private void parseSelect(HttpServletResponse response,
-                           final QueryIterator<BindingSet> queryIt)
+  private void parseSelect(HttpServletResponse response, final QueryIterator<BindingSet> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -268,7 +262,7 @@ extends HttpServlet {
     out.close();
   }
 
-  private void parseGraphResult(HttpServletResponse response, final QueryIterator<BindingSet> queryIt)
+  private void parseGraphResult(HttpServletResponse response, final QueryIterator<Statement> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
     final PrintWriter out = response.getWriter();
@@ -284,7 +278,7 @@ extends HttpServlet {
     try {
       while (queryIt.hasNext()) {
         // Find the correct format of the return value.
-        Statement st = (Statement) queryIt.next();
+        Statement st = queryIt.next();
         Map<String, JSONObject> bindings = new HashMap<String, JSONObject>();
         bindings.put("s", getSerializedValue(st.getSubject()));
         bindings.put("p", getSerializedValue(st.getPredicate()));
@@ -347,8 +341,7 @@ extends HttpServlet {
     return node;
   }
 
-  private void parseAsk(HttpServletResponse response,
-                        final QueryIterator<BindingSet> queryIt)
+  private void parseAsk(HttpServletResponse response, final QueryIterator<Boolean> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
 
@@ -363,8 +356,8 @@ extends HttpServlet {
     try {
       while (queryIt.hasNext()) {
         // Find the correct format of the return value.
-        Object result = queryIt.next();
-        json.put("boolean", ((Boolean) result).toString());
+        Boolean result = queryIt.next();
+        json.put("boolean", result);
       }
       json.put("head", head);
       json.put("status", "SUCCESS");

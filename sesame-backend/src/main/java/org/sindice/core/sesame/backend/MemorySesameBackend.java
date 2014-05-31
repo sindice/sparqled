@@ -27,8 +27,8 @@ import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultPr
 /**
  * 
  */
-public class MemorySesameBackend<VALUE>
-extends AbstractSesameBackend<VALUE> {
+public class MemorySesameBackend
+extends AbstractSesameBackend {
 
   private final File dataDir;
 
@@ -41,11 +41,11 @@ extends AbstractSesameBackend<VALUE> {
     this(null, dataDir);
   }
 
-  public MemorySesameBackend(QueryResultProcessor<VALUE> qit) {
+  public MemorySesameBackend(QueryResultProcessor qit) {
     this(qit, null);
   }
 
-  public MemorySesameBackend(QueryResultProcessor<VALUE> qit, String dataDir) {
+  public MemorySesameBackend(QueryResultProcessor qit, String dataDir) {
     super(qit);
     this.dataDir = dataDir == null ? null : new File(dataDir);
   }
