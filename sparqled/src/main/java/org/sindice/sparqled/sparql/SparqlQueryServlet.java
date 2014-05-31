@@ -341,7 +341,7 @@ extends HttpServlet {
     return node;
   }
 
-  private void parseAsk(HttpServletResponse response, final QueryIterator queryIt)
+  private void parseAsk(HttpServletResponse response, final QueryIterator<Boolean> queryIt)
   throws IOException {
     final JSONObject json = new JSONObject();
 
@@ -356,8 +356,8 @@ extends HttpServlet {
     try {
       while (queryIt.hasNext()) {
         // Find the correct format of the return value.
-        Object result = queryIt.next();
-        json.put("boolean", ((Boolean) result).toString());
+        Boolean result = queryIt.next();
+        json.put("boolean", result);
       }
       json.put("head", head);
       json.put("status", "SUCCESS");
