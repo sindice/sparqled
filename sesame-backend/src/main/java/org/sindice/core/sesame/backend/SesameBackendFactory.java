@@ -17,7 +17,6 @@
  */
 package org.sindice.core.sesame.backend;
 
-import org.openrdf.query.BindingSet;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
 /**
@@ -31,37 +30,35 @@ public final class SesameBackendFactory {
 
   private SesameBackendFactory() {}
 
-  public static <VALUE> SesameBackend<VALUE> getDgsBackend(BackendType type,
-                                                           QueryResultProcessor<VALUE> qrp,
-                                                           String... args) {
+  public static SesameBackend getDgsBackend(BackendType type, QueryResultProcessor qrp, String... args) {
     switch (type) {
       case MEMORY:
         if (args != null && args.length > 1) {
           throw new IllegalArgumentException("The Memory backend takes zero or one argument: <data-dir>?");
         }
-        return new MemorySesameBackend<VALUE>(qrp, (args == null || args.length == 0) ? null : args[0]);
+        return new MemorySesameBackend(qrp, (args == null || args.length == 0) ? null : args[0]);
       case VIRTUOSO:
       case HTTP:
         if (args.length != 1) {
           throw new IllegalArgumentException("The HTTP backend only takes one argument: <enpoint-url>");
         }
-        return new HTTPSesameBackend<VALUE>(qrp, args[0]);
+        return new HTTPSesameBackend(qrp, args[0]);
       case NATIVE:
         if (args.length != 1) {
           throw new IllegalArgumentException("The Native backend only takes one argument: <data-dir>");
         }
-        return new NativeSesameBackend<VALUE>(qrp, args[0]);
+        return new NativeSesameBackend(qrp, args[0]);
       case RDBMS:
         if (args.length != 4) {
           throw new IllegalArgumentException("The RDBMS backend only takes 4 argument: <url> <database> <user> <password>");
         }
-        return new RDBMSSesameBackend<VALUE>(qrp, args[0], args[1], args[2], args[3]);
+        return new RDBMSSesameBackend(qrp, args[0], args[1], args[2], args[3]);
       default:
         throw new EnumConstantNotPresentException(BackendType.class, type.toString());
     }
   }
 
-  public static SesameBackend<BindingSet> getDgsBackend(BackendType type, String... args) {
+  public static SesameBackend getDgsBackend(BackendType type, String... args) {
     return getDgsBackend(type, null, args);
   }
 

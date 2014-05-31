@@ -38,14 +38,14 @@ import org.slf4j.LoggerFactory;
  */
 abstract public class AbstractQuery {
 
-  protected String _graphFrom = "";
-  protected static SesameBackend<BindingSet> _repository;
-  protected final static Logger _logger = LoggerFactory.getLogger(AbstractQuery.class);
-  private final Dump _dump;
-  private String _domain = "";
-  private boolean _setGraph = false;
-  private boolean _initDump = false;
-  private int _pagination = -1;
+  protected String               _graphFrom  = "";
+  protected static SesameBackend _repository;
+  protected final static Logger  _logger     = LoggerFactory.getLogger(AbstractQuery.class);
+  private final Dump             _dump;
+  private String                 _domain     = "";
+  private boolean                _setGraph   = false;
+  private boolean                _initDump   = false;
+  private int                    _pagination = -1;
 
   public static enum SummaryAlgorithm {
     SINGLE_LABELLED, MULTI_LABELLED

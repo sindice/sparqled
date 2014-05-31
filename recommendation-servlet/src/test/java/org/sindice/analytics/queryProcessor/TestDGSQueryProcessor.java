@@ -55,7 +55,7 @@ import org.sindice.core.sesame.backend.SesameBackendFactory.BackendType;
  */
 public class TestDGSQueryProcessor {
 
-  private static final SesameBackend<Label> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
+  private static final SesameBackend backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
   private DGSQueryProcessor dgsQProcessor = new DGSQueryProcessor();
 
   private final Comparator<Label> cmpLabels = new Comparator<Label>() {
@@ -80,7 +80,7 @@ public class TestDGSQueryProcessor {
    * @param backend the {@link SesameBackend} instance
    * @param input the path to the RDF data
    */
-  private static void init(SesameBackend<Label> backend, String input)
+  private static void init(SesameBackend backend, String input)
   throws Exception {
     AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
     DataGraphSummaryVocab.resetToDefaults();
@@ -99,7 +99,7 @@ public class TestDGSQueryProcessor {
   @Test
   public void testCustomTemplate()
   throws Exception {
-    final SesameBackend<Label> backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
+    final SesameBackend backend = SesameBackendFactory.getDgsBackend(BackendType.MEMORY, new DGSQueryResultProcessor());
 
     try {
       init(backend, "./src/test/resources/testDGSQueryProcessor/testCustomTemplate/custom-summary.nt.gz");
@@ -272,7 +272,7 @@ public class TestDGSQueryProcessor {
     executeQuery(backend, query, expected, 1, 20);
   }
 
-  private void executeQuery(SesameBackend<Label> backend, String query, List<Label> expected)
+  private void executeQuery(SesameBackend backend, String query, List<Label> expected)
   throws Exception {
     executeQuery(backend, query, expected, 0, 0);
   }
@@ -286,7 +286,7 @@ public class TestDGSQueryProcessor {
    * @param pagination set the {@link QueryIterator#setPagination(int) pagination}
    * @throws Exception if an error occurred while translating the query, or while executing the translated query
    */
-  private void executeQuery(SesameBackend<Label> backend, String query, List<Label> expected, int limit, int pagination)
+  private void executeQuery(SesameBackend backend, String query, List<Label> expected, int limit, int pagination)
   throws Exception {
     final List<Label> actualLabels = new ArrayList<Label>();
 

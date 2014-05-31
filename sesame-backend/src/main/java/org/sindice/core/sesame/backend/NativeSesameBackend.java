@@ -24,8 +24,8 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.nativerdf.NativeStore;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
-public class NativeSesameBackend<VALUE>
-extends AbstractSesameBackend<VALUE> {
+public class NativeSesameBackend
+extends AbstractSesameBackend {
 
   private final String dataDir;
 
@@ -33,7 +33,7 @@ extends AbstractSesameBackend<VALUE> {
     this(null, dataDir);
   }
 
-  public NativeSesameBackend(QueryResultProcessor<VALUE> qit, String dataDir) {
+  public NativeSesameBackend(QueryResultProcessor qit, String dataDir) {
     super(qit);
     this.dataDir = dataDir;
   }

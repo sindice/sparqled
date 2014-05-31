@@ -44,19 +44,19 @@ import org.slf4j.LoggerFactory;
 
 public class SesameBackendCLI {
 
-  private static final Logger       logger   = LoggerFactory.getLogger(SesameBackendCLI.class);
+  private static final Logger logger   = LoggerFactory.getLogger(SesameBackendCLI.class);
 
-  private static final String       HELP     = "help";
-  private static final String       TYPE     = "type";
-  private static final String       ARGS     = "args";
+  private static final String HELP     = "help";
+  private static final String TYPE     = "type";
+  private static final String ARGS     = "args";
 
-  private static final String       ADD_RDF  = "add-rdf";
-  private static final String       FORMAT   = "format";
-  private static final String       CONTEXTS = "contexts";
-  private static final String       QUERY    = "query";
+  private static final String ADD_RDF  = "add-rdf";
+  private static final String FORMAT   = "format";
+  private static final String CONTEXTS = "contexts";
+  private static final String QUERY    = "query";
 
-  private final OptionParser        parser;
-  private SesameBackend<BindingSet> backend;
+  private final OptionParser  parser;
+  private SesameBackend       backend;
 
   public SesameBackendCLI() {
     parser = new OptionParser() {

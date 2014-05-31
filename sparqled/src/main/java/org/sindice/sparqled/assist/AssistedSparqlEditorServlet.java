@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openrdf.http.protocol.Protocol;
 import org.sindice.analytics.ranking.DGSQueryResultProcessor;
-import org.sindice.analytics.ranking.Label;
 import org.sindice.core.analytics.commons.summary.AnalyticsClassAttributes;
 import org.sindice.core.analytics.commons.summary.DataGraphSummaryVocab;
 import org.sindice.core.analytics.commons.summary.DatasetLabel;
@@ -49,16 +48,16 @@ import org.slf4j.LoggerFactory;
 public class AssistedSparqlEditorServlet
 extends HttpServlet {
 
-  private static final long    serialVersionUID = 4137296200305461786L;
+  private static final long   serialVersionUID = 4137296200305461786L;
 
-  private static final Logger  logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
+  private static final Logger logger           = LoggerFactory.getLogger(AssistedSparqlEditorServlet.class);
 
-  public static final String   DGS_GRAPH        = "dg";
+  public static final String  DGS_GRAPH        = "dg";
 
-  private SparqlRecommender    recommender;
-  private SesameBackend<Label> dgsBackend;
-  private int                  pagination;
-  private int                  limit;
+  private SparqlRecommender   recommender;
+  private SesameBackend       dgsBackend;
+  private int                 pagination;
+  private int                 limit;
 
   @Override
   public void init(ServletConfig config)

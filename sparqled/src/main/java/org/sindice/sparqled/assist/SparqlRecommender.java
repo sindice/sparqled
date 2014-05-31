@@ -65,7 +65,7 @@ public final class SparqlRecommender {
    * @param limit
    * @return
    */
-  public <C> C run(SesameBackend<Label> dgsBackend, ResponseWriter<C> response, String query, int pagination, int limit) {
+  public <C> C run(SesameBackend dgsBackend, ResponseWriter<C> response, String query, int pagination, int limit) {
     // TODO: Support queries with multiple FROM clauses
     RecommendationType recommendationType = RecommendationType.NONE;
 

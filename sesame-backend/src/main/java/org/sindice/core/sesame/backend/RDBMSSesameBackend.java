@@ -22,8 +22,8 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.rdbms.mysql.MySqlStore;
 import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
-public class RDBMSSesameBackend<VALUE>
-extends AbstractSesameBackend<VALUE> {
+public class RDBMSSesameBackend
+extends AbstractSesameBackend {
 
   private final String url;
   private final String database;
@@ -34,7 +34,7 @@ extends AbstractSesameBackend<VALUE> {
     this(null, url, database, user, password);
   }
 
-  public RDBMSSesameBackend(QueryResultProcessor<VALUE> qit, String url, String database, String user, String password) {
+  public RDBMSSesameBackend(QueryResultProcessor qit, String url, String database, String user, String password) {
     super(qit);
     this.database = database;
     this.password = password;
