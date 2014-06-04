@@ -170,7 +170,7 @@ public final class PointOfFocusProcessor {
     @Override
     public Object visit(ASTVar node, Object data)
     throws VisitorException {
-      ((HashSet<String>) data).add(node.getName());
+      ((Set<String>) data).add(node.getName());
       return super.visit(node, data);
     }
 
