@@ -102,7 +102,7 @@ public class Pipeline {
         accepts(
             CLASS_ATTRIBUTE,
             "for the user defined class-attribute. The default class-attribute is: "
-                + AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE)
+                + AnalyticsClassAttributes.DEFAULT)
             .withRequiredArg().ofType(String.class);
         acceptsAll(asList(SUMMARY_ALGORITHM, "algorithm"),
             "Allow the user to change the clustering algorithm to create the summary.")
@@ -297,9 +297,6 @@ public class Pipeline {
       }
 
       AnalyticsClassAttributes.initClassAttributes(classAttributes);
-    } else {
-      String[] defaultClassAttribute = { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE };
-      AnalyticsClassAttributes.initClassAttributes(defaultClassAttribute);
     }
     // Then create the Query. The local repository is created and open in
     // the query.

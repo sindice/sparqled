@@ -73,8 +73,7 @@ extends AbstractDumpTest {
   @Test
   public void testWrongClassAttribute()
   throws Exception {
-    String[] type = { "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes(AnalyticsClassAttributes.DEFAULT);
     AbstractQuery q = new NativeSingleLabelledQuery(new Dump(), testOutput + "/dumpstoresingle10");
     q.addFileToRepository("src/test/resources/unit_test_encode.nt", RDFFormat.N3);
 

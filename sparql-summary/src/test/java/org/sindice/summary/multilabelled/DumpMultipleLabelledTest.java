@@ -70,8 +70,7 @@ extends AbstractDumpTest {
   @Test
   public void testMultiLabelledWrongClassAtrribute()
   throws Exception {
-    String[] type = { "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes(AnalyticsClassAttributes.DEFAULT);
     AbstractQuery q = new NativeMultiLabelledQuery(new Dump(), testOutput + "/dumpstore5");
     q.addFileToRepository("src/test/resources/unit_test_encode.nt", RDFFormat.N3);
     _assertDump(q, testOutput + "/dumpoutput5", "testMultiLabelledWrongClassAtrribute");

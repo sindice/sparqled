@@ -110,23 +110,23 @@ public class HTTPVirtuosoMultiLabelledQuery extends AbstractMultiLabelledQuery {
     String query = "SELECT ?label (COUNT (?s) AS ?cardinality)\n" + _graphFrom
         + "WHERE {\n{\n" + "SELECT ?s (sql:GROUP_CONCAT(IF(isURI(?type),\n";
 
-    if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-      for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1; ++i) {
+    if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+      for (int i = 0; i < AnalyticsClassAttributes.getClassAttributes().size() - 1; ++i) {
         query += "            " + "IF(?p = <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">,\n"
+            + AnalyticsClassAttributes.getClassAttributes().get(i) + ">,\n"
             + "                " + "bif:concat('{<', str(?type), '>," + i
             + "}'),\n";
       }
 
       query += "            "
           + "# "
-          + AnalyticsClassAttributes.CLASS_ATTRIBUTES
-              .get(AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1)
+          + AnalyticsClassAttributes.getClassAttributes()
+              .get(AnalyticsClassAttributes.getClassAttributes().size() - 1)
           + "\n" + "                " + "bif:concat('{<', str(?type), '>,"
-          + (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1) + "}'\n"
+          + (AnalyticsClassAttributes.getClassAttributes().size() - 1) + "}'\n"
           + "            ";
       // close parenthesis
-      for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+      for (int i = 0; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
         query += ")";
       }
       query += ",\n";
@@ -135,43 +135,43 @@ public class HTTPVirtuosoMultiLabelledQuery extends AbstractMultiLabelledQuery {
     query += "        " + "#else\n";
 
     // If it is a litteral, get the type of the "type".
-    if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-      for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1; ++i) {
+    if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+      for (int i = 0; i < AnalyticsClassAttributes.getClassAttributes().size() - 1; ++i) {
         query += "            " + "IF(?p = <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">,\n"
+            + AnalyticsClassAttributes.getClassAttributes().get(i) + ">,\n"
             + "                "
             + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\"," + i + "}'),\n";
       }
 
       query += "            "
           + "# "
-          + AnalyticsClassAttributes.CLASS_ATTRIBUTES
-              .get(AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1)
+          + AnalyticsClassAttributes.getClassAttributes()
+              .get(AnalyticsClassAttributes.getClassAttributes().size() - 1)
           + "\n" + "                "
           + "bif:concat('{\"', ENCODE_FOR_URI(?type), '\","
-          + (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() - 1) + "}'\n"
+          + (AnalyticsClassAttributes.getClassAttributes().size() - 1) + "}'\n"
           + "            ";
       // close parenthesis
-      for (int i = 0; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+      for (int i = 0; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
         query += ")";
       }
       query += "\n";
 
-      if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 1) {
+      if (AnalyticsClassAttributes.getClassAttributes().size() > 1) {
         query += "), \" \") AS ?label)\n" + "        WHERE {\n"
             + "        {\n" + "            SELECT ?s ?type ?p WHERE\n"
             + "            {\n";
 
-        if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-          query += "{ ?s <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+        if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+          query += "{ ?s <" + AnalyticsClassAttributes.getClassAttributes().get(0)
               + "> ?type .\n" + "?s ?p ?type .\n" + "FILTER(?p = <"
-              + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0) + ">) }\n";
+              + AnalyticsClassAttributes.getClassAttributes().get(0) + ">) }\n";
 
-          for (int i = 1; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+          for (int i = 1; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
             query += "UNION { ?s <"
-                + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i)
+                + AnalyticsClassAttributes.getClassAttributes().get(i)
                 + "> ?type .\n" + "?s ?p ?type .\n" + "FILTER(?p = <"
-                + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i) + ">) }\n";
+                + AnalyticsClassAttributes.getClassAttributes().get(i) + ">) }\n";
           }
         }
 
@@ -179,7 +179,7 @@ public class HTTPVirtuosoMultiLabelledQuery extends AbstractMultiLabelledQuery {
         query += "), \" \") AS ?label)\n" + "        WHERE {\n"
             + "        {\n" + "            SELECT ?s ?type WHERE\n"
             + "            {\n" + "                { ?s <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+            + AnalyticsClassAttributes.getClassAttributes().get(0)
             + "> ?type . }\n";
       }
     }
@@ -190,4 +190,5 @@ public class HTTPVirtuosoMultiLabelledQuery extends AbstractMultiLabelledQuery {
     _logger.debug(query);
     launchQueryNode(query);
   }
+
 }

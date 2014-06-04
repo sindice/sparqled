@@ -69,12 +69,13 @@ public class MultipleLabelledTest {
   throws Exception {
     q = qClass.newInstance(d, "/tmp/test/store");
     d.clear();
-    String[] type = { "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-        "http://opengraphprotocol.org/schema/type", "http://ogp.me/ns#type",
-        "http://opengraph.org/schema/type",
-        "http://purl.org/dc/elements/1.1/type",
-        "http://dbpedia.org/property/type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes(
+      "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "http://opengraphprotocol.org/schema/type", "http://ogp.me/ns#type",
+      "http://opengraph.org/schema/type",
+      "http://purl.org/dc/elements/1.1/type",
+      "http://dbpedia.org/property/type"
+    );
   }
 
   @After
@@ -426,8 +427,7 @@ public class MultipleLabelledTest {
   @Test
   public void testNameMultipleDomainOneCA()
   throws Exception {
-    String[] type = { "http://opengraphprotocol.org/schema/type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes("http://opengraphprotocol.org/schema/type");
 
     q.addFileToRepository("src/test/resources/unit_test_multidomain.nt", RDFFormat.N3);
     q.computeName();
@@ -441,8 +441,7 @@ public class MultipleLabelledTest {
   @Test
   public void testPredMultipleDomainOneCA()
   throws Exception {
-    String[] type = { "http://opengraphprotocol.org/schema/type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes("http://opengraphprotocol.org/schema/type");
 
     q.addFileToRepository("src/test/resources/unit_test_multidomain.nt", RDFFormat.N3);
     q.computePredicate();
@@ -459,8 +458,7 @@ public class MultipleLabelledTest {
   @Test
   public void testNameMultipleDomainInvalidCA()
   throws Exception {
-    String[] type = { "http://dbpedia.org/property/type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes("http://dbpedia.org/property/type");
 
     q.addFileToRepository("src/test/resources/unit_test_multidomain.nt", RDFFormat.N3);
     q.computeName();
@@ -474,8 +472,7 @@ public class MultipleLabelledTest {
   @Test
   public void testPredMultipleDomainInvalidCA()
   throws Exception {
-    String[] type = { "http://dbpedia.org/property/type" };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    AnalyticsClassAttributes.initClassAttributes("http://dbpedia.org/property/type");
 
     q.addFileToRepository("src/test/resources/unit_test_multidomain.nt", RDFFormat.N3);
     q.computePredicate();

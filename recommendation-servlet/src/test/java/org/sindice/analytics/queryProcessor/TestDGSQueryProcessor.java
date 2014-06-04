@@ -82,7 +82,6 @@ public class TestDGSQueryProcessor {
    */
   private static void init(SesameBackend backend, String input)
   throws Exception {
-    AnalyticsClassAttributes.initClassAttributes(new String[] {AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE});
     DataGraphSummaryVocab.resetToDefaults();
 
     final Resource c = NTriplesUtil.parseURI("<" + DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH + ">", new MemValueFactory());
