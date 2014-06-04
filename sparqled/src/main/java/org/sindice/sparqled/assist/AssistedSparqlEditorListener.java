@@ -97,7 +97,7 @@ extends SparqledContextListener {
     final String limit = doGetParameter(config, LIMIT, "1000");
     setParameter(context, LIMIT, Integer.valueOf(limit));
 
-    final String[] classAttributes = doGetParameters(config, CLASS_ATTRIBUTES, AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE);
+    final String[] classAttributes = doGetParameters(config, CLASS_ATTRIBUTES, AnalyticsClassAttributes.DEFAULT);
     setParameter(context, CLASS_ATTRIBUTES, classAttributes);
 
     final String useMemcached = doGetParameter(config, "USE_MEMCACHED", "false");

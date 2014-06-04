@@ -21,31 +21,39 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * @author thomas
+ * This class contains the definition of class attributes.
+ * 
+ * <p>
+ * 
+ * Class attributes are predicates which define the associated object
+ * as a class. The default predicate used as a class attribute is
+ * <code>rdf:type</code>.
  */
 public class AnalyticsClassAttributes {
 
-  public static final Logger logger                  = LoggerFactory.getLogger(AnalyticsClassAttributes.class);
+  public static final String  DEFAULT = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
 
-  public static final String DEFAULT_CLASS_ATTRIBUTE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+  private static List<String> classAttributes;
 
-  public static List<String> CLASS_ATTRIBUTES;
-
-  public static final void initClassAttributes(String[] attributes) {
+  public static final void initClassAttributes(String... attributes) {
     initClassAttributes(Arrays.asList(attributes));
   }
 
   public static final void initClassAttributes(List<String> attributes) {
     Collections.sort(attributes);
-    CLASS_ATTRIBUTES = Collections.unmodifiableList(attributes);
+    classAttributes = Collections.unmodifiableList(attributes);
   }
 
   public static boolean isClass(String predicate) {
-    return CLASS_ATTRIBUTES.contains(predicate);
+    return getClassAttributes().contains(predicate);
+  }
+
+  public static List<String> getClassAttributes() {
+    if (classAttributes == null) {
+      classAttributes = Arrays.asList(DEFAULT);
+    }
+    return classAttributes;
   }
 
 }

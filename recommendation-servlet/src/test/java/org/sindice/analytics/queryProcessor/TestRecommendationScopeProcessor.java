@@ -38,7 +38,6 @@ public class TestRecommendationScopeProcessor {
   public void setUp()
   throws Exception {
     ast = null;
-    AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
     SparqlVarGenerator.reset();
   }
 

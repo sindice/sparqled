@@ -43,7 +43,7 @@ public class TestAnalyticsClassAttributes {
   @Before
   public void setUp()
   throws Exception {
-    AnalyticsClassAttributes.initClassAttributes(new String[] {
+    AnalyticsClassAttributes.initClassAttributes(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
       "http://opengraphprotocol.org/schema/type",
       "http://opengraph.org/schema/type",
@@ -54,8 +54,8 @@ public class TestAnalyticsClassAttributes {
       "http://dbpedia.org/property/type",
       "http://dbpedia.org/ontology/type",
       "http://dbpedia.org/ontology/Organisation/type", //Added 25 Oct 2011
-      "http://xmlns.com/foaf/0.1/type", //Added 25 Oct 2011
-    });
+      "http://xmlns.com/foaf/0.1/type" //Added 25 Oct 2011
+    );
   }
 
   @Test

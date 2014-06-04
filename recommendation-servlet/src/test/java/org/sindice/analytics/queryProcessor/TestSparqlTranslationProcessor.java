@@ -40,7 +40,6 @@ public class TestSparqlTranslationProcessor {
   @Before
   public void setUp()
   throws Exception {
-    AnalyticsClassAttributes.initClassAttributes(Arrays.asList(AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE));
     SparqlVarGenerator.reset();
   }
 

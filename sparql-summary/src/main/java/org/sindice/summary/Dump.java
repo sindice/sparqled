@@ -160,7 +160,7 @@ public class Dump {
       p = createURI(DataGraphSummaryVocab.LABEL);
       int vocabValue = Integer.parseInt(type);
 
-      dumpTriple(o, p, createURI(AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(vocabValue)));
+      dumpTriple(o, p, createURI(AnalyticsClassAttributes.getClassAttributes().get(vocabValue)));
       // an:typeID an:cardinality Cardinality .
       // always the same o as the s
       p = createURI(DataGraphSummaryVocab.CARDINALITY);

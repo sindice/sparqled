@@ -55,12 +55,12 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
         + "           concat('{\"', ENCODE_FOR_URI(?type), '\",',?p,'}')) AS ?label)\n"
         + "        WHERE {\n";
 
-    if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-      query += "{ ?s <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+    if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+      query += "{ ?s <" + AnalyticsClassAttributes.getClassAttributes().get(0)
           + "> ?type .\n  BIND ('0' AS ?p) }\n";
-      for (int i = 1; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+      for (int i = 1; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
         query += "UNION{ ?s <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i)
+            + AnalyticsClassAttributes.getClassAttributes().get(i)
             + "> ?type .\n BIND ('" + i + "' AS ?p) }\n";
       }
     }
@@ -88,12 +88,12 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
         + "                       concat('\"', ENCODE_FOR_URI(?type),"
         + "'\"')) as ?source)\n" + "           WHERE {\n";
 
-    if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-      query += "{ ?s <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+    if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+      query += "{ ?s <" + AnalyticsClassAttributes.getClassAttributes().get(0)
           + "> ?type . }\n";
-      for (int i = 1; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+      for (int i = 1; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
         query += "UNION { ?s <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i)
+            + AnalyticsClassAttributes.getClassAttributes().get(i)
             + "> ?type . }\n";
       }
     }
@@ -108,12 +108,12 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
         + "                       concat('\"', ENCODE_FOR_URI(?typeSon),"
         + "'\"')) as ?target)\n" + "           WHERE {\n";
 
-    if (AnalyticsClassAttributes.CLASS_ATTRIBUTES.size() > 0) {
-      query += "{ ?sSon <" + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(0)
+    if (AnalyticsClassAttributes.getClassAttributes().size() > 0) {
+      query += "{ ?sSon <" + AnalyticsClassAttributes.getClassAttributes().get(0)
           + "> ?typeSon . }\n";
-      for (int i = 1; i < AnalyticsClassAttributes.CLASS_ATTRIBUTES.size(); ++i) {
+      for (int i = 1; i < AnalyticsClassAttributes.getClassAttributes().size(); ++i) {
         query += "UNION { ?sSon <"
-            + AnalyticsClassAttributes.CLASS_ATTRIBUTES.get(i)
+            + AnalyticsClassAttributes.getClassAttributes().get(i)
             + "> ?typeSon . }\n";
       }
     }
@@ -123,4 +123,5 @@ public class AbstractSingleLabelledQuery extends AbstractQuery {
     _logger.debug(query);
     launchQueryPred(query);
   }
+
 }

@@ -142,7 +142,7 @@ public class TestAssistedSparqlEditorSevlet {
     aseTester.setAttribute(RECOMMENDER_WRAPPER + DOMAIN_URI_PREFIX, DataGraphSummaryVocab.DOMAIN_URI_PREFIX);
     aseTester.setAttribute(RECOMMENDER_WRAPPER + PAGINATION, 1000);
     aseTester.setAttribute(RECOMMENDER_WRAPPER + DATASET_LABEL_DEF, DatasetLabel.SECOND_LEVEL_DOMAIN);
-    aseTester.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT_CLASS_ATTRIBUTE });
+    aseTester.setAttribute(RECOMMENDER_WRAPPER + CLASS_ATTRIBUTES, new String[] { AnalyticsClassAttributes.DEFAULT });
     aseTester.setAttribute(RECOMMENDER_WRAPPER + GRAPH_SUMMARY_GRAPH, DataGraphSummaryVocab.GRAPH_SUMMARY_GRAPH);
     aseTester.setAttribute(RECOMMENDER_WRAPPER + LIMIT, limit);
     /*

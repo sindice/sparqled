@@ -47,15 +47,14 @@ public abstract class AbstractDumpTest {
 
   @Before
   public void setUp() {
-    String[] type = {
+    AnalyticsClassAttributes.initClassAttributes(
       "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
       "http://opengraphprotocol.org/schema/type",
       "http://ogp.me/ns#type",
       "http://opengraph.org/schema/type",
       "http://purl.org/dc/elements/1.1/type",
       "http://dbpedia.org/property/type"
-    };
-    AnalyticsClassAttributes.initClassAttributes(type);
+    );
     testOutput = new File("/tmp/testUNIT/");
   }
 
