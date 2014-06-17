@@ -21,7 +21,7 @@ import org.sindice.analytics.queryProcessor.QueryProcessor.POFMetadata;
 import org.sindice.analytics.queryProcessor.QueryProcessor.RecommendationType;
 import org.sindice.analytics.ranking.LabelsRanking;
 
-public interface ResponseWriter<C> {
+public interface ResponseWriter {
 
   /**
    * Returns an object storing the list of recommendations
@@ -31,20 +31,20 @@ public interface ResponseWriter<C> {
    * @param rankingName
    * @return
    */
-  public C createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, LabelsRanking recommendations);
+  public String createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, LabelsRanking recommendations);
 
   /**
    * Returns an object with an explanation of the failure
    * @param type
    * @return
    */
-  public C createErrorAnswer(RecommendationType type, Throwable e);
+  public String createErrorAnswer(RecommendationType type, Throwable e);
 
   /**
    * Returns an object with an explanation of the failure
    * @param type
    * @return
    */
-  public C createEmptyAnswer(String msg);
+  public String createEmptyAnswer(String msg);
 
 }

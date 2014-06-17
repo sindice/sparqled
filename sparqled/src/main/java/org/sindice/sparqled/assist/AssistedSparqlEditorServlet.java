@@ -173,10 +173,9 @@ extends HttpServlet {
 
     // Check if user wants a context aware recommendation
     if (request.getParameter(Protocol.QUERY_PARAM_NAME) != null) {
-      final ResponseWriter<String> responseWriter = new JsonResponseWriter();
       final String query = URLDecoder.decode(request.getParameter(Protocol.QUERY_PARAM_NAME), "UTF-8");
       // Get recommendation
-      response = recommender.run(dgsBackend, responseWriter, query, pagination, limit);
+      response = recommender.run(dgsBackend, query, pagination, limit);
     }
     return response;
   }

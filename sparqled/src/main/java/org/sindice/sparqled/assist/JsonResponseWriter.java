@@ -39,21 +39,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JsonResponseWriter
-implements ResponseWriter<String> {
+implements ResponseWriter {
 
-  private static final Logger logger   = LoggerFactory.getLogger(JsonResponseWriter.class);
-  private final ObjectMapper  mapper   = new ObjectMapper();
+  private static final Logger logger = LoggerFactory.getLogger(JsonResponseWriter.class);
+  private final ObjectMapper  mapper = new ObjectMapper();
 
   @Override
-  public String createSuccessAnswer(RecommendationType type,
-                                    POFMetadata pofMetadata,
-                                    LabelsRanking recommendations) {
+  public String createSuccessAnswer(RecommendationType type, POFMetadata pofMetadata, LabelsRanking recommendations) {
     final Map<String, Object> jsonStructure = new HashMap<String, Object>();
     final String json;
 
     try {
-      final boolean isClass = type.equals(RecommendationType.CLASS);
-
       jsonStructure.put(ResponseStructure.STATUS, ResponseStructure.SUCCESS);
       jsonStructure.put(ResponseStructure.RESULTS, new HashMap<String, Map>());
 
@@ -69,7 +65,7 @@ implements ResponseWriter<String> {
         rec.put(ResponseStructure.COUNT, sug.getCardinality());
         rec.put(ResponseStructure.STATUS, sug.getLabel().getType());
 
-        if (isClass) {
+        if (type == RecommendationType.CLASS) {
           // For classes, the predicates that define them and their counts
           addClassAttributes(sug.getLabel(), rec);
         }
@@ -80,7 +76,7 @@ implements ResponseWriter<String> {
       jsonStructure.put(ResponseStructure.CA_REPLACE, false);
       jsonStructure.put(ResponseStructure.REC_REPLACE, false);
       // add current class attribute substitution data
-      if (isClass) {
+      if (type == RecommendationType.CLASS) {
         addClassAttributeSubstitution(pofMetadata, jsonStructure);
       }
       // add other substitution data, e.g., for keyword search

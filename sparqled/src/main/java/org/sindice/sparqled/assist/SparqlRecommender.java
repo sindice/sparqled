@@ -41,9 +41,11 @@ import com.github.mustachejava.MustacheFactory;
  */
 public final class SparqlRecommender {
 
-  private static final Logger logger  = LoggerFactory.getLogger(SparqlRecommender.class);
+  private static final Logger  logger   = LoggerFactory.getLogger(SparqlRecommender.class);
 
-  private final Mustache template;
+  private final Mustache       template;
+
+  private final ResponseWriter response = new JsonResponseWriter();
 
   public SparqlRecommender(String pathToTemplate) {
     if (pathToTemplate != null) {
@@ -58,14 +60,13 @@ public final class SparqlRecommender {
 
   /**
    * Returns an object containing the list of recommendation for the given query
-   * @param dgsBackend
-   * @param query
-   * @param rankings
-   * @param pagination
-   * @param limit
+   * @param dgsBackend the {@link SesameBackend} for the SPARQL endpoint
+   * @param query the query to recommend
+   * @param pagination the pagination step; no pagination if equal to zero
+   * @param limit the maximum number of results to retrieve; no limit if equal to zero
    * @return
    */
-  public <C> C run(SesameBackend dgsBackend, ResponseWriter<C> response, String query, int pagination, int limit) {
+  public String run(SesameBackend dgsBackend, String query, int pagination, int limit) {
     // TODO: Support queries with multiple FROM clauses
     RecommendationType recommendationType = RecommendationType.NONE;
 
@@ -127,7 +128,7 @@ public final class SparqlRecommender {
         return response.createEmptyAnswer("Cannot compute recommendation from the given position");
       }
     } catch (DGSException e) {
-      logger.info("DGSException: Unable to compute recommendations", e);
+      logger.info("Unable to compute recommendations", e);
       return response.createErrorAnswer(recommendationType, e);
     } catch (Throwable e) {
       logger.info("Unable to compute recommendations", e);

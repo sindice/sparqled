@@ -26,10 +26,9 @@ import org.openrdf.model.Resource;
 import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.rio.RDFFormat;
-import org.sindice.core.sesame.backend.SesameBackend.QueryIterator.QueryResultProcessor;
 
 /**
- * Provides access method to Sesame repositories: query, adding data.
+ * Provides access method to query Sesame repositories: query, adding data.
  */
 public interface SesameBackend {
 
@@ -79,58 +78,36 @@ public interface SesameBackend {
 
   /**
    * Close the underlying repository
-   * 
-   * @throws SesameBackendException
    */
   public void closeConnection()
   throws SesameBackendException;
 
   /**
    * Starts the underlying repository
-   * 
-   * @throws SesameBackendException
    */
   public void initConnection()
   throws SesameBackendException;
 
   /**
    * Get a direct access to the repository
-   * 
-   * @return
    */
   public RepositoryConnection getConnection();
 
   /**
    * Add data to the repository
-   * 
-   * @param path
-   * @param format
-   * @param contexts
-   * @throws SesameBackendException
+   * @param path the path to the data, either a file or a directory
+   * @param format the {@link RDFFormat} of the RDF data
+   * @param contexts the named graph of the data
    */
   public void addToRepository(File path, RDFFormat format, Resource... contexts)
   throws SesameBackendException;
 
   /**
    * Returns an iterator over the results of the submitted query
-   * 
-   * @param query
-   * @return
-   * @throws SesameBackendException
+   * @param query the SPARQL query to execute
+   * @return a {@link QueryIterator} to iterate over the results
    */
   public <VALUE> QueryIterator<VALUE> submit(String query)
-  throws SesameBackendException;
-
-  /**
-   * Returns an iterator over the results of the submitted query. Process results using the given
-   * {@link QueryResultProcessor}
-   * 
-   * @param qrp
-   * @param query
-   * @return
-   * @throws SesameBackendException
-   */
-  public <VALUE> QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query)
   throws SesameBackendException;
 
 }

@@ -17,6 +17,9 @@
  */
 package org.sindice.sparqled.assist;
 
+/**
+ * Vocabulary terms of the response of {@link SparqlRecommender}
+ */
 public class ResponseStructure {
 
   public static final String STATUS           = "status";

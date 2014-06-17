@@ -95,12 +95,6 @@ implements SesameBackend {
     return new SesameQueryIterator<VALUE>(qrp, query);
   }
 
-  @Override
-  public <VALUE> QueryIterator<VALUE> submit(QueryResultProcessor<VALUE> qrp, String query)
-  throws SesameBackendException {
-    return new SesameQueryIterator<VALUE>(qrp, query);
-  }
-
   protected abstract Repository getRepository();
 
   @Override
