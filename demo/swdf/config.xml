@@ -3,12 +3,14 @@
 
     <recommender>
         <backend>NATIVE</backend>
+        <!-- Update the path to the "native-summary" folder -->
         <backendArgs>/path/to/native-summary</backendArgs>
         <graphSummaryGraph>http://data.semanticweb.org/summary</graphSummaryGraph>
     </recommender>
 
     <proxy>
         <backend>NATIVE</backend>
+        <!-- Update the path to the "native" folder -->
         <backendArgs>/path/to/native</backendArgs>
     </proxy>
 

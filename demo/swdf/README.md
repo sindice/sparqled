@@ -5,11 +5,12 @@ This demo uses Sesame [Native repository](http://openrdf.callimachus.net/sesame/
 ## Requirements
 
 You must have a Tomcat instance up and running.
-You must have downloaded or created the binaries. If not, follow those [steps](https://github.com/sindice/sparqled/wiki/Getting-Binaries). In this demo, we will use two binaries: `sesame-backend-xxx.jar` and `sparqled.war`.
 
-## Create the Graph Schema
+You must have downloaded or created the binaries. If not, follow those [steps](https://github.com/sindice/sparqled/wiki/Getting-Binaries). In this demo, we will use two binaries: `../../sesame-backend/target/sesame-backend-${version}.jar` and `../../sparqled/target/sparqled.war`.
 
-The data in the tarball `swdf.tar.bz2` is in `Turtle` format. The graph schema has been created already using the [hadoop-based](https://github.com/sindice/summary) implementation of the graph schema computation, and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
+## The Graph Schema
+
+The data in the tarball `swdf.tar.bz2` is in `Turtle` format. The graph schema has already been created and is stored in the file `swdf-types.nq.bz2` in `N-Quads` format.
 
 ## Deploy SPARQLed
 
@@ -20,7 +21,7 @@ The data in the tarball `swdf.tar.bz2` is in `Turtle` format. The graph schema h
 # Create the Native repository into the folder `native` with the statements
 # in the files under `./swdf/` folder.
 # The statements are added to the named graph `http://data.semanticweb.org/`.
-42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
+42sh$ java -cp ../../sesame-backend/target/sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
                 --format Turtle --type NATIVE --args native \
                 --contexts http://data.semanticweb.org/ --add-rdf ./swdf/
 ```
@@ -29,11 +30,11 @@ The data in the tarball `swdf.tar.bz2` is in `Turtle` format. The graph schema h
 # Uncompress the data
 42sh$ bunzip2 swdf-types.nq.bz2
 # Add the statements to the named graph `http://data.semanticweb.org/summary`.
-42sh$ java -cp sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
+42sh$ java -cp ../../sesame-backend/target/sesame-backend-xxx.jar org.sindice.core.sesame.backend.SesameBackendCLI \
                 --format N-QUADS --type NATIVE --args native-summary \
                 --contexts http://data.semanticweb.org/summary --add-rdf ./swdf-types.nq
 ```
-3. Update the path to the `native` folder in `config.xml`.
-4. Update the paths to `sparqled.war` and to the sparqled home `demo/swdf/` in `swdf.xml`.
+3. Update the paths to the `native` and `native-summary` folders in `config.xml`.
+4. Update the paths in `swdf.xml` to `sparqled.war`, located at `../../sparqled/target/sparqled.war`, and to the sparqled home, i.e., the current directory.
 5. Copy `swdf.xml` to `$CATALINA_HOME/conf/Catalina/localhost`.
 6. The application can be accessed at [http://localhost:8080/swdf/](http://localhost:8080/swdf/).

@@ -1,3 +1,5 @@
+<!-- Update the path to the sparqled.war file -->
 <Context docBase="/path/to/sparqled.war">
+    <!-- Update the path to the demo/swdf folder -->
     <Parameter name="sparqled/home" value="/path/to/demo/swdf" override="false" />
 </Context>
